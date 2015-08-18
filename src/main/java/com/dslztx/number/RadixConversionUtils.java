@@ -1,4 +1,4 @@
-package com.dslztx;
+package com.dslztx.number;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -205,6 +205,13 @@ public class RadixConversionUtils {
         return new String(fromBinary(longToBinary(l), toRadix));
     }
 
+    /**
+     * chars是fromRadix所表示进制形式的字符串
+     * 
+     * @param chars
+     * @param fromRadix
+     * @return
+     */
     private static char[] toBinary(char[] chars, Radix fromRadix) {
         if (fromRadix == Radix.Binary)
             return chars;
@@ -214,6 +221,13 @@ public class RadixConversionUtils {
             return toBinary(chars, 4);
     }
 
+    /**
+     * 将十六进制，八进制形式表示的字符串转换成以二进制形式表示，charLen=3，表示原来以八进制形式表示，charLen=4，表示原来以十六进制形式表示
+     * 
+     * @param chars
+     * @param charLen
+     * @return
+     */
     private static char[] toBinary(char[] chars, int charLen) {
         char[] values = new char[chars.length * charLen];
         int pos = 0;
@@ -226,6 +240,13 @@ public class RadixConversionUtils {
         return values;
     }
 
+    /**
+     * 将某个十六进制，八进制字符转换成二进制串
+     * 
+     * @param c
+     * @param charLen
+     * @return
+     */
     private static char[] getBinaryDigits(char c, int charLen) {
         char[] binaryDigits = new char[charLen];
         Arrays.fill(binaryDigits, '0');
@@ -242,6 +263,12 @@ public class RadixConversionUtils {
         return binaryDigits;
     }
 
+    /**
+     * 将二进制字符串转换成byte类型的对象
+     * 
+     * @param binaryStr
+     * @return
+     */
     private static byte toByte(char[] binaryStr) {
         int start = binaryStr.length - 1;
         for (int index = 0; index < binaryStr.length - 1; index++) {
@@ -283,6 +310,12 @@ public class RadixConversionUtils {
         }
     }
 
+    /**
+     * 将二进制字符串转换成short类型的对象
+     * 
+     * @param binaryStr
+     * @return
+     */
     private static short toShort(char[] binaryStr) {
         int start = binaryStr.length - 1;
         for (int index = 0; index < binaryStr.length - 1; index++) {
@@ -324,6 +357,12 @@ public class RadixConversionUtils {
         }
     }
 
+    /**
+     * 将二进制字符串转换成int类型的对象
+     * 
+     * @param binaryStr
+     * @return
+     */
     private static int toInt(char[] binaryStr) {
         int start = binaryStr.length - 1;
         for (int index = 0; index < binaryStr.length - 1; index++) {
@@ -365,6 +404,12 @@ public class RadixConversionUtils {
         }
     }
 
+    /**
+     * 将二进制字符串转换成long类型的对象
+     * 
+     * @param binaryStr
+     * @return
+     */
     private static long toLong(char[] binaryStr) {
         int start = binaryStr.length - 1;
         for (int index = 0; index < binaryStr.length - 1; index++) {
@@ -407,11 +452,53 @@ public class RadixConversionUtils {
     }
 
 
-
+    /**
+     * 将以fromRadix所表示进制形式表示的字符串转换成int类型对象
+     * 
+     * @param chars
+     * @param fromRadix
+     * @return
+     */
     public static int toInt(char[] chars, Radix fromRadix) {
         return toInt(toBinary(chars, fromRadix));
     }
 
+    /**
+     * 将以fromRadix所表示进制形式表示的字符串转换成byte类型对象
+     * 
+     * @param chars
+     * @param fromRadix
+     * @return
+     */
+    public static byte toByte(char[] chars, Radix fromRadix) {
+        return toByte(toBinary(chars, fromRadix));
+    }
+
+    /**
+     * 将以fromRadix所表示进制形式表示的字符串转换成short类型对象
+     * 
+     * @param chars
+     * @param fromRadix
+     * @return
+     */
+    public static short toShort(char[] chars, Radix fromRadix) {
+        return toShort(toBinary(chars, fromRadix));
+    }
+
+    /**
+     * 将以fromRadix所表示进制形式表示的字符串转换成long类型对象
+     * 
+     * @param chars
+     * @param fromRadix
+     * @return
+     */
+    public static long toLong(char[] chars, Radix fromRadix) {
+        return toLong(toBinary(chars, fromRadix));
+    }
+
+    /**
+     * 进制类型枚举
+     */
     public enum Radix {
         Binary(2), Octal(8), Hex(16);
 

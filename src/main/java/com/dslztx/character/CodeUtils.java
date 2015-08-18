@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
+ * 编码解码工具类
+ * 
  * @author dslztx
  * @date 2015年08月11日
  */
@@ -38,7 +40,7 @@ public class CodeUtils {
     }
 
     /**
-     * 编码方案枚举
+     * 常见编码方案枚举
      */
     public enum CodeMethod {
         UTF8("UTF-8"), GBK("GBK"), ISO("ISO"), ASCII("ASCII");

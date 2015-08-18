@@ -1,9 +1,10 @@
 package com.dslztx.character;
 
 /**
- * 关于字符串的工具类
+ * 字符串工具类
  * 
  * @author dslztx
+ * @date 2015年08月17日
  */
 public class StringUtils {
 

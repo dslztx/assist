@@ -1,6 +1,8 @@
 package com.dslztx.character;
 
 /**
+ * 字符工具类
+ * 
  * @author dslztx
  * @date 2015年08月17日
  */

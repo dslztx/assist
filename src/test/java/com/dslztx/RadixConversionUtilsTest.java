@@ -81,4 +81,67 @@ public class RadixConversionUtilsTest {
             fail();
         }
     }
+
+    @Test
+    public void testToByte() {
+        try {
+            assertTrue(RadixConversionUtils.toByte("00001111".toCharArray(), RadixConversionUtils.Radix.Binary) == (byte) 15);
+            assertTrue(RadixConversionUtils.toByte("11111111".toCharArray(), RadixConversionUtils.Radix.Binary) == (byte) -1);
+            assertTrue(RadixConversionUtils.toByte("000000000000177".toCharArray(), RadixConversionUtils.Radix.Octal) == (byte) 127);
+            assertTrue(RadixConversionUtils.toByte("71".toCharArray(), RadixConversionUtils.Radix.Octal) == (byte) 57);
+            assertTrue(RadixConversionUtils.toByte("000000000000ff".toCharArray(), RadixConversionUtils.Radix.Hex) == (byte) -1);
+            assertTrue(RadixConversionUtils.toByte("00005f".toCharArray(), RadixConversionUtils.Radix.Hex) == (byte) 95);
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testToShort() {
+        try {
+            assertTrue(RadixConversionUtils.toShort("00001111".toCharArray(), RadixConversionUtils.Radix.Binary) == (short) 15);
+            assertTrue(RadixConversionUtils
+                    .toShort("1111111111111111".toCharArray(), RadixConversionUtils.Radix.Binary) == (short) -1);
+            assertTrue(RadixConversionUtils.toShort("000000000000177".toCharArray(), RadixConversionUtils.Radix.Octal) == (short) 127);
+            assertTrue(RadixConversionUtils.toShort("55".toCharArray(), RadixConversionUtils.Radix.Octal) == (short) 45);
+            assertTrue(RadixConversionUtils.toShort("000000000000ff".toCharArray(), RadixConversionUtils.Radix.Hex) == (short) 255);
+            assertTrue(RadixConversionUtils.toShort("00005f".toCharArray(), RadixConversionUtils.Radix.Hex) == (short) 95);
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testToInt() {
+        try {
+            assertTrue(RadixConversionUtils.toInt("00001111".toCharArray(), RadixConversionUtils.Radix.Binary) == (int) 15);
+            assertTrue(RadixConversionUtils
+                    .toShort("1111111111111111".toCharArray(), RadixConversionUtils.Radix.Binary) == (int) -1);
+            assertTrue(RadixConversionUtils.toInt("000000000000177".toCharArray(), RadixConversionUtils.Radix.Octal) == (int) 127);
+            assertTrue(RadixConversionUtils.toInt("55".toCharArray(), RadixConversionUtils.Radix.Octal) == (int) 45);
+            assertTrue(RadixConversionUtils.toInt("000000000000ff".toCharArray(), RadixConversionUtils.Radix.Hex) == (int) 255);
+            assertTrue(RadixConversionUtils.toInt("00005f".toCharArray(), RadixConversionUtils.Radix.Hex) == (int) 95);
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testToLong() {
+        try {
+            assertTrue(RadixConversionUtils.toLong("00001111".toCharArray(), RadixConversionUtils.Radix.Binary) == (long) 15);
+            assertTrue(RadixConversionUtils
+                    .toShort("1111111111111111".toCharArray(), RadixConversionUtils.Radix.Binary) == (long) -1);
+            assertTrue(RadixConversionUtils.toLong("000000000000177".toCharArray(), RadixConversionUtils.Radix.Octal) == (long) 127);
+            assertTrue(RadixConversionUtils.toLong("55".toCharArray(), RadixConversionUtils.Radix.Octal) == (long) 45);
+            assertTrue(RadixConversionUtils.toLong("000000000000ff".toCharArray(), RadixConversionUtils.Radix.Hex) == (long) 255);
+            assertTrue(RadixConversionUtils.toLong("00005f".toCharArray(), RadixConversionUtils.Radix.Hex) == (long) 95);
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

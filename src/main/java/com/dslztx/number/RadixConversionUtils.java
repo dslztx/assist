@@ -234,7 +234,7 @@ public class RadixConversionUtils {
         char[] binaryDigits;
         for (int index = 0; index < chars.length; index++) {
             binaryDigits = getBinaryDigits(chars[index], charLen);
-            for (int index2 = charLen - 1; index2 >= 0; index2--)
+            for (int index2 = 0; index2 < charLen; index2++)
                 values[pos++] = binaryDigits[index2];
         }
         return values;
@@ -281,9 +281,6 @@ public class RadixConversionUtils {
         if (end - start + 1 > 8) {
             throw new RuntimeException("超出int型的位数");
         } else if (end - start + 1 == 8) {
-            boolean negative = false;
-            if (binaryStr[start] == '1')
-                negative = true;
             start++;
 
             byte sum = 0;
@@ -293,11 +290,7 @@ public class RadixConversionUtils {
                     sum += multiplier;
                 multiplier *= 2;
             }
-            if (negative) {
-                return (byte) (-(~(sum - 1)));
-            } else {
-                return sum;
-            }
+            return (byte) (-(0x7f & (~(sum - 1))));
         } else {
             byte sum = 0;
             byte multiplier = 1;
@@ -328,9 +321,6 @@ public class RadixConversionUtils {
         if (end - start + 1 > 16) {
             throw new RuntimeException("超出int型的位数");
         } else if (end - start + 1 == 16) {
-            boolean negative = false;
-            if (binaryStr[start] == '1')
-                negative = true;
             start++;
 
             short sum = 0;
@@ -340,11 +330,7 @@ public class RadixConversionUtils {
                     sum += multiplier;
                 multiplier *= 2;
             }
-            if (negative) {
-                return (short) (-(~(sum - 1)));
-            } else {
-                return sum;
-            }
+            return (short) -((0x7fff & (~(sum - 1))));
         } else {
             short sum = 0;
             short multiplier = 1;
@@ -375,9 +361,6 @@ public class RadixConversionUtils {
         if (end - start + 1 > 32) {
             throw new RuntimeException("超出int型的位数");
         } else if (end - start + 1 == 32) {
-            boolean negative = false;
-            if (binaryStr[start] == '1')
-                negative = true;
             start++;
 
             int sum = 0;
@@ -387,11 +370,8 @@ public class RadixConversionUtils {
                     sum += multiplier;
                 multiplier *= 2;
             }
-            if (negative) {
-                return -(~(sum - 1));
-            } else {
-                return sum;
-            }
+
+            return -(~(sum - 1));
         } else {
             int sum = 0;
             int multiplier = 1;
@@ -422,9 +402,6 @@ public class RadixConversionUtils {
         if (end - start + 1 > 64) {
             throw new RuntimeException("超出long型的位数");
         } else if (end - start + 1 == 64) {
-            boolean negative = false;
-            if (binaryStr[start] == '1')
-                negative = true;
             start++;
 
             long sum = 0;
@@ -434,14 +411,10 @@ public class RadixConversionUtils {
                     sum += multiplier;
                 multiplier *= 2;
             }
-            if (negative) {
-                return -(~(sum - 1));
-            } else {
-                return sum;
-            }
+            return -(~(sum - 1));
         } else {
-            int sum = 0;
-            int multiplier = 1;
+            long sum = 0;
+            long multiplier = 1;
             for (int index = end; index >= start; index--) {
                 if (binaryStr[index] == '1')
                     sum += multiplier;

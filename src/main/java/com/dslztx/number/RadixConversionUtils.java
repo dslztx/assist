@@ -99,7 +99,7 @@ public class RadixConversionUtils {
     }
 
     /**
-     * 将二进制形式的01字符串表示成由“0-9,a-f”字符组成的字符串，每个字符对应“charLen”个二进制位
+     * 将二进制形式的01字符串表示成由“0-9,a-f”字符或者“0-7”字符组成的字符串，每个字符对应“charLen”个二进制位
      * 
      * @param binaryStr
      * @param charLen
@@ -124,7 +124,7 @@ public class RadixConversionUtils {
     }
 
     /**
-     * 将binaryStr中的[start,end]范围内的二进制字符串转换成对应的“0-9,a-f”中的字符
+     * 将binaryStr中的[start,end]范围内的二进制字符串转换成对应的“0-9,a-f”中或者“0-7”中的字符
      * 
      * @param binaryStr
      * @param start
@@ -206,7 +206,7 @@ public class RadixConversionUtils {
     }
 
     /**
-     * chars是fromRadix所表示进制形式的字符串
+     * chars是fromRadix所表示进制形式的字符串，转换成以二进制形式表示
      * 
      * @param chars
      * @param fromRadix
@@ -249,12 +249,15 @@ public class RadixConversionUtils {
      */
     private static char[] getBinaryDigits(char c, int charLen) {
         char[] binaryDigits = new char[charLen];
+
         Arrays.fill(binaryDigits, '0');
+
         int value = 0;
         if (c <= '9' && c >= '0')
             value = c - '0';
         else
             value = c - 'a' + 10;
+
         int pos = charLen - 1;
         while (value != 0) {
             binaryDigits[pos--] = (value % 2 == 1) ? '1' : '0';
@@ -271,16 +274,20 @@ public class RadixConversionUtils {
      */
     private static byte toByte(char[] binaryStr) {
         int start = binaryStr.length - 1;
+
         for (int index = 0; index < binaryStr.length - 1; index++) {
             if (binaryStr[index] == '1') {
                 start = index;
                 break;
             }
         }
+
         int end = binaryStr.length - 1;
+
         if (end - start + 1 > 8) {
-            throw new RuntimeException("超出int型的位数");
+            throw new RuntimeException("超出byte型的位数");
         } else if (end - start + 1 == 8) {
+            // 第一位是符号位
             start++;
 
             byte sum = 0;
@@ -290,6 +297,8 @@ public class RadixConversionUtils {
                     sum += multiplier;
                 multiplier *= 2;
             }
+
+            // “取反加一”等价于“减一取反”
             return (byte) (-(0x7f & (~(sum - 1))));
         } else {
             byte sum = 0;
@@ -311,16 +320,20 @@ public class RadixConversionUtils {
      */
     private static short toShort(char[] binaryStr) {
         int start = binaryStr.length - 1;
+
         for (int index = 0; index < binaryStr.length - 1; index++) {
             if (binaryStr[index] == '1') {
                 start = index;
                 break;
             }
         }
+
         int end = binaryStr.length - 1;
+
         if (end - start + 1 > 16) {
-            throw new RuntimeException("超出int型的位数");
+            throw new RuntimeException("超出short型的位数");
         } else if (end - start + 1 == 16) {
+            // 第一位是符号位
             start++;
 
             short sum = 0;
@@ -330,6 +343,8 @@ public class RadixConversionUtils {
                     sum += multiplier;
                 multiplier *= 2;
             }
+
+            // “取反加一”等价于“减一取反”
             return (short) -((0x7fff & (~(sum - 1))));
         } else {
             short sum = 0;
@@ -358,9 +373,11 @@ public class RadixConversionUtils {
             }
         }
         int end = binaryStr.length - 1;
+
         if (end - start + 1 > 32) {
             throw new RuntimeException("超出int型的位数");
         } else if (end - start + 1 == 32) {
+            // 第一位是符号位
             start++;
 
             int sum = 0;
@@ -371,6 +388,7 @@ public class RadixConversionUtils {
                 multiplier *= 2;
             }
 
+            // “取反加一”等价于“减一取反”
             return -(~(sum - 1));
         } else {
             int sum = 0;
@@ -399,9 +417,11 @@ public class RadixConversionUtils {
             }
         }
         int end = binaryStr.length - 1;
+
         if (end - start + 1 > 64) {
             throw new RuntimeException("超出long型的位数");
         } else if (end - start + 1 == 64) {
+            // 第一位是符号位
             start++;
 
             long sum = 0;
@@ -411,6 +431,8 @@ public class RadixConversionUtils {
                     sum += multiplier;
                 multiplier *= 2;
             }
+
+            // “取反加一”等价于“减一取反”
             return -(~(sum - 1));
         } else {
             long sum = 0;

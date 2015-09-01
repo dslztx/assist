@@ -1,4 +1,4 @@
-package com.dslztx;
+package com.dslztx.db;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -7,7 +7,7 @@ import redis.clients.jedis.JedisPool;
  * @author dslztx
  * @date 2015年07月03日
  */
-public class RedisHelper {
+public class RedisUtils {
     public static void main(String[] args) {
         JedisPool jedisPool = new JedisPool("localhost", 6379);
         Jedis jedis = null;

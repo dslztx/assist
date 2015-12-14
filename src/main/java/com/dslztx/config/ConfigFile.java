@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.ContentHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ConfigFile {
      * @param pFile
      * @param separator
      */
-    public static void loadFile(File pFile, char separator) {
+    public static ConfigFile loadFile(File pFile, char separator) {
         List<String> comments0 = new ArrayList<String>();
         Map<String, String> contents0 = new HashMap<String, String>();
 
@@ -58,6 +59,8 @@ public class ConfigFile {
                     contents0.put(key, value);
                 }
             }
+
+            return new ConfigFile(comments0, contents0);
         } catch (Exception e) {
             logger.error("", e);
         } finally {
@@ -69,6 +72,7 @@ public class ConfigFile {
                 }
             }
         }
+        return null;
     }
 
     /**
@@ -110,18 +114,23 @@ public class ConfigFile {
     }
 
     /**
-     * 更新值对
+     * 更新键值对
      * 
      * @param key
      * @param value
      */
     public void update(String key, String value) {
-        if (contents != null)
-            contents.put(key, value);
+        if (contents != null) {
+            if (!contents.containsKey(key)) {
+                throw new RuntimeException("key not exist");
+            } else {
+                contents.put(key, value);
+            }
+        }
     }
 
     /**
-     * 批量更新值对
+     * 批量更新键值对
      * 
      * @param keys
      * @param values
@@ -132,7 +141,82 @@ public class ConfigFile {
             for (int index = 0; index < keys.length; index++) {
                 key = keys[index];
                 value = values[index];
+                if (!contents.containsKey(key)) {
+                    throw new RuntimeException("key " + key + " not exist");
+                } else {
+                    contents.put(key, value);
+                }
+            }
+        }
+    }
+
+    /**
+     * 加入键值对
+     * 
+     * @param key
+     * @param value
+     */
+    public void add(String key, String value) {
+        if (contents != null) {
+            if (contents.containsKey(key)) {
+                throw new RuntimeException("key exists");
+            } else {
                 contents.put(key, value);
+            }
+        }
+    }
+
+    /**
+     * 批量加入键值对
+     * 
+     * @param keys
+     * @param values
+     */
+    public void batchAdd(String[] keys, String[] values) {
+        if (contents != null) {
+            String key = null, value = null;
+            for (int index = 0; index < keys.length; index++) {
+                key = keys[index];
+                value = values[index];
+                if (contents.containsKey(key)) {
+                    throw new RuntimeException("key " + key + " exists");
+                } else {
+                    contents.put(key, value);
+                }
+            }
+        }
+    }
+
+    /**
+     * 删除键值对
+     * 
+     * @param key
+     */
+    public void remove(String key) {
+        if (contents != null) {
+            if (!contents.containsKey(key)) {
+                throw new RuntimeException("key " + key + " not exist");
+            } else {
+                contents.remove(key);
+            }
+        }
+    }
+
+    /**
+     * 批量删除键值对
+     * 
+     * @param keys
+     */
+    public void batchRemove(String[] keys) {
+        if (contents != null) {
+            String key = null;
+            for (int index = 0; index < keys.length; index++) {
+                key = keys[index];
+                if (!contents.containsKey(key)) {
+                    throw new RuntimeException("key " + key + " not exist");
+                } else {
+                    contents.remove(key);
+                }
             }
         }
     }

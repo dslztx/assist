@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,6 +50,13 @@ public class MQConsumerManager extends MQClientManager {
         super(mqNodeGroup, username, password, destination, type);
     }
 
+    @Override
+    public void init() throws IOException {
+        logger.info("In MQConsumerManager,initializing");
+
+        super.init();
+    }
+
     /**
      * 在MQNodesSync中回调
      * 
@@ -56,17 +64,27 @@ public class MQConsumerManager extends MQClientManager {
      */
     @Override
     public void syncMQNodes(List<String> mqNodesList) {
+        logger.info("In MQConsumerManager,callback's content is " + mqNodesList);
+
         // 需要增加的MQ节点
         List<String> toAdd = obtainToAdd(mqNodesList);
+
+        logger.info("In MQConsumerManager,callback's toAdd content is " + toAdd);
 
         // 需要移除的MQ节点
         List<String> toDel = obtainToDel(mqNodesList);
 
+        logger.info("In MQConsumerManager,callback's toDel content is " + toDel);
+
         // 处理增加
         add(toAdd);
 
+        logger.info("In MQConsumerManager,finish addition");
+
         // 处理移除
         remove(toDel);
+
+        logger.info("In MQConsumerManager,finish deletion");
     }
 
     /**

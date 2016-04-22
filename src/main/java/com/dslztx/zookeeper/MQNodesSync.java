@@ -40,6 +40,11 @@ public class MQNodesSync {
      */
     private MQClientManager manager;
 
+    /**
+     * 异步调用操作是否完成
+     */
+    private boolean firstRequestFinish = false;
+
     public MQNodesSync(String mqNodeGroup) {
         try {
             BeanFactory beanFactory = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -80,8 +85,26 @@ public class MQNodesSync {
         // 开始ZooKeeper Session
         startSession();
 
+        // 与ZooKeeper的Session建立后，才允许调用ZooKeeper的API接口
+        while (!session.isConnected()) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        }
+
         // 获取最新的MQ节点地址和端口号列表
         getMQNodes();
+
+        // 等待第一次异步调用操作完成
+        while (!firstRequestFinish) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        }
     }
 
     /**
@@ -114,7 +137,11 @@ public class MQNodesSync {
         public void processResult(int rc, String path, Object ctx, List<String> children) {
             switch (KeeperException.Code.get(rc)) {
                 case CONNECTIONLOSS:
+                    logger.error("Connection Loss in getting children");
                     getMQNodes();
+
+                    firstRequestFinish = true;
+
                     break;
                 case OK:
                     logger.info("Succesfully got a list of mqnodes: " + children.size() + " mqnodes");
@@ -122,8 +149,11 @@ public class MQNodesSync {
                     // 回调
                     manager.syncMQNodes(children);
 
+                    firstRequestFinish = true;
+
                     break;
                 default:
+                    firstRequestFinish = true;
                     logger.error("getMQNodes failed", KeeperException.create(KeeperException.Code.get(rc), path));
             }
         }

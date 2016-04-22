@@ -181,7 +181,7 @@ public class MQProducerManager extends MQClientManager {
      * 
      * @return
      */
-    public MessageProducer nextProducer() {
+    public ProducerTuple nextProducerTuple() {
         index.set(index.get() + 1);
         if (index.get().equals(size.get())) {
             index.set(0);
@@ -191,7 +191,7 @@ public class MQProducerManager extends MQClientManager {
             return null;
         }
 
-        return producers.get(index.get()).getProducer();
+        return producers.get(index.get());
     }
 }
 
@@ -222,6 +222,10 @@ class ProducerTuple {
 
     public MessageProducer getProducer() {
         return producer;
+    }
+
+    public Session getSession() {
+        return session;
     }
 
     public void destroy() {

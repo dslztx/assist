@@ -10,10 +10,16 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MQNodesSync {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    /**
+     * 与MQ节点通信的协议前缀
+     */
+    private static final String PROTOTYPE = "tcp://";
 
     /**
      * ZooKeeper中维护MQ地址和端口号数据结构的顶层路径
@@ -146,6 +152,9 @@ public class MQNodesSync {
                 case OK:
                     logger.info("Succesfully got a list of mqnodes: " + children.size() + " mqnodes");
 
+                    // 给MQ节点地址和端口号增加协议前缀
+                    children = addPrototype(children);
+
                     // 回调
                     manager.syncMQNodes(children);
 
@@ -156,6 +165,20 @@ public class MQNodesSync {
                     firstRequestFinish = true;
                     logger.error("getMQNodes failed", KeeperException.create(KeeperException.Code.get(rc), path));
             }
+        }
+
+        /**
+         * 给MQ节点地址和端口号增加协议前缀
+         * 
+         * @param children
+         * @return
+         */
+        private List<String> addPrototype(List<String> children) {
+            List<String> result = new ArrayList<String>();
+            for (String mqNode : children) {
+                result.add(PROTOTYPE + mqNode);
+            }
+            return result;
         }
     };
 }

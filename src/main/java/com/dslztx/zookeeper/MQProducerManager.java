@@ -8,33 +8,34 @@ import org.slf4j.LoggerFactory;
 import javax.jms.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MQProducerManager extends MQClientManager {
     private static final Logger logger = LoggerFactory.getLogger(MQProducerManager.class);
 
+    private final ReadWriteLock rwl = new ReentrantReadWriteLock();
+
     /**
      * MQ节点地址和端口号列表
      */
-    CopyOnWriteArrayList<String> mqNodes = new CopyOnWriteArrayList<String>();
+    List<String> mqNodes = new ArrayList<String>();
 
     /**
      * "MQ节点地址和端口号"与"生产者对象"关系
      */
-    ConcurrentHashMap<String, ProducerTuple> map = new ConcurrentHashMap<String, ProducerTuple>();
+    Map<String, ProducerTuple> map = new HashMap<String, ProducerTuple>();
 
     /**
      * 生产者对象列表
      */
-    CopyOnWriteArrayList<ProducerTuple> producers = new CopyOnWriteArrayList<ProducerTuple>();
-
-    /**
-     * "mqNodes"或者"producers"的大小，这两者的大小是一致的
-     */
-    AtomicInteger size = new AtomicInteger(0);
+    List<ProducerTuple> producers = new ArrayList<ProducerTuple>();
 
     /**
      * 索引器
@@ -64,27 +65,32 @@ public class MQProducerManager extends MQClientManager {
      */
     @Override
     public void syncMQNodes(List<String> mqNodesList) {
-        logger.info("In MQProducerManager,callback's content is " + mqNodesList);
+        rwl.writeLock().lock();
+        try {
+            logger.info("In MQProducerManager,callback's content is " + mqNodesList);
 
-        // 需要增加的MQ节点
-        List<String> toAdd = obtainToAdd(mqNodesList);
+            // 需要增加的MQ节点
+            List<String> toAdd = obtainToAdd(mqNodesList);
 
-        logger.info("In MQProducerManager,callback's toAdd content is " + toAdd);
+            logger.info("In MQProducerManager,callback's toAdd content is " + toAdd);
 
-        // 需要移除的MQ节点
-        List<String> toDel = obtainToDel(mqNodesList);
+            // 需要移除的MQ节点
+            List<String> toDel = obtainToDel(mqNodesList);
 
-        logger.info("In MQProducerManager,callback's toDel content is " + toDel);
+            logger.info("In MQProducerManager,callback's toDel content is " + toDel);
 
-        // 处理增加
-        add(toAdd);
+            // 处理增加
+            add(toAdd);
 
-        logger.info("In MQProducerManager,finish addition");
+            logger.info("In MQProducerManager,finish addition");
 
-        // 处理移除
-        remove(toDel);
+            // 处理移除
+            remove(toDel);
 
-        logger.info("In MQProducerManager,finish deletion");
+            logger.info("In MQProducerManager,finish deletion");
+        } finally {
+            rwl.writeLock().unlock();
+        }
     }
 
     /**
@@ -103,8 +109,6 @@ public class MQProducerManager extends MQClientManager {
             toDelProducers.add(map.get(delMQNode));
             map.remove(delMQNode);
         }
-
-        size.addAndGet((-1) * toDel.size());
 
         producers.removeAll(toDelProducers);
 
@@ -142,7 +146,7 @@ public class MQProducerManager extends MQClientManager {
                     producer = session.createProducer(topic);
                 }
 
-                ProducerTuple tuple = new ProducerTuple(connection, session, producer);
+                ProducerTuple tuple = new ProducerTuple(newMQNode, connection, session, producer);
                 map.put(newMQNode, tuple);
 
                 toAddProducers.add(tuple);
@@ -152,8 +156,6 @@ public class MQProducerManager extends MQClientManager {
         }
 
         producers.addAll(toAddProducers);
-
-        size.addAndGet(toAddProducers.size());
     }
 
     private List<String> obtainToAdd(List<String> mqNodesList) {
@@ -182,22 +184,32 @@ public class MQProducerManager extends MQClientManager {
      * @return
      */
     public ProducerTuple nextProducerTuple() {
-        index.set(index.get() + 1);
-        if (index.get().equals(size.get())) {
-            index.set(0);
-        }
+        rwl.readLock().lock();
+        try {
+            index.set(index.get() + 1);
+            if (index.get().equals(producers.size())) {
+                index.set(0);
+            }
 
-        if (index.get().compareTo(size.get()) >= 0) {
-            return null;
-        }
+            if (index.get().compareTo(producers.size()) >= 0) {
+                return null;
+            }
 
-        return producers.get(index.get());
+            return producers.get(index.get());
+        } finally {
+            rwl.readLock().unlock();
+        }
     }
 }
 
 
 class ProducerTuple {
     private static final Logger logger = LoggerFactory.getLogger(ProducerTuple.class);
+
+    /**
+     * MQ节点地址和端口号
+     */
+    String hostPort;
 
     /**
      * 与MQ节点的连接
@@ -214,10 +226,15 @@ class ProducerTuple {
      */
     MessageProducer producer;
 
-    public ProducerTuple(Connection connection, Session session, MessageProducer producer) {
+    public ProducerTuple(String hostPort, Connection connection, Session session, MessageProducer producer) {
+        this.hostPort = hostPort;
         this.connection = connection;
         this.session = session;
         this.producer = producer;
+    }
+
+    public String getHostPort() {
+        return hostPort;
     }
 
     public MessageProducer getProducer() {

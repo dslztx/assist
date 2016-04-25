@@ -8,33 +8,40 @@ import org.slf4j.LoggerFactory;
 import javax.jms.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MQConsumerManager extends MQClientManager {
     private static final Logger logger = LoggerFactory.getLogger(MQProducerManager.class);
 
     /**
+     * 读写锁
+     */
+    private final ReadWriteLock rwl = new ReentrantReadWriteLock();
+
+
+    /**
      * MQ节点地址和端口号列表
      */
-    CopyOnWriteArrayList<String> mqNodes = new CopyOnWriteArrayList<String>();
+    List<String> mqNodes = new ArrayList<String>();
 
     /**
      * "MQ节点地址和端口号"与"消费者对象"关系
      */
-    ConcurrentHashMap<String, ConsumerTuple> map = new ConcurrentHashMap<String, ConsumerTuple>();
+    Map<String, ConsumerTuple> map = new HashMap<String, ConsumerTuple>();
 
     /**
      * 消费者对象列表
      */
-    CopyOnWriteArrayList<ConsumerTuple> consumers = new CopyOnWriteArrayList<ConsumerTuple>();
+    List<ConsumerTuple> consumers = new ArrayList<ConsumerTuple>();
 
-    /**
-     * "mqNodes"或者"consumers"的大小，这两者的大小是一致的
-     */
-    AtomicInteger size = new AtomicInteger(0);
 
     /**
      * 索引器
@@ -64,27 +71,32 @@ public class MQConsumerManager extends MQClientManager {
      */
     @Override
     public void syncMQNodes(List<String> mqNodesList) {
-        logger.info("In MQConsumerManager,callback's content is " + mqNodesList);
+        rwl.writeLock().lock();
+        try {
+            logger.info("In MQConsumerManager,callback's content is " + mqNodesList);
 
-        // 需要增加的MQ节点
-        List<String> toAdd = obtainToAdd(mqNodesList);
+            // 需要增加的MQ节点
+            List<String> toAdd = obtainToAdd(mqNodesList);
 
-        logger.info("In MQConsumerManager,callback's toAdd content is " + toAdd);
+            logger.info("In MQConsumerManager,callback's toAdd content is " + toAdd);
 
-        // 需要移除的MQ节点
-        List<String> toDel = obtainToDel(mqNodesList);
+            // 需要移除的MQ节点
+            List<String> toDel = obtainToDel(mqNodesList);
 
-        logger.info("In MQConsumerManager,callback's toDel content is " + toDel);
+            logger.info("In MQConsumerManager,callback's toDel content is " + toDel);
 
-        // 处理增加
-        add(toAdd);
+            // 处理增加
+            add(toAdd);
 
-        logger.info("In MQConsumerManager,finish addition");
+            logger.info("In MQConsumerManager,finish addition");
 
-        // 处理移除
-        remove(toDel);
+            // 处理移除
+            remove(toDel);
 
-        logger.info("In MQConsumerManager,finish deletion");
+            logger.info("In MQConsumerManager,finish deletion");
+        } finally {
+            rwl.writeLock().unlock();
+        }
     }
 
     /**
@@ -103,8 +115,6 @@ public class MQConsumerManager extends MQClientManager {
             toDelConsumers.add(map.get(delMQNode));
             map.remove(delMQNode);
         }
-
-        size.addAndGet((-1) * toDel.size());
 
         consumers.removeAll(toDelConsumers);
 
@@ -142,7 +152,7 @@ public class MQConsumerManager extends MQClientManager {
                     consumer = session.createConsumer(topic);
                 }
 
-                ConsumerTuple tuple = new ConsumerTuple(connection, session, consumer);
+                ConsumerTuple tuple = new ConsumerTuple(newMQNode, connection, session, consumer);
                 map.put(newMQNode, tuple);
 
                 toAddConsumers.add(tuple);
@@ -152,8 +162,6 @@ public class MQConsumerManager extends MQClientManager {
         }
 
         consumers.addAll(toAddConsumers);
-
-        size.addAndGet(toAddConsumers.size());
     }
 
     private List<String> obtainToAdd(List<String> mqNodesList) {
@@ -181,23 +189,33 @@ public class MQConsumerManager extends MQClientManager {
      * 
      * @return
      */
-    public MessageConsumer nextConsumer() {
-        index.set(index.get() + 1);
-        if (index.get().equals(size.get())) {
-            index.set(0);
-        }
+    public ConsumerTuple nextConsumer() {
+        rwl.readLock().lock();
+        try {
+            index.set(index.get() + 1);
+            if (index.get().equals(consumers.size())) {
+                index.set(0);
+            }
 
-        if (index.get().compareTo(size.get()) >= 0) {
-            return null;
-        }
+            if (index.get().compareTo(consumers.size()) >= 0) {
+                return null;
+            }
 
-        return consumers.get(index.get()).getConsumer();
+            return consumers.get(index.get());
+        } finally {
+            rwl.readLock().unlock();
+        }
     }
 }
 
 
 class ConsumerTuple {
     private static final Logger logger = LoggerFactory.getLogger(ProducerTuple.class);
+
+    /**
+     * MQ节点地址和端口号
+     */
+    String hostPort;
 
     /**
      * 与MQ节点的连接
@@ -214,10 +232,19 @@ class ConsumerTuple {
      */
     MessageConsumer consumer;
 
-    public ConsumerTuple(Connection connection, Session session, MessageConsumer consumer) {
+    public ConsumerTuple(String hostPort, Connection connection, Session session, MessageConsumer consumer) {
+        this.hostPort = hostPort;
         this.connection = connection;
         this.session = session;
         this.consumer = consumer;
+    }
+
+    public String getHostPort() {
+        return hostPort;
+    }
+
+    public Session getSession() {
+        return session;
     }
 
     public MessageConsumer getConsumer() {

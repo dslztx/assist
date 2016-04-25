@@ -49,7 +49,7 @@ public class MQNodesSync {
     /**
      * 异步调用操作是否完成
      */
-    private boolean firstRequestFinish = false;
+    private volatile boolean firstRequestFinish = false;
 
     public MQNodesSync(String mqNodeGroup) {
         try {

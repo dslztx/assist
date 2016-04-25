@@ -186,13 +186,13 @@ public class MQProducerManager extends MQClientManager {
     public ProducerTuple nextProducerTuple() {
         rwl.readLock().lock();
         try {
-            index.set(index.get() + 1);
-            if (index.get().equals(producers.size())) {
-                index.set(0);
+            if (producers.size() == 0) {
+                return null;
             }
 
+            index.set(index.get() + 1);
             if (index.get().compareTo(producers.size()) >= 0) {
-                return null;
+                index.set(0);
             }
 
             return producers.get(index.get());

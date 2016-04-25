@@ -192,13 +192,13 @@ public class MQConsumerManager extends MQClientManager {
     public ConsumerTuple nextConsumer() {
         rwl.readLock().lock();
         try {
-            index.set(index.get() + 1);
-            if (index.get().equals(consumers.size())) {
-                index.set(0);
+            if (consumers.size() == 0) {
+                return null;
             }
 
+            index.set(index.get() + 1);
             if (index.get().compareTo(consumers.size()) >= 0) {
-                return null;
+                index.set(0);
             }
 
             return consumers.get(index.get());

@@ -3,12 +3,7 @@ package com.dslztx.character;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
-/**
- * 编码解码工具类
- * 
- * @author dslztx
- * @date 2015年08月11日
- */
+
 public class CodeUtils {
     /**
      * 以特定编码方案编码字符串，返回编码得到的字节流
@@ -54,5 +49,11 @@ public class CodeUtils {
         public String getCharset() {
             return charset;
         }
+    }
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        String a = "�";
+        String b = CodeUtils.decode(CodeUtils.encode("�", CodeMethod.GBK), CodeMethod.GBK);
+        System.out.println(a.equals(b));
     }
 }

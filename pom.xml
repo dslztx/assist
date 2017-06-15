@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dslztx</groupId>
-    <artifactId>code-lib</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>codebase</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>

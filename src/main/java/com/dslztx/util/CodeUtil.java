@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 
-public class CodeUtils {
+public class CodeUtil {
     /**
      * 以特定编码方案编码字符串，返回编码得到的字节流
      * 
@@ -53,7 +53,7 @@ public class CodeUtils {
 
     public static void main(String[] args) throws UnsupportedEncodingException {
         String a = "�";
-        String b = CodeUtils.decode(CodeUtils.encode("�", CodeMethod.GBK), CodeMethod.GBK);
+        String b = CodeUtil.decode(CodeUtil.encode("�", CodeMethod.GBK), CodeMethod.GBK);
         System.out.println(a.equals(b));
     }
 }

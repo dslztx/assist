@@ -6,7 +6,7 @@ package com.dslztx.util;
  * @author dslztx
  * @date 2015年08月17日
  */
-public class CharacterUtils {
+public class CharUtil {
     /**
      * 是否是十六进制字符
      * 

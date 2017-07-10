@@ -16,7 +16,7 @@ public class StringUtils {
      */
     public static boolean isHexStr(String s) {
         for (int index = 0; index < s.length(); index++) {
-            if (!CharacterUtils.isHexChar(s.charAt(index)))
+            if (!CharUtil.isHexChar(s.charAt(index)))
                 return false;
         }
         return true;
@@ -30,7 +30,7 @@ public class StringUtils {
      */
     public static boolean isOctStr(String s) {
         for (int index = 0; index < s.length(); index++) {
-            if (!CharacterUtils.isOctChar(s.charAt(index)))
+            if (!CharUtil.isOctChar(s.charAt(index)))
                 return false;
         }
         return true;
@@ -44,7 +44,7 @@ public class StringUtils {
      */
     public static boolean isDecimalStr(String s) {
         for (int index = 0; index < s.length(); index++) {
-            if (!CharacterUtils.isDecimalChar(s.charAt(index)))
+            if (!CharUtil.isDecimalChar(s.charAt(index)))
                 return false;
         }
         return true;

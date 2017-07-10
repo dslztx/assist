@@ -7,8 +7,8 @@ import java.io.*;
 
 import com.dslztx.struct.Process;
 
-public class IOUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(IOUtils.class);
+public class IOUtil {
+    private static final Logger LOG = LoggerFactory.getLogger(IOUtil.class);
 
     public static void loadFile(File file, Process process) {
         BufferedReader in = null;

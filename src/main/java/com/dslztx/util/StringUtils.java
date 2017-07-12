@@ -33,6 +33,8 @@ public class StringUtils {
             if (!CharUtil.isOctChar(s.charAt(index)))
                 return false;
         }
+
+
         return true;
     }
 

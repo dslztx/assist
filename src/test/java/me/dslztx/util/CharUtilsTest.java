@@ -52,4 +52,70 @@ public class CharUtilsTest {
             fail();
         }
     }
+
+    @Test
+    public void testIsChineseChar() {
+        try {
+            assertTrue(CharUtils.isChineseChar('好'));
+            assertFalse(CharUtils.isChineseChar('》'));
+            assertFalse(CharUtils.isChineseChar('>'));
+            assertFalse(CharUtils.isChineseChar('a'));
+            assertFalse(CharUtils.isChineseChar('1'));
+            assertFalse(CharUtils.isChineseChar('\r'));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testIsEnglishChar() {
+        try {
+            assertFalse(CharUtils.isEnglishChar('》'));
+            assertFalse(CharUtils.isEnglishChar('〸'));
+            assertFalse(CharUtils.isEnglishChar('>'));
+            assertFalse(CharUtils.isEnglishChar('='));
+            assertTrue(CharUtils.isEnglishChar('a'));
+            assertFalse(CharUtils.isEnglishChar('好'));
+            assertFalse(CharUtils.isEnglishChar('\r'));
+            assertFalse(CharUtils.isEnglishChar('1'));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testIsChinesePunctuation() {
+        try {
+            assertTrue(CharUtils.isChinesePunctuation('》'));
+            assertTrue(CharUtils.isChinesePunctuation('〸'));
+            assertFalse(CharUtils.isChinesePunctuation('>'));
+            assertFalse(CharUtils.isChinesePunctuation('='));
+            assertFalse(CharUtils.isChinesePunctuation('a'));
+            assertFalse(CharUtils.isChinesePunctuation('好'));
+            assertFalse(CharUtils.isChinesePunctuation('\r'));
+            assertFalse(CharUtils.isChinesePunctuation('1'));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testIsEnglishPunctuation() {
+        try {
+            assertFalse(CharUtils.isEnglishPunctuation('》'));
+            assertFalse(CharUtils.isEnglishPunctuation('〸'));
+            assertTrue(CharUtils.isEnglishPunctuation('>'));
+            assertTrue(CharUtils.isEnglishPunctuation('='));
+            assertFalse(CharUtils.isEnglishPunctuation('a'));
+            assertFalse(CharUtils.isEnglishPunctuation('好'));
+            assertFalse(CharUtils.isEnglishPunctuation('\r'));
+            assertFalse(CharUtils.isEnglishPunctuation('1'));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

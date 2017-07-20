@@ -2,3 +2,4 @@ target
 *.iml
 *.class
 .idea
+src/main/java/Main.java

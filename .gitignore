@@ -3,3 +3,4 @@ target
 *.class
 .idea
 src/main/java/Main.java
+log.out

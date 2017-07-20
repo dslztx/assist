@@ -6,14 +6,14 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
-public class CharUtilTest {
-    private static final Logger logger = LoggerFactory.getLogger(CharUtilTest.class);
+public class CharUtilsTest {
+    private static final Logger logger = LoggerFactory.getLogger(CharUtilsTest.class);
 
     @Test
     public void testIsHexChar() throws Exception {
         try {
-            assertTrue(CharUtil.isHexChar('f'));
-            assertFalse(CharUtil.isHexChar('z'));
+            assertTrue(CharUtils.isHexChar('f'));
+            assertFalse(CharUtils.isHexChar('z'));
         } catch (Exception e) {
             logger.error("", e);
             fail();
@@ -23,8 +23,8 @@ public class CharUtilTest {
     @Test
     public void testIsOctChar() throws Exception {
         try {
-            assertTrue(CharUtil.isOctChar('7'));
-            assertFalse(CharUtil.isOctChar('8'));
+            assertTrue(CharUtils.isOctChar('7'));
+            assertFalse(CharUtils.isOctChar('8'));
         } catch (Exception e) {
             logger.error("", e);
             fail();
@@ -34,8 +34,8 @@ public class CharUtilTest {
     @Test
     public void testIsDecimalChar() throws Exception {
         try {
-            assertTrue(CharUtil.isDecimalChar('9'));
-            assertFalse(CharUtil.isDecimalChar('a'));
+            assertTrue(CharUtils.isDecimalChar('9'));
+            assertFalse(CharUtils.isDecimalChar('a'));
         } catch (Exception e) {
             logger.error("", e);
             fail();
@@ -45,8 +45,8 @@ public class CharUtilTest {
     @Test
     public void testIsDigitChar() throws Exception {
         try {
-            assertTrue(CharUtil.isDigitChar('9'));
-            assertFalse(CharUtil.isDigitChar('a'));
+            assertTrue(CharUtils.isDigitChar('9'));
+            assertFalse(CharUtils.isDigitChar('a'));
         } catch (Exception e) {
             logger.error("", e);
             fail();

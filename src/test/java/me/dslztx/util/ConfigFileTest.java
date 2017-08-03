@@ -34,9 +34,9 @@ public class ConfigFileTest {
             configFile.update("a", "bb");
             configFile.batchUpdate(new String[] {"c", "e"}, new String[] {"dd", "ff"});
 
-            configFile.storeFile(new File("/home/dsl/1.out"), ',');
-            configFile.storeFile(new File("/home/dsl/2.out"), ':');
-            configFile.storeFile(new File("/home/dsl/3.out"), '=');
+            configFile.storeFile(new File("/home/dsl/Tmp/1.out"), ',');
+            configFile.storeFile(new File("/home/dsl/Tmp/2.out"), ':');
+            configFile.storeFile(new File("/home/dsl/Tmp/3.out"), '=');
         } catch (Exception e) {
             logger.error("", e);
         }

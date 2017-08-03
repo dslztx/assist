@@ -1,54 +1,60 @@
 package me.dslztx.util;
 
 /**
- * 字符串工具类
- * 
+ * String Utility
+ *
  * @author dslztx
- * @date 2015年08月17日
  */
 public class StringUtils {
 
-    /**
-     * 是否是一个合法的十六进制字符串
-     * 
-     * @param s
-     * @return
-     */
-    public static boolean isHexStr(String s) {
-        for (int index = 0; index < s.length(); index++) {
-            if (!CharUtils.isHexChar(s.charAt(index)))
-                return false;
-        }
-        return true;
+  /**
+   * judge whether legal hexadecimal number string
+   */
+  public static boolean isHexStr(String s) {
+    for (int index = 0; index < s.length(); index++) {
+      if (!CharUtils.isHexChar(s.charAt(index))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * judge whether legal octal number string
+   */
+  public static boolean isOctStr(String s) {
+    for (int index = 0; index < s.length(); index++) {
+      if (!CharUtils.isOctChar(s.charAt(index))) {
+        return false;
+      }
     }
 
-    /**
-     * 是否是一个合法的八进制字符串
-     * 
-     * @param s
-     * @return
-     */
-    public static boolean isOctStr(String s) {
-        for (int index = 0; index < s.length(); index++) {
-            if (!CharUtils.isOctChar(s.charAt(index)))
-                return false;
-        }
+    return true;
+  }
 
-
-        return true;
+  /**
+   * judge whether legal decimal number string
+   */
+  public static boolean isDecimalStr(String s) {
+    for (int index = 0; index < s.length(); index++) {
+      if (!CharUtils.isDecimalChar(s.charAt(index))) {
+        return false;
+      }
     }
+    return true;
+  }
 
-    /**
-     * 是否是一个合法的十进制字符串
-     * 
-     * @param s
-     * @return
-     */
-    public static boolean isDecimalStr(String s) {
-        for (int index = 0; index < s.length(); index++) {
-            if (!CharUtils.isDecimalChar(s.charAt(index)))
-                return false;
-        }
-        return true;
+  public static boolean isBlank(String s) {
+    if (s == null || s.length() == 0) {
+      return true;
     }
+    char c;
+    for (int index = 0; index < s.length(); index++) {
+      c = s.charAt(index);
+      if (c != ' ') {
+        return false;
+      }
+    }
+    return true;
+  }
 }

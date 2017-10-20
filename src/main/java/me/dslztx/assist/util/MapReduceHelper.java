@@ -21,6 +21,7 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
  * @author dslztx
  */
 @SuppressWarnings("rawtypes")
+//todo
 public class MapReduceHelper {
 
     /**

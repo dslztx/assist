@@ -1,8 +1,6 @@
 package me.dslztx.assist.util;
 
 /**
- * Array Utility
- *
  * @author dslztx
  */
 public class ArrayUtils {

@@ -42,7 +42,7 @@ public class IOUtils {
     if (resource != null) {
       try {
         resource.close();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         logger.error("", e);
       }
     }

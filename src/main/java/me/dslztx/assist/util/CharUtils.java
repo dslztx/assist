@@ -1,8 +1,6 @@
 package me.dslztx.assist.util;
 
 /**
- * Char Utility
- *
  * @author dslztx
  */
 public class CharUtils {

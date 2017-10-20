@@ -1,11 +1,8 @@
 package me.dslztx.assist.util;
 
 /**
- * String Utility
- *
  * @author dslztx
  */
-//todo
 public class StringUtils {
 
   /**
@@ -49,6 +46,7 @@ public class StringUtils {
     if (s == null || s.length() == 0) {
       return true;
     }
+
     char c;
     for (int index = 0; index < s.length(); index++) {
       c = s.charAt(index);

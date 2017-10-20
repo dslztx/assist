@@ -18,7 +18,7 @@ public class RedisUtils {
             jedis.set("rediskey2", "redisvalue2");
             System.out.println(jedis.get("rediskey1"));
             System.out.println(jedis.get("rediskey2"));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         } finally {
             if (jedis != null)

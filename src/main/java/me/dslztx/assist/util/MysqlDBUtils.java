@@ -24,7 +24,7 @@ public class MysqlDBUtils {
   static {
     try {
       Class.forName("com.mysql.jdbc.Driver");
-    } catch (Exception e) {
+    } catch (Throwable e) {
       throw new RuntimeException(e);
     }
   }
@@ -57,7 +57,7 @@ public class MysqlDBUtils {
   public static void main(String[] args) {
     try {
       Class.forName("com.mysql.jdbc.Driver");
-    } catch (Exception e) {
+    } catch (Throwable e) {
       throw new RuntimeException(e);
     }
 
@@ -66,7 +66,7 @@ public class MysqlDBUtils {
       connection = DriverManager.getConnection(
           "jdbc:mysql://220.181.96.33:3306/mailcommon?useUnicode=true&characterEncoding=gbk",
           "garbage", "garbage");
-    } catch (Exception e) {
+    } catch (Throwable e) {
       logger.error(connection == null ? "yes" : "no");
       logger.error("", e);
     }
@@ -77,7 +77,7 @@ public class MysqlDBUtils {
             "jdbc:mysql://10.110.20.33:3306/mailcommon?useUnicode=true&characterEncoding=gbk",
             "garbage", "garbage");
       }
-    } catch (Exception e) {
+    } catch (Throwable e) {
       logger.error(connection == null ? "yes" : "no");
       logger.error("", e);
     }
@@ -121,14 +121,14 @@ public class MysqlDBUtils {
     if (prepareStatement != null) {
       try {
         prepareStatement.close();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         logger.error("", e);
       }
     }
     if (connection != null) {
       try {
         connection.close();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         logger.error("", e);
       }
     }

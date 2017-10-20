@@ -45,7 +45,7 @@ public class PropertyUtils {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.error("", e);
                 }
             }
@@ -72,7 +72,7 @@ public class PropertyUtils {
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.error("", e);
                 }
             }
@@ -101,7 +101,7 @@ public class PropertyUtils {
             if (in != null) {
                 try {
                     in.close();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.error("", e);
                 }
             }
@@ -128,7 +128,7 @@ public class PropertyUtils {
             if (out != null) {
                 try {
                     out.close();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.error("", e);
                 }
             }

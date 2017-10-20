@@ -61,13 +61,13 @@ public class ConfigFile {
             }
 
             return new ConfigFile(comments0, contents0);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("", e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.error("", e);
                 }
             }
@@ -100,13 +100,13 @@ public class ConfigFile {
                     out.write(key + separator + value + "\n");
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("", e);
         } finally {
             if (out != null) {
                 try {
                     out.close();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.error("", e);
                 }
             }

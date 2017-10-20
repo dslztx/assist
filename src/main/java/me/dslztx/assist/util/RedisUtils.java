@@ -7,6 +7,7 @@ import redis.clients.jedis.JedisPool;
  * @author dslztx
  * @date 2015年07月03日
  */
+//todo
 public class RedisUtils {
     public static void main(String[] args) {
         JedisPool jedisPool = new JedisPool("localhost", 6379);

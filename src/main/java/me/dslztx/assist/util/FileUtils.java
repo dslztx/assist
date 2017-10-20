@@ -2,6 +2,9 @@ package me.dslztx.assist.util;
 
 import java.io.File;
 
+/**
+ * @author dslztx
+ */
 public class FileUtils {
 
   public static boolean isDir(File file) {

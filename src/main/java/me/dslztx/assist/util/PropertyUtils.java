@@ -19,6 +19,7 @@ import java.util.Properties;
  *          used, however a specific encoding may be specified if required. This class is thread-safe: multiple threads
  *          can share a single Properties object without the need for external synchronization.
  */
+//todo
 public class PropertyUtils {
     private static final Logger logger = LoggerFactory.getLogger(PropertyUtils.class);
 

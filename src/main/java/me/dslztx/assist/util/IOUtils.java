@@ -9,12 +9,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.charset.Charset;
-import me.dslztx.assist.struct.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author dslztx
+ */
 public class IOUtils {
 
   private static final Logger logger = LoggerFactory.getLogger(IOUtils.class);
@@ -44,46 +45,6 @@ public class IOUtils {
       } catch (Exception e) {
         logger.error("", e);
       }
-    }
-  }
-
-  public static void loadFile(File file, Process process) {
-    BufferedReader in = null;
-    try {
-      in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-      String line = null;
-      while ((line = in.readLine()) != null) {
-        process.parse(line);
-      }
-    } catch (Exception e) {
-      logger.error("", e);
-    } finally {
-      try {
-        if (in != null) {
-          in.close();
-        }
-      } catch (Exception e) {
-        logger.error("", e);
-      }
-    }
-  }
-
-  public static Writer fetchWriter(File file) {
-    try {
-      return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
-    } catch (Exception e) {
-      logger.error("", e);
-      return null;
-    }
-  }
-
-  public static void returnWriter(Writer writer) {
-    try {
-      if (writer != null) {
-        writer.close();
-      }
-    } catch (Exception e) {
-      logger.error("", e);
     }
   }
 }

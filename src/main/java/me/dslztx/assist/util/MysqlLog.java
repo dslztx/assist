@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
 
+//todo
 public class MysqlLog {
     String sql = "update activity set origin='hangzhou' where id=?";
 

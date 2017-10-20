@@ -1,5 +1,6 @@
 package me.dslztx.assist.struct;
 
+//todo
 public interface Process {
 
     /**

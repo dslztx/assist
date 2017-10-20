@@ -2,6 +2,7 @@ package me.dslztx.assist.struct;
 
 import java.util.*;
 
+//todo:
 public class LinkedListSet {
 
     private LinkedList<String> list;

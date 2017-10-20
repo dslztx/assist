@@ -22,6 +22,7 @@ import org.apache.hadoop.util.ReflectionUtils;
  *              2)任务在使用conf配置实例的时候，会对其进行一些隐式的设置参数操作，<br>
  *              比如getSnappyCodecSeqFileWriter在使用conf的时候，会设置其压缩参数，这会造成代码间的耦合
  */
+//todo:
 public class    HDFSHelper {
     /**
      * 判断在HDFS中，一个指定的路径是否存在

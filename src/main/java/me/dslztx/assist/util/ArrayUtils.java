@@ -13,4 +13,11 @@ public class ArrayUtils {
     }
     return false;
   }
+
+  public static boolean isEmpty(byte[] array) {
+    if (array == null || array.length == 0) {
+      return true;
+    }
+    return false;
+  }
 }

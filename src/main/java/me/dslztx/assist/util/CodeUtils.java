@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 /**
  * @author dslztx
  */
-public class CodeUtil {
+public class CodeUtils {
 
   /**
    * 以特定编码方案编码字符串，返回编码得到的字节流
@@ -33,7 +33,7 @@ public class CodeUtil {
 
   public static void main(String[] args) throws UnsupportedEncodingException {
     String a = "�";
-    String b = CodeUtil.decode(CodeUtil.encode("�", CodeMethod.GBK), CodeMethod.GBK);
+    String b = CodeUtils.decode(CodeUtils.encode("�", CodeMethod.GBK), CodeMethod.GBK);
     System.out.println(a.equals(b));
   }
 

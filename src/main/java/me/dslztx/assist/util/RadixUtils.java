@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * @author dslztx
  */
-public class RadixConversionUtils {
+public class RadixUtils {
 
   /**
    * 以二进制形式表示byte类型值

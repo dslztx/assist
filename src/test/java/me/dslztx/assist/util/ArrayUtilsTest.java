@@ -11,7 +11,6 @@ public class ArrayUtilsTest {
   @Test
   public void isEmpty() throws Exception {
     try {
-      assertTrue(ArrayUtils.isEmpty(null));
       assertTrue(ArrayUtils.isEmpty(new String[0]));
       assertFalse(ArrayUtils.isEmpty(new String[1]));
     } catch (Exception e) {

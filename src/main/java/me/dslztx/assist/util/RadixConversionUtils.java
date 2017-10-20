@@ -5,7 +5,6 @@ import java.util.Arrays;
 /**
  * @author dslztx
  */
-//todo
 public class RadixConversionUtils {
 
   /**
@@ -392,14 +391,6 @@ public class RadixConversionUtils {
     }
   }
 
-
-  /**
-   * 将以fromRadix所表示进制形式表示的字符串转换成int类型对象
-   */
-  public static int toInt(char[] chars, Radix fromRadix) {
-    return toInt(toBinary(chars, fromRadix));
-  }
-
   /**
    * 将以fromRadix所表示进制形式表示的字符串转换成byte类型对象
    */
@@ -412,6 +403,13 @@ public class RadixConversionUtils {
    */
   public static short toShort(char[] chars, Radix fromRadix) {
     return toShort(toBinary(chars, fromRadix));
+  }
+
+  /**
+   * 将以fromRadix所表示进制形式表示的字符串转换成int类型对象
+   */
+  public static int toInt(char[] chars, Radix fromRadix) {
+    return toInt(toBinary(chars, fromRadix));
   }
 
   /**

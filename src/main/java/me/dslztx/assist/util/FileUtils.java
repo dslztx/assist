@@ -60,4 +60,28 @@ public class FileUtils {
 
     return name.substring(pos + 1);
   }
+
+  public static void createUniqueFile(File dir, String suffix) {
+    if (!isDir(dir)) {
+      throw new RuntimeException("dir is not a legal directory");
+    }
+
+    long t = System.currentTimeMillis();
+
+    File file = new File(
+        (dir.getAbsolutePath() + File.separator + (t++) + (StringUtils.isBlank(suffix) ? ""
+            : suffix)));
+    while (file.exists()) {
+      file = new File(
+          dir.getAbsolutePath() + File.separator + (t++) + (StringUtils.isBlank(suffix) ? ""
+              : suffix));
+    }
+
+    try {
+      file.createNewFile();
+    } catch (Throwable e) {
+      throw new RuntimeException("create file [" + file.getAbsolutePath() + "] fail");
+    }
+  }
+
 }

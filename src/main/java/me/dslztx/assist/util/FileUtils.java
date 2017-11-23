@@ -33,13 +33,23 @@ public class FileUtils {
     BufferedInputStream ain = null;
     BufferedInputStream bin = null;
     try {
+      ain = IOUtils.bufferedInputStream(a);
+      bin = IOUtils.bufferedInputStream(b);
+
       int av = 0;
       int bv = 0;
-      while ((av = ain.read()) != -1 && (bv = bin.read()) != -1) {
+      while (true) {
+        av = ain.read();
+        bv = bin.read();
+        if (av == -1 || bv == -1) {
+          break;
+        }
+
         if (av != bv) {
           return false;
         }
       }
+
       if (av == -1 && bv == -1) {
         return true;
       } else {

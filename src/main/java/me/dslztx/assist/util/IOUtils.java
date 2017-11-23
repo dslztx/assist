@@ -1,5 +1,7 @@
 package me.dslztx.assist.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -54,6 +56,28 @@ public class IOUtils {
 
   public static BufferedWriter bufferedWriter(OutputStream out) {
     return bufferedWriter(out, Charset.forName("UTF-8"));
+  }
+
+  public static BufferedInputStream bufferedInputStream(File file) throws FileNotFoundException {
+    return bufferedInputStream(new FileInputStream(file));
+  }
+
+  public static BufferedInputStream bufferedInputStream(InputStream in) {
+    if (in instanceof BufferedInputStream) {
+      return (BufferedInputStream) in;
+    }
+    return new BufferedInputStream(in);
+  }
+
+  public static BufferedOutputStream bufferedOutputStream(File file) throws FileNotFoundException {
+    return bufferedOutputStream(new FileOutputStream(file));
+  }
+
+  public static BufferedOutputStream bufferedOutputStream(OutputStream out) {
+    if (out instanceof BufferedOutputStream) {
+      return (BufferedOutputStream) out;
+    }
+    return new BufferedOutputStream(out);
   }
 
   public static void closeResource(Closeable resource) {

@@ -1,13 +1,18 @@
 package me.dslztx.assist.util;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author dslztx
  */
 public class FileUtils {
+
+  private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
   private static final Set<String> imgSuffixes = new HashSet<String>();
 
@@ -18,6 +23,35 @@ public class FileUtils {
     imgSuffixes.add("jpeg");
     imgSuffixes.add("bmp");
     imgSuffixes.add("pic");
+  }
+
+  public static boolean isContentSame(File a, File b) {
+    if (a == null || b == null) {
+      return false;
+    }
+
+    BufferedInputStream ain = null;
+    BufferedInputStream bin = null;
+    try {
+      int av = 0;
+      int bv = 0;
+      while ((av = ain.read()) != -1 && (bv = bin.read()) != -1) {
+        if (av != bv) {
+          return false;
+        }
+      }
+      if (av == -1 && bv == -1) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (Throwable e) {
+      logger.error("", e);
+      return false;
+    } finally {
+      IOUtils.closeResource(ain);
+      IOUtils.closeResource(bin);
+    }
   }
 
   public static boolean isDir(File file) {

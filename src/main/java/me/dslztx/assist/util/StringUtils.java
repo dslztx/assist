@@ -9,6 +9,10 @@ public class StringUtils {
    * judge whether legal hexadecimal number string
    */
   public static boolean isHexStr(String s) {
+    if (isBlank(s)) {
+      return false;
+    }
+
     for (int index = 0; index < s.length(); index++) {
       if (!CharUtils.isHexChar(s.charAt(index))) {
         return false;
@@ -21,6 +25,10 @@ public class StringUtils {
    * judge whether legal octal number string
    */
   public static boolean isOctStr(String s) {
+    if (isBlank(s)) {
+      return false;
+    }
+
     for (int index = 0; index < s.length(); index++) {
       if (!CharUtils.isOctChar(s.charAt(index))) {
         return false;
@@ -34,6 +42,10 @@ public class StringUtils {
    * judge whether legal decimal number string
    */
   public static boolean isDecimalStr(String s) {
+    if (isBlank(s)) {
+      return false;
+    }
+
     for (int index = 0; index < s.length(); index++) {
       if (!CharUtils.isDecimalChar(s.charAt(index))) {
         return false;

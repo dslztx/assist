@@ -126,6 +126,10 @@ public class RadixUtils {
    * 将二进制形式的字符串转换成toRadix所表示的进制形式的字符串
    */
   private static char[] fromBinary(char[] binaryStr, Radix toRadix) {
+    if (toRadix == null) {
+      throw new RuntimeException("toRadix is null");
+    }
+
     if (toRadix == Radix.Binary) {
       return binaryStr;
     } else if (toRadix == Radix.Octal) {
@@ -139,6 +143,10 @@ public class RadixUtils {
    * 将整数表示成toRadix所表示的进制形式的字符串，整数为byte类型
    */
   public static String fromByte(byte b, Radix toRadix) {
+    if (toRadix == null) {
+      throw new RuntimeException("toRadix is null");
+    }
+
     return new String(fromBinary(byteToBinary(b), toRadix));
   }
 
@@ -146,6 +154,10 @@ public class RadixUtils {
    * 将整数表示成toRadix所表示的进制形式的字符串，整数为short类型
    */
   public static String fromShort(short s, Radix toRadix) {
+    if (toRadix == null) {
+      throw new RuntimeException("toRadix is null");
+    }
+
     return new String(fromBinary(shortToBinary(s), toRadix));
   }
 
@@ -153,6 +165,10 @@ public class RadixUtils {
    * 将整数表示成toRadix所表示的进制形式的字符串，整数为int类型
    */
   public static String fromInt(int i, Radix toRadix) {
+    if (toRadix == null) {
+      throw new RuntimeException("toRadix is null");
+    }
+
     return new String(fromBinary(intToBinary(i), toRadix));
   }
 
@@ -160,6 +176,10 @@ public class RadixUtils {
    * 将整数表示成toRadix所表示的进制形式的字符串，整数为long类型
    */
   public static String fromLong(long l, Radix toRadix) {
+    if (toRadix == null) {
+      throw new RuntimeException("toRadix is null");
+    }
+
     return new String(fromBinary(longToBinary(l), toRadix));
   }
 
@@ -167,6 +187,10 @@ public class RadixUtils {
    * chars是fromRadix所表示进制形式的字符串，转换成以二进制形式表示
    */
   private static char[] toBinary(char[] chars, Radix fromRadix) {
+    if (fromRadix == null) {
+      throw new RuntimeException("fromRadix is null");
+    }
+
     if (fromRadix == Radix.Binary) {
       return chars;
     } else if (fromRadix == Radix.Octal) {
@@ -395,13 +419,28 @@ public class RadixUtils {
    * 将以fromRadix所表示进制形式表示的字符串转换成byte类型对象
    */
   public static byte toByte(char[] chars, Radix fromRadix) {
+    if (fromRadix == null) {
+      throw new RuntimeException("fromRadix is null");
+    }
+    if (chars == null) {
+      throw new RuntimeException("chars is null");
+    }
+
     return toByte(toBinary(chars, fromRadix));
   }
 
   /**
    * 将以fromRadix所表示进制形式表示的字符串转换成short类型对象
    */
+
   public static short toShort(char[] chars, Radix fromRadix) {
+    if (fromRadix == null) {
+      throw new RuntimeException("fromRadix is null");
+    }
+    if (chars == null) {
+      throw new RuntimeException("chars is null");
+    }
+
     return toShort(toBinary(chars, fromRadix));
   }
 
@@ -409,6 +448,13 @@ public class RadixUtils {
    * 将以fromRadix所表示进制形式表示的字符串转换成int类型对象
    */
   public static int toInt(char[] chars, Radix fromRadix) {
+    if (fromRadix == null) {
+      throw new RuntimeException("fromRadix is null");
+    }
+    if (chars == null) {
+      throw new RuntimeException("chars is null");
+    }
+
     return toInt(toBinary(chars, fromRadix));
   }
 
@@ -416,6 +462,13 @@ public class RadixUtils {
    * 将以fromRadix所表示进制形式表示的字符串转换成long类型对象
    */
   public static long toLong(char[] chars, Radix fromRadix) {
+    if (fromRadix == null) {
+      throw new RuntimeException("fromRadix is null");
+    }
+    if (chars == null) {
+      throw new RuntimeException("chars is null");
+    }
+
     return toLong(toBinary(chars, fromRadix));
   }
 

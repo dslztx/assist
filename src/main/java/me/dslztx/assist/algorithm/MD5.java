@@ -13,6 +13,10 @@ public class MD5 {
    * @return 32位十六进制小写字符
    */
   public static String md5(String s) {
+    if (s == null) {
+      return null;
+    }
+
     return DigestUtils.md5Hex(s);
   }
 }

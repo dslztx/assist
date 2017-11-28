@@ -2,6 +2,7 @@ package me.dslztx.assist.util;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class FileUtils {
       } else {
         return false;
       }
-    } catch (Throwable e) {
+    } catch (IOException e) {
       logger.error("", e);
       return false;
     } finally {
@@ -123,7 +124,7 @@ public class FileUtils {
 
     try {
       file.createNewFile();
-    } catch (Throwable e) {
+    } catch (IOException e) {
       throw new RuntimeException("create file [" + file.getAbsolutePath() + "] fail");
     }
   }

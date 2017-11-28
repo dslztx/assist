@@ -11,13 +11,19 @@ public class CodeUtils {
   /**
    * 以特定编码方案编码字符串，返回编码得到的字节流
    */
-  public static byte[] encode(String str, CodeMethod codeMethod)
-      throws UnsupportedEncodingException {
+  public static byte[] encode(String str, CodeMethod codeMethod) {
     if (StringUtils.isBlank(str)) {
       return null;
     }
+    if (codeMethod == null) {
+      throw new RuntimeException("codeMethod is null");
+    }
 
-    return str.getBytes(codeMethod.getCharset());
+    try {
+      return str.getBytes(codeMethod.getCharset());
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -26,6 +32,9 @@ public class CodeUtils {
   public static String decode(byte[] bytes, CodeMethod codeMethod) {
     if (ArrayUtils.isEmpty(bytes)) {
       return null;
+    }
+    if (codeMethod == null) {
+      throw new RuntimeException("codeMethod is null");
     }
 
     return new String(bytes, Charset.forName(codeMethod.getCharset()));

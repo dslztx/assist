@@ -68,4 +68,18 @@ public class StringUtils {
     }
     return true;
   }
+
+  public static String toLowerCase(String s) {
+    if (s == null) {
+      return null;
+    }
+    return s.toLowerCase();
+  }
+
+  public static String toUpperCase(String s) {
+    if (s == null) {
+      return null;
+    }
+    return s.toUpperCase();
+  }
 }

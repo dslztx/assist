@@ -1,6 +1,7 @@
 package me.dslztx.assist.util;
 
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
@@ -56,6 +57,28 @@ public class StringUtilsTest {
       assertTrue(StringUtils.isBlank(null));
       assertTrue(StringUtils.isBlank("   "));
       assertFalse(StringUtils.isBlank("  fdsfd "));
+    } catch (Exception e) {
+      logger.error("", e);
+      fail();
+    }
+  }
+
+  @Test
+  public void testToLowerCase() {
+    try {
+      assertNull(StringUtils.toLowerCase(null));
+      assertTrue(StringUtils.toLowerCase("hEllo").equals("hello"));
+    } catch (Exception e) {
+      logger.error("", e);
+      fail();
+    }
+  }
+
+  @Test
+  public void testToUpperCase() {
+    try {
+      assertNull(StringUtils.toUpperCase(null));
+      assertTrue(StringUtils.toUpperCase("hEllo").equals("HELLO"));
     } catch (Exception e) {
       logger.error("", e);
       fail();

@@ -1,6 +1,7 @@
 package me.dslztx.assist.util;
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -60,8 +61,8 @@ public class FileUtils {
       logger.error("", e);
       return false;
     } finally {
-      IOUtils.closeResource(ain);
-      IOUtils.closeResource(bin);
+      CloseableUtils.close(ain);
+      CloseableUtils.close(bin);
     }
   }
 

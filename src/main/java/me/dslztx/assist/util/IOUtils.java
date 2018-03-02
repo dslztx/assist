@@ -154,13 +154,4 @@ public class IOUtils {
     return new BufferedOutputStream(out);
   }
 
-  public static void closeResource(Closeable resource) {
-    if (resource != null) {
-      try {
-        resource.close();
-      } catch (Throwable e) {
-        logger.error("", e);
-      }
-    }
-  }
 }

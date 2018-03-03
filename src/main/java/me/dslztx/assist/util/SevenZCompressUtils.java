@@ -1,9 +1,11 @@
 package me.dslztx.assist.util;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
+import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +17,6 @@ public class SevenZCompressUtils {
 
   private static final Logger logger = LoggerFactory.getLogger(SevenZCompressUtils.class);
 
-  /**
-   * 空目录不会被压缩
-   */
   public static void compress(File input, File output) {
     SevenZOutputFile sevenZOutput = null;
     try {
@@ -35,9 +34,10 @@ public class SevenZCompressUtils {
         addEntry(input, input.getName(), sevenZOutput);
       } else {
         sevenZOutput = new SevenZOutputFile(output);
-        if (!compressSubDirElements(input.listFiles(), input.getName(), sevenZOutput)) {
-          output.delete();
-          throw new RuntimeException("待压缩文件不存在");
+        if (ArrayUtils.isEmpty(input.listFiles())) {
+          addEntry(input, input.getName(), sevenZOutput);
+        } else {
+          compressSubDirElements(input.listFiles(), input.getName(), sevenZOutput);
         }
       }
     } catch (Exception e) {
@@ -47,42 +47,87 @@ public class SevenZCompressUtils {
     }
   }
 
+  public static void decompress(File input, File output) {
+    if (!FileUtils.isRegular(input)) {
+      throw new RuntimeException("待解压压缩文件不合法");
+    }
+
+    if (!FileUtils.isDir(output)) {
+      throw new RuntimeException("未指定合法的解压后存放路径");
+    }
+
+    SevenZFile sevenZFile = null;
+    try {
+      sevenZFile = new SevenZFile(input);
+
+      SevenZArchiveEntry entry = null;
+
+      while ((entry = sevenZFile.getNextEntry()) != null) {
+        if (entry.isDirectory()) {
+          new File(output.getCanonicalPath() + File.separator + entry.getName()).mkdirs();
+        } else {
+          File target = new File(output.getCanonicalPath() + File.separator + entry.getName());
+
+          target.getParentFile().mkdirs();
+
+          BufferedOutputStream out = IOUtils.bufferedOutputStream(target);
+
+          byte[] buffer = new byte[1024];
+          long num = entry.getSize() / 1024 + 1;
+          for (long index = 0; index < num - 1; index++) {
+            sevenZFile.read(buffer, 0, 1024);
+            out.write(buffer, 0, 1024);
+          }
+
+          int left = (int) (entry.getSize() - (num - 1) * 1024);
+          if (left > 0) {
+            sevenZFile.read(buffer, 0, left);
+            out.write(buffer, 0, left);
+          }
+
+          CloseableUtils.close(out);
+        }
+      }
+    } catch (Exception e) {
+      logger.error("", e);
+    } finally {
+      CloseableUtils.close(sevenZFile);
+    }
+  }
+
   private static void addEntry(File file, String entryName, SevenZOutputFile sevenZOutputFile)
       throws IOException {
     SevenZArchiveEntry entry = sevenZOutputFile.createArchiveEntry(file, entryName);
     sevenZOutputFile.putArchiveEntry(entry);
 
-    BufferedInputStream in = IOUtils.bufferedInputStream(file);
-    byte[] bytes = new byte[1024];
-    int len = 0;
-    while ((len = in.read(bytes)) > 0) {
-      sevenZOutputFile.write(bytes, 0, len);
+    if (!file.isDirectory()) {
+      BufferedInputStream in = IOUtils.bufferedInputStream(file);
+      byte[] bytes = new byte[1024];
+      int len = 0;
+      while ((len = in.read(bytes)) > 0) {
+        sevenZOutputFile.write(bytes, 0, len);
+      }
+      CloseableUtils.close(in); 
     }
-    sevenZOutputFile.closeArchiveEntry();
 
-    CloseableUtils.close(in);
+    sevenZOutputFile.closeArchiveEntry();
   }
 
-  private static boolean compressSubDirElements(File[] files, String prefix,
+  private static void compressSubDirElements(File[] files, String prefix,
       SevenZOutputFile sevenZOutputFile)
       throws IOException {
-    if (ArrayUtils.isEmpty(files)) {
-      return false;
-    }
-
-    boolean flag = false;
     for (File file : files) {
       if (file.isFile()) {
-        flag = true;
         addEntry(file, prefix + File.separator + file.getName(), sevenZOutputFile);
       } else {
-        if (compressSubDirElements(file.listFiles(), prefix + File.separator + file.getName(),
-            sevenZOutputFile)) {
-          flag = true;
+        if (ArrayUtils.isEmpty(file.listFiles())) {
+          addEntry(file, prefix + File.separator + file.getName(), sevenZOutputFile);
+        } else {
+          compressSubDirElements(file.listFiles(), prefix + File.separator + file.getName(),
+              sevenZOutputFile);
         }
       }
     }
-    return flag;
   }
 
   private static File obtainDefaultOutput(File input) throws IOException {

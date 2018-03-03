@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -67,9 +66,6 @@ public class IOUtils {
   }
 
   public static BufferedWriter bufferedWriter(File file, Charset charset) {
-    if (file == null) {
-      throw new RuntimeException("file is null");
-    }
     if (charset == null) {
       throw new RuntimeException("charset is null");
     }
@@ -93,10 +89,6 @@ public class IOUtils {
   }
 
   public static BufferedWriter bufferedWriter(File file) {
-    if (file == null) {
-      throw new RuntimeException("file is null");
-    }
-
     return bufferedWriter(file, Charset.forName("UTF-8"));
   }
 
@@ -132,10 +124,6 @@ public class IOUtils {
   }
 
   public static BufferedOutputStream bufferedOutputStream(File file) {
-    if (file == null) {
-      throw new RuntimeException("file is null");
-    }
-
     try {
       return bufferedOutputStream(new FileOutputStream(file));
     } catch (FileNotFoundException e) {

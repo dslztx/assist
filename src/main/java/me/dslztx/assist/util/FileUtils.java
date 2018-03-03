@@ -28,6 +28,29 @@ public class FileUtils {
     imgSuffixes.add("pic");
   }
 
+  public static void delFileRecursiveForce(File a) {
+    if (a == null || !a.exists()) {
+      return;
+    }
+
+    if (a.isFile()) {
+      a.delete();
+    } else {
+      if (ArrayUtils.isEmpty(a.listFiles())) {
+        a.delete();
+      } else {
+        for (File file : a.listFiles()) {
+          if (file.isFile()) {
+            file.delete();
+          } else {
+            delFileRecursiveForce(file);
+          }
+        }
+        a.delete();
+      }
+    }
+  }
+
   public static boolean isDirSame(File a, File b) {
     if (!FileUtils.isDir(a) || !FileUtils.isDir(b)) {
       throw new RuntimeException("存在非法目录");

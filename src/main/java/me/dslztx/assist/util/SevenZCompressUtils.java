@@ -107,7 +107,7 @@ public class SevenZCompressUtils {
       while ((len = in.read(bytes)) > 0) {
         sevenZOutputFile.write(bytes, 0, len);
       }
-      CloseableUtils.close(in); 
+      CloseableUtils.close(in);
     }
 
     sevenZOutputFile.closeArchiveEntry();

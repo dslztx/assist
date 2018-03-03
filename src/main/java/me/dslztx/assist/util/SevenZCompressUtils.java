@@ -20,7 +20,7 @@ public class SevenZCompressUtils {
   public static void compress(File input, File output) {
     SevenZOutputFile sevenZOutput = null;
     try {
-      if (input == null) {
+      if (input == null || !input.exists()) {
         throw new RuntimeException("待压缩文件不存在");
       }
 

@@ -1,10 +1,11 @@
 package me.dslztx.assist.util;
 
 import java.io.BufferedInputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,54 @@ public class FileUtils {
     imgSuffixes.add("jpeg");
     imgSuffixes.add("bmp");
     imgSuffixes.add("pic");
+  }
+
+  public static boolean isDirSame(File a, File b) {
+    if (!FileUtils.isDir(a) || !FileUtils.isDir(b)) {
+      throw new RuntimeException("存在非法目录");
+    }
+
+    try {
+      List<String> aFileNames = new ArrayList<String>();
+      List<String> bFileNames = new ArrayList<String>();
+      if (a.listFiles() != null) {
+        for (File file : a.listFiles()) {
+          aFileNames.add(file.getName());
+        }
+      }
+
+      if (b.listFiles() != null) {
+        for (File file : b.listFiles()) {
+          bFileNames.add(file.getName());
+        }
+      }
+
+      if (!aFileNames.equals(bFileNames)) {
+        return false;
+      }
+
+      File aSubFile = null;
+      File bSubFile = null;
+      for (String fileName : aFileNames) {
+        aSubFile = new File(a.getCanonicalPath() + File.separator + fileName);
+        bSubFile = new File(b.getCanonicalPath() + File.separator + fileName);
+        if (aSubFile.isFile() && bSubFile.isFile()) {
+          if (!isContentSame(aSubFile, bSubFile)) {
+            return false;
+          }
+        } else if (aSubFile.isDirectory() && bSubFile.isDirectory()) {
+          if (!isDirSame(aSubFile, bSubFile)) {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+      return true;
+    } catch (Exception e) {
+      logger.error("", e);
+      return false;
+    }
   }
 
   public static boolean isContentSame(File a, File b) {

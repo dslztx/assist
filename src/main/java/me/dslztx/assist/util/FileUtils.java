@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,8 @@ public class FileUtils {
   private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
   private static final Set<String> imgSuffixes = new HashSet<String>();
+
+  private static final AtomicLong uniqueID = new AtomicLong(System.currentTimeMillis());
 
   static {
     imgSuffixes.add("gif");
@@ -202,4 +205,7 @@ public class FileUtils {
     }
   }
 
+  public static long obtainApplicationUniqueID() {
+    return uniqueID.getAndIncrement();
+  }
 }

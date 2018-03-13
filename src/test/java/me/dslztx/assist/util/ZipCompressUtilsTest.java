@@ -1,5 +1,7 @@
 package me.dslztx.assist.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -41,12 +43,64 @@ public class ZipCompressUtilsTest {
           PATH_PREFIX + File.separator + "test" + File.separator + "1.xml.zip");
       compressed.getParentFile().mkdirs();
 
-      SevenZCompressUtils.compress(original, compressed);
+      ZipCompressUtils.compress(original, compressed);
 
-      SevenZCompressUtils.decompress(compressed, compressed.getParentFile());
+      ZipCompressUtils.decompress(compressed, compressed.getParentFile());
 
       Assert.assertTrue(FileUtils.isContentSame(original,
           new File(compressed.getParentFile().getCanonicalPath() + File.separator + "1.xml")));
+    } catch (Exception e) {
+      logger.error("", e);
+      Assert.fail();
+    } finally {
+      FileUtils.delFileRecursiveForce(new File(PATH_PREFIX + File.separator + "test"));
+    }
+  }
+
+  @Test
+  public void compressAndDecompress3() throws Exception {
+    try {
+      File original = new File(PATH_PREFIX + File.separator + "a");
+
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      File dst = new File(PATH_PREFIX + File.separator + "test");
+      dst.mkdirs();
+
+      ZipCompressUtils.compress(original, byteArrayOutputStream);
+
+      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+          byteArrayOutputStream.toByteArray());
+
+      ZipCompressUtils.decompress(byteArrayInputStream, dst);
+
+      Assert.assertTrue(FileUtils.isDirSame(original,
+          new File(dst.getCanonicalPath() + File.separator + "a")));
+    } catch (Exception e) {
+      logger.error("", e);
+      Assert.fail();
+    } finally {
+      FileUtils.delFileRecursiveForce(new File(PATH_PREFIX + File.separator + "test"));
+    }
+  }
+
+  @Test
+  public void compressAndDecompress4() throws Exception {
+    try {
+      File original = new File(PATH_PREFIX + File.separator + "1.xml");
+
+      File dst = new File(
+          PATH_PREFIX + File.separator + "test");
+      dst.mkdirs();
+
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      ZipCompressUtils.compress(original, byteArrayOutputStream);
+
+      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+          byteArrayOutputStream.toByteArray());
+      ZipCompressUtils.decompress(byteArrayInputStream, dst);
+
+      Assert.assertTrue(FileUtils.isContentSame(original,
+          new File(dst.getCanonicalPath() + File.separator + "1.xml")));
     } catch (Exception e) {
       logger.error("", e);
       Assert.fail();

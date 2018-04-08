@@ -1,4 +1,4 @@
-package me.dslztx.assist.client;
+package me.dslztx.assist.client.redis;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;

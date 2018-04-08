@@ -1,4 +1,4 @@
-package me.dslztx.assist.client;
+package me.dslztx.assist.client.redis;
 
 import java.io.File;
 import java.util.ArrayList;

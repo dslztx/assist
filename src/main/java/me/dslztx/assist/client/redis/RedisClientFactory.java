@@ -2,7 +2,9 @@ package me.dslztx.assist.client.redis;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import me.dslztx.assist.util.StringUtils;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
@@ -29,13 +31,21 @@ public class RedisClientFactory {
 
   private static volatile boolean init = false;
 
-  private static List<JedisPoolProxy> jedisPools = new ArrayList<JedisPoolProxy>();
+  private static Map<String, List<JedisPoolProxy>> groupedJedisPools = new HashMap<String, List<JedisPoolProxy>>();
 
-  public static RedisClient obtainRedisClient() {
+  public static RedisClient obtainRedisClient(String group) {
     if (!init) {
       init();
     }
 
+    if (groupedJedisPools.get(group) == null) {
+      return null;
+    }
+
+    return obtainRedisClient(groupedJedisPools.get(group));
+  }
+
+  private static RedisClient obtainRedisClient(List<JedisPoolProxy> jedisPools) {
     int idx = (int) (Math.random() * jedisPools.size());
 
     for (int index = idx; index < jedisPools.size(); index++) {
@@ -80,35 +90,17 @@ public class RedisClientFactory {
 
             Configuration configuration = configs.properties(new File(CONFIG_FILE));
 
-            String servers = configuration.getString("redis.servers");
-            if (StringUtils.isBlank(servers)) {
-              throw new RuntimeException("no redis servers");
+            String groups = configuration.getString("groups");
+            if (StringUtils.isBlank(groups)) {
+              throw new RuntimeException("no groups");
             }
 
-            String[] serverArray = servers.split(",");
-
-            JedisPoolConfig config = new JedisPoolConfig();
-            config.setMaxTotal(MAX_TOTAL);
-            config.setMaxIdle(MAX_IDLE);
-            config.setMaxWaitMillis(MAX_WAIT_MILLIS);
-            config.setTestOnBorrow(TEST_ON_BORROW);
-            config.setTestWhileIdle(TEST_WHILE_IDLE);
-
-            for (String server : serverArray) {
-              try {
-                String host = server.split(":")[0];
-                int port = Integer.parseInt(server.split(":")[1]);
-
-                JedisPoolProxy proxy = new JedisPoolProxy(server,
-                    new JedisPool(config, host, port, TIMEOUT));
-
-                jedisPools.add(proxy);
-              } catch (Exception e) {
-                logger.error(server, e);
-              }
+            String[] groupArray = groups.split(",");
+            for (String group : groupArray) {
+              logger.info("generate jedispools for group: " + group);
+              Configuration subConfiguration = configuration.subset(group);
+              groupedJedisPools.put(group, generateJedisPools(subConfiguration));
             }
-
-            logger.info("jedisPools size : " + jedisPools.size());
           } catch (Exception e) {
             logger.error("", e);
             throw new RuntimeException(e);
@@ -118,5 +110,46 @@ public class RedisClientFactory {
         }
       }
     }
+  }
+
+  private static List<JedisPoolProxy> generateJedisPools(Configuration configuration) {
+    List<JedisPoolProxy> jedisPools = new ArrayList<JedisPoolProxy>();
+
+    if (configuration == null) {
+      return jedisPools;
+    }
+
+    String servers = configuration.getString("redis.servers");
+    if (StringUtils.isBlank(servers)) {
+      logger.error("no redis servers");
+      return jedisPools;
+    }
+
+    String[] serverArray = servers.split(",");
+
+    JedisPoolConfig config = new JedisPoolConfig();
+    config.setMaxTotal(MAX_TOTAL);
+    config.setMaxIdle(MAX_IDLE);
+    config.setMaxWaitMillis(MAX_WAIT_MILLIS);
+    config.setTestOnBorrow(TEST_ON_BORROW);
+    config.setTestWhileIdle(TEST_WHILE_IDLE);
+
+    for (String server : serverArray) {
+      try {
+        String host = server.split(":")[0];
+        int port = Integer.parseInt(server.split(":")[1]);
+
+        JedisPoolProxy proxy = new JedisPoolProxy(server,
+            new JedisPool(config, host, port, TIMEOUT));
+
+        jedisPools.add(proxy);
+      } catch (Exception e) {
+        logger.error(server, e);
+      }
+    }
+
+    logger.info("jedisPools size : " + jedisPools.size());
+
+    return jedisPools;
   }
 }

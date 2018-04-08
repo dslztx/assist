@@ -25,11 +25,25 @@
     <slf4j.version>1.7.12</slf4j.version>
     <junit.version>4.10</junit.version>
     <commons-compress.version>1.12</commons-compress.version>
+    <commons-configuration.version>2.2</commons-configuration.version>
     <xz.version>1.5</xz.version>
     <logback.version>1.2.3</logback.version>
+    <jedis.version>2.6.0</jedis.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>${jedis.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-configuration2</artifactId>
+      <version>${commons-configuration.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>

@@ -3,6 +3,7 @@ package me.dslztx.assist.util;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,26 @@ public class FileUtils {
     imgSuffixes.add("jpeg");
     imgSuffixes.add("bmp");
     imgSuffixes.add("pic");
+  }
+
+  public static void copyClassPathFileToLocalDir(String name, boolean overwrite) {
+    File dst = new File(name);
+
+    if (!overwrite) {
+      if (dst.exists()) {
+        return;
+      }
+    }
+
+    InputStream in = null;
+    try {
+      in = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+      org.apache.commons.io.FileUtils.copyInputStreamToFile(in, dst);
+    } catch (Throwable e) {
+      logger.error("", e);
+    } finally {
+      org.apache.commons.io.IOUtils.closeQuietly(in);
+    }
   }
 
   public static void delFileRecursiveForce(File a) {

@@ -1,5 +1,6 @@
 package me.dslztx.assist.util;
 
+import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -31,6 +32,22 @@ public class FileUtilsTest {
     } catch (Exception e) {
       logger.error("", e);
       Assert.fail();
+    }
+  }
+
+  @Test
+  public void testCopyClassPathFileToLocalDir() throws Exception {
+    try {
+      FileUtils.copyClassPathFileToLocalDir("mysql.properties", true);
+      Assert.assertTrue(new File("mysql.properties").exists());
+    } catch (Exception e) {
+      logger.error("", e);
+      Assert.fail();
+    } finally {
+      File dst = new File("mysql.properties");
+      if (dst.exists()) {
+        dst.delete();
+      }
     }
   }
 

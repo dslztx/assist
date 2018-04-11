@@ -9,15 +9,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author dslztx
  */
-public class FileUtils {
+public class FileAssistor {
 
-  private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(FileAssistor.class);
 
   private static final Set<String> imgSuffixes = new HashSet<String>();
 
@@ -44,7 +45,7 @@ public class FileUtils {
     InputStream in = null;
     try {
       in = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
-      org.apache.commons.io.FileUtils.copyInputStreamToFile(in, dst);
+      FileUtils.copyInputStreamToFile(in, dst);
     } catch (Throwable e) {
       logger.error("", e);
     }
@@ -74,7 +75,7 @@ public class FileUtils {
   }
 
   public static boolean isDirSame(File a, File b) {
-    if (!FileUtils.isDir(a) || !FileUtils.isDir(b)) {
+    if (!FileAssistor.isDir(a) || !FileAssistor.isDir(b)) {
       throw new RuntimeException("存在非法目录");
     }
 
@@ -129,8 +130,8 @@ public class FileUtils {
     BufferedInputStream ain = null;
     BufferedInputStream bin = null;
     try {
-      ain = IOUtils.bufferedInputStream(a);
-      bin = IOUtils.bufferedInputStream(b);
+      ain = IOAssistor.bufferedInputStream(a);
+      bin = IOAssistor.bufferedInputStream(b);
 
       int av = 0;
       int bv = 0;

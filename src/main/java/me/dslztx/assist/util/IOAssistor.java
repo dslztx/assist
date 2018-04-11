@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author dslztx
  */
-public class IOUtils {
+public class IOAssistor {
 
-  private static final Logger logger = LoggerFactory.getLogger(IOUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(IOAssistor.class);
 
   public static BufferedReader bufferedReader(File file, Charset charset) {
     if (file == null) {

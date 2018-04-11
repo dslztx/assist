@@ -38,8 +38,7 @@ public class ZooKeeperClientFactory {
 
             Configuration configuration = configs.properties(new File(CONFIG_FILE));
 
-            String addresses = configuration.getString(
-                "zookeeper.curator.addresses");
+            String addresses = configuration.getString("zookeeper.curator.addresses");
             if (StringUtils.isBlank(addresses)) {
               throw new RuntimeException("no addresses");
             }

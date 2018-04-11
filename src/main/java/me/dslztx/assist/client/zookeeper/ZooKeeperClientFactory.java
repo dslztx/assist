@@ -46,6 +46,8 @@ public class ZooKeeperClientFactory {
 
             RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
             curatorFramework = CuratorFrameworkFactory.newClient(addresses, retryPolicy);
+
+            curatorFramework.start();
           } catch (Exception e) {
             logger.error("", e);
             throw new RuntimeException(e);

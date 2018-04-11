@@ -47,8 +47,6 @@ public class FileUtils {
       org.apache.commons.io.FileUtils.copyInputStreamToFile(in, dst);
     } catch (Throwable e) {
       logger.error("", e);
-    } finally {
-      org.apache.commons.io.IOUtils.closeQuietly(in);
     }
   }
 

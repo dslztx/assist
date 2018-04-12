@@ -51,6 +51,24 @@ public class FileAssistor {
     }
   }
 
+  public static void copyClassPathFileToDst(String name, String destination, boolean overwrite) {
+    File dst = new File(destination);
+
+    if (!overwrite) {
+      if (dst.exists()) {
+        return;
+      }
+    }
+
+    InputStream in = null;
+    try {
+      in = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+      FileUtils.copyInputStreamToFile(in, dst);
+    } catch (Throwable e) {
+      logger.error("", e);
+    }
+  }
+
   public static void delFileRecursiveForce(File a) {
     if (a == null || !a.exists()) {
       return;

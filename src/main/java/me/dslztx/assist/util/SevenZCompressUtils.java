@@ -48,11 +48,11 @@ public class SevenZCompressUtils {
   }
 
   public static void decompress(File input, File output) {
-    if (!FileAssistor.isRegular(input)) {
+    if (!FileAssist.isRegular(input)) {
       throw new RuntimeException("待解压压缩文件不合法");
     }
 
-    if (!FileAssistor.isDir(output)) {
+    if (!FileAssist.isDir(output)) {
       throw new RuntimeException("未指定合法的解压后存放路径");
     }
 
@@ -70,7 +70,7 @@ public class SevenZCompressUtils {
 
           target.getParentFile().mkdirs();
 
-          BufferedOutputStream out = IOAssistor.bufferedOutputStream(target);
+          BufferedOutputStream out = IOAssist.bufferedOutputStream(target);
 
           byte[] buffer = new byte[1024];
           long num = entry.getSize() / 1024 + 1;
@@ -101,7 +101,7 @@ public class SevenZCompressUtils {
     sevenZOutputFile.putArchiveEntry(entry);
 
     if (!file.isDirectory()) {
-      BufferedInputStream in = IOAssistor.bufferedInputStream(file);
+      BufferedInputStream in = IOAssist.bufferedInputStream(file);
       byte[] bytes = new byte[1024];
       int len = 0;
       while ((len = in.read(bytes)) > 0) {

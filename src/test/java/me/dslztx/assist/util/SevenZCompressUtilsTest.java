@@ -23,13 +23,13 @@ public class SevenZCompressUtilsTest {
 
       SevenZCompressUtils.decompress(compressed, compressed.getParentFile());
 
-      Assert.assertTrue(FileAssistor.isDirSame(original,
+      Assert.assertTrue(FileAssist.isDirSame(original,
           new File(compressed.getParentFile().getCanonicalPath() + File.separator + "a")));
     } catch (Exception e) {
       logger.error("", e);
       Assert.fail();
     } finally {
-      FileAssistor.delFileRecursiveForce(new File(PATH_PREFIX + File.separator + "test"));
+      FileAssist.delFileRecursiveForce(new File(PATH_PREFIX + File.separator + "test"));
     }
   }
 
@@ -45,13 +45,13 @@ public class SevenZCompressUtilsTest {
 
       SevenZCompressUtils.decompress(compressed, compressed.getParentFile());
 
-      Assert.assertTrue(FileAssistor.isContentSame(original,
+      Assert.assertTrue(FileAssist.isContentSame(original,
           new File(compressed.getParentFile().getCanonicalPath() + File.separator + "1.xml")));
     } catch (Exception e) {
       logger.error("", e);
       Assert.fail();
     } finally {
-      FileAssistor.delFileRecursiveForce(new File(PATH_PREFIX + File.separator + "test"));
+      FileAssist.delFileRecursiveForce(new File(PATH_PREFIX + File.separator + "test"));
     }
   }
 }

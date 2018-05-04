@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author dslztx
  */
-public class FileAssistor {
+public class FileAssist {
 
-  private static final Logger logger = LoggerFactory.getLogger(FileAssistor.class);
+  private static final Logger logger = LoggerFactory.getLogger(FileAssist.class);
 
   private static final Set<String> imgSuffixes = new HashSet<String>();
 
@@ -93,7 +93,7 @@ public class FileAssistor {
   }
 
   public static boolean isDirSame(File a, File b) {
-    if (!FileAssistor.isDir(a) || !FileAssistor.isDir(b)) {
+    if (!FileAssist.isDir(a) || !FileAssist.isDir(b)) {
       throw new RuntimeException("存在非法目录");
     }
 
@@ -148,8 +148,8 @@ public class FileAssistor {
     BufferedInputStream ain = null;
     BufferedInputStream bin = null;
     try {
-      ain = IOAssistor.bufferedInputStream(a);
-      bin = IOAssistor.bufferedInputStream(b);
+      ain = IOAssist.bufferedInputStream(a);
+      bin = IOAssist.bufferedInputStream(b);
 
       int av = 0;
       int bv = 0;

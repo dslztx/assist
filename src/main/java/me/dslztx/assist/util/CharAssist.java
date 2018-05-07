@@ -3,7 +3,7 @@ package me.dslztx.assist.util;
 /**
  * @author dslztx
  */
-public class CharUtils {
+public class CharAssist {
 
   public static boolean isHexChar(char c) {
     return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');

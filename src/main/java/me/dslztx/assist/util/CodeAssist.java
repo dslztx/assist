@@ -6,13 +6,13 @@ import java.nio.charset.Charset;
 /**
  * @author dslztx
  */
-public class CodeUtils {
+public class CodeAssist {
 
   /**
    * 以特定编码方案编码字符串，返回编码得到的字节流
    */
   public static byte[] encode(String str, CodeMethod codeMethod) {
-    if (StringUtils.isBlank(str)) {
+    if (StringAssist.isBlank(str)) {
       return null;
     }
     if (codeMethod == null) {
@@ -30,7 +30,7 @@ public class CodeUtils {
    * 以特定编码方案解码字节流，返回解码得到的字符串
    */
   public static String decode(byte[] bytes, CodeMethod codeMethod) {
-    if (ArrayUtils.isEmpty(bytes)) {
+    if (ArrayAssist.isEmpty(bytes)) {
       return null;
     }
     if (codeMethod == null) {
@@ -42,7 +42,7 @@ public class CodeUtils {
 
   public static void main(String[] args) throws UnsupportedEncodingException {
     String a = "�";
-    String b = CodeUtils.decode(CodeUtils.encode("�", CodeMethod.GBK), CodeMethod.GBK);
+    String b = CodeAssist.decode(CodeAssist.encode("�", CodeMethod.GBK), CodeMethod.GBK);
     System.out.println(a.equals(b));
   }
 

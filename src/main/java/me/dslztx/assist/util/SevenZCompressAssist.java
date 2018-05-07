@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author dslztx
  */
-public class SevenZCompressUtils {
+public class SevenZCompressAssist {
 
-  private static final Logger logger = LoggerFactory.getLogger(SevenZCompressUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(SevenZCompressAssist.class);
 
   public static void compress(File input, File output) {
     SevenZOutputFile sevenZOutput = null;
@@ -34,7 +34,7 @@ public class SevenZCompressUtils {
         addEntry(input, input.getName(), sevenZOutput);
       } else {
         sevenZOutput = new SevenZOutputFile(output);
-        if (ArrayUtils.isEmpty(input.listFiles())) {
+        if (ArrayAssist.isEmpty(input.listFiles())) {
           addEntry(input, input.getName(), sevenZOutput);
         } else {
           compressSubDirElements(input.listFiles(), input.getName(), sevenZOutput);
@@ -43,7 +43,7 @@ public class SevenZCompressUtils {
     } catch (Exception e) {
       logger.error("", e);
     } finally {
-      CloseableUtils.close(sevenZOutput);
+      CloseableAssist.close(sevenZOutput);
     }
   }
 
@@ -85,13 +85,13 @@ public class SevenZCompressUtils {
             out.write(buffer, 0, left);
           }
 
-          CloseableUtils.close(out);
+          CloseableAssist.close(out);
         }
       }
     } catch (Exception e) {
       logger.error("", e);
     } finally {
-      CloseableUtils.close(sevenZFile);
+      CloseableAssist.close(sevenZFile);
     }
   }
 
@@ -107,7 +107,7 @@ public class SevenZCompressUtils {
       while ((len = in.read(bytes)) > 0) {
         sevenZOutputFile.write(bytes, 0, len);
       }
-      CloseableUtils.close(in);
+      CloseableAssist.close(in);
     }
 
     sevenZOutputFile.closeArchiveEntry();
@@ -120,7 +120,7 @@ public class SevenZCompressUtils {
       if (file.isFile()) {
         addEntry(file, prefix + File.separator + file.getName(), sevenZOutputFile);
       } else {
-        if (ArrayUtils.isEmpty(file.listFiles())) {
+        if (ArrayAssist.isEmpty(file.listFiles())) {
           addEntry(file, prefix + File.separator + file.getName(), sevenZOutputFile);
         } else {
           compressSubDirElements(file.listFiles(), prefix + File.separator + file.getName(),

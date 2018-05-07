@@ -3,7 +3,7 @@ package me.dslztx.assist.util;
 /**
  * @author dslztx
  */
-public class StringUtils {
+public class StringAssist {
 
   /**
    * judge whether legal hexadecimal number string
@@ -14,7 +14,7 @@ public class StringUtils {
     }
 
     for (int index = 0; index < s.length(); index++) {
-      if (!CharUtils.isHexChar(s.charAt(index))) {
+      if (!CharAssist.isHexChar(s.charAt(index))) {
         return false;
       }
     }
@@ -30,7 +30,7 @@ public class StringUtils {
     }
 
     for (int index = 0; index < s.length(); index++) {
-      if (!CharUtils.isOctChar(s.charAt(index))) {
+      if (!CharAssist.isOctChar(s.charAt(index))) {
         return false;
       }
     }
@@ -47,7 +47,7 @@ public class StringUtils {
     }
 
     for (int index = 0; index < s.length(); index++) {
-      if (!CharUtils.isDecimalChar(s.charAt(index))) {
+      if (!CharAssist.isDecimalChar(s.charAt(index))) {
         return false;
       }
     }

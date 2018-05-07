@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-import me.dslztx.assist.util.StringUtils;
+import me.dslztx.assist.util.StringAssist;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class MysqlClientFactory {
             Configuration configuration = configs.properties(new File(CONFIG_FILE));
 
             String groups = configuration.getString("groups");
-            if (StringUtils.isBlank(groups)) {
+            if (StringAssist.isBlank(groups)) {
               throw new RuntimeException("no groups");
             }
 
@@ -72,7 +72,7 @@ public class MysqlClientFactory {
     String username = configuration.getString("username");
     String password = configuration.getString("password");
 
-    if (StringUtils.isBlank(url) || StringUtils.isBlank(username) || StringUtils
+    if (StringAssist.isBlank(url) || StringAssist.isBlank(username) || StringAssist
         .isBlank(password)) {
       return null;
     }

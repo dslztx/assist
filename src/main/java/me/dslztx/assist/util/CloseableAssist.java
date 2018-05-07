@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author dslztx
  */
-public class CloseableUtils {
+public class CloseableAssist {
 
-  private static final Logger logger = LoggerFactory.getLogger(CloseableUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(CloseableAssist.class);
 
   public static void close(Closeable closeable) {
     if (closeable != null) {

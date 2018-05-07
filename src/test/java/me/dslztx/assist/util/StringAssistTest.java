@@ -13,15 +13,15 @@ import org.slf4j.LoggerFactory;
  * @author dslztx
  * @date 2015年08月18日
  */
-public class StringUtilsTest {
+public class StringAssistTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(StringUtilsTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(StringAssistTest.class);
 
   @Test
   public void testIsHexStr() throws Exception {
     try {
-      assertTrue(StringUtils.isHexStr("aaFf"));
-      assertFalse(StringUtils.isHexStr("zu"));
+      assertTrue(StringAssist.isHexStr("aaFf"));
+      assertFalse(StringAssist.isHexStr("zu"));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -31,8 +31,8 @@ public class StringUtilsTest {
   @Test
   public void testIsOctStr() throws Exception {
     try {
-      assertTrue(StringUtils.isOctStr("07770"));
-      assertFalse(StringUtils.isOctStr("0768"));
+      assertTrue(StringAssist.isOctStr("07770"));
+      assertFalse(StringAssist.isOctStr("0768"));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -42,8 +42,8 @@ public class StringUtilsTest {
   @Test
   public void testIsDecimalStr() throws Exception {
     try {
-      assertTrue(StringUtils.isDecimalStr("3128390217"));
-      assertFalse(StringUtils.isDecimalStr("983219z"));
+      assertTrue(StringAssist.isDecimalStr("3128390217"));
+      assertFalse(StringAssist.isDecimalStr("983219z"));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -53,10 +53,10 @@ public class StringUtilsTest {
   @Test
   public void testIsBlank() {
     try {
-      assertTrue(StringUtils.isBlank(""));
-      assertTrue(StringUtils.isBlank(null));
-      assertTrue(StringUtils.isBlank("   "));
-      assertFalse(StringUtils.isBlank("  fdsfd "));
+      assertTrue(StringAssist.isBlank(""));
+      assertTrue(StringAssist.isBlank(null));
+      assertTrue(StringAssist.isBlank("   "));
+      assertFalse(StringAssist.isBlank("  fdsfd "));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -66,8 +66,8 @@ public class StringUtilsTest {
   @Test
   public void testToLowerCase() {
     try {
-      assertNull(StringUtils.toLowerCase(null));
-      assertTrue(StringUtils.toLowerCase("hEllo").equals("hello"));
+      assertNull(StringAssist.toLowerCase(null));
+      assertTrue(StringAssist.toLowerCase("hEllo").equals("hello"));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -77,8 +77,8 @@ public class StringUtilsTest {
   @Test
   public void testToUpperCase() {
     try {
-      assertNull(StringUtils.toUpperCase(null));
-      assertTrue(StringUtils.toUpperCase("hEllo").equals("HELLO"));
+      assertNull(StringAssist.toUpperCase(null));
+      assertTrue(StringAssist.toUpperCase("hEllo").equals("HELLO"));
     } catch (Exception e) {
       logger.error("", e);
       fail();

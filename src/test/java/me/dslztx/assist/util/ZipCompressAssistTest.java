@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ZipCompressUtilsTest {
+public class ZipCompressAssistTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(ZipCompressUtilsTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(ZipCompressAssistTest.class);
 
   private static final String PATH_PREFIX = "src/test/resources";
 
@@ -21,9 +21,9 @@ public class ZipCompressUtilsTest {
       File compressed = new File(PATH_PREFIX + File.separator + "test" + File.separator + "a.zip");
       compressed.getParentFile().mkdirs();
 
-      ZipCompressUtils.compress(original, compressed);
+      ZipCompressAssist.compress(original, compressed);
 
-      ZipCompressUtils.decompress(compressed, compressed.getParentFile());
+      ZipCompressAssist.decompress(compressed, compressed.getParentFile());
 
       Assert.assertTrue(FileAssist.isDirSame(original,
           new File(compressed.getParentFile().getCanonicalPath() + File.separator + "a")));
@@ -43,9 +43,9 @@ public class ZipCompressUtilsTest {
           PATH_PREFIX + File.separator + "test" + File.separator + "1.xml.zip");
       compressed.getParentFile().mkdirs();
 
-      ZipCompressUtils.compress(original, compressed);
+      ZipCompressAssist.compress(original, compressed);
 
-      ZipCompressUtils.decompress(compressed, compressed.getParentFile());
+      ZipCompressAssist.decompress(compressed, compressed.getParentFile());
 
       Assert.assertTrue(FileAssist.isContentSame(original,
           new File(compressed.getParentFile().getCanonicalPath() + File.separator + "1.xml")));
@@ -66,12 +66,12 @@ public class ZipCompressUtilsTest {
       File dst = new File(PATH_PREFIX + File.separator + "test");
       dst.mkdirs();
 
-      ZipCompressUtils.compress(original, byteArrayOutputStream);
+      ZipCompressAssist.compress(original, byteArrayOutputStream);
 
       ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
           byteArrayOutputStream.toByteArray());
 
-      ZipCompressUtils.decompress(byteArrayInputStream, dst);
+      ZipCompressAssist.decompress(byteArrayInputStream, dst);
 
       Assert.assertTrue(FileAssist.isDirSame(original,
           new File(dst.getCanonicalPath() + File.separator + "a")));
@@ -93,11 +93,11 @@ public class ZipCompressUtilsTest {
       dst.mkdirs();
 
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-      ZipCompressUtils.compress(original, byteArrayOutputStream);
+      ZipCompressAssist.compress(original, byteArrayOutputStream);
 
       ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
           byteArrayOutputStream.toByteArray());
-      ZipCompressUtils.decompress(byteArrayInputStream, dst);
+      ZipCompressAssist.decompress(byteArrayInputStream, dst);
 
       Assert.assertTrue(FileAssist.isContentSame(original,
           new File(dst.getCanonicalPath() + File.separator + "1.xml")));

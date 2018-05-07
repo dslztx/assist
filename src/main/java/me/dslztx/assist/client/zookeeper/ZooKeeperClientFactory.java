@@ -1,7 +1,7 @@
 package me.dslztx.assist.client.zookeeper;
 
 import java.io.File;
-import me.dslztx.assist.util.StringUtils;
+import me.dslztx.assist.util.StringAssist;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.curator.RetryPolicy;
@@ -39,7 +39,7 @@ public class ZooKeeperClientFactory {
             Configuration configuration = configs.properties(new File(CONFIG_FILE));
 
             String addresses = configuration.getString("zookeeper.curator.addresses");
-            if (StringUtils.isBlank(addresses)) {
+            if (StringAssist.isBlank(addresses)) {
               throw new RuntimeException("no addresses");
             }
 

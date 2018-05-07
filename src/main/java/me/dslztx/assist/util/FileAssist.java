@@ -77,7 +77,7 @@ public class FileAssist {
     if (a.isFile()) {
       a.delete();
     } else {
-      if (ArrayUtils.isEmpty(a.listFiles())) {
+      if (ArrayAssist.isEmpty(a.listFiles())) {
         a.delete();
       } else {
         for (File file : a.listFiles()) {
@@ -174,8 +174,8 @@ public class FileAssist {
       logger.error("", e);
       return false;
     } finally {
-      CloseableUtils.close(ain);
-      CloseableUtils.close(bin);
+      CloseableAssist.close(ain);
+      CloseableAssist.close(bin);
     }
   }
 
@@ -196,12 +196,12 @@ public class FileAssist {
   }
 
   public static boolean isImage(String name) {
-    if (StringUtils.isBlank(name)) {
+    if (StringAssist.isBlank(name)) {
       return false;
     }
 
     String suffix = obtainSuffix(name);
-    if (StringUtils.isBlank(suffix)) {
+    if (StringAssist.isBlank(suffix)) {
       return false;
     }
 
@@ -209,7 +209,7 @@ public class FileAssist {
   }
 
   public static String obtainSuffix(String name) {
-    if (StringUtils.isBlank(name)) {
+    if (StringAssist.isBlank(name)) {
       return "";
     }
     int pos = name.lastIndexOf(".");
@@ -228,11 +228,11 @@ public class FileAssist {
     long t = System.currentTimeMillis();
 
     File file = new File(
-        (dir.getCanonicalPath() + File.separator + (t++) + (StringUtils.isBlank(suffix) ? ""
+        (dir.getCanonicalPath() + File.separator + (t++) + (StringAssist.isBlank(suffix) ? ""
             : suffix)));
     while (file.exists()) {
       file = new File(
-          dir.getCanonicalPath() + File.separator + (t++) + (StringUtils.isBlank(suffix) ? ""
+          dir.getCanonicalPath() + File.separator + (t++) + (StringAssist.isBlank(suffix) ? ""
               : suffix));
     }
 

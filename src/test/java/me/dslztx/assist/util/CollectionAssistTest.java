@@ -8,16 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 
-public class CollectionUtilsTest {
+public class CollectionAssistTest {
 
   @Test
   public void isEmpty() throws Exception {
     try {
-      assertTrue(CollectionUtils.isEmpty(null));
-      assertTrue(CollectionUtils.isEmpty(new ArrayList<String>()));
+      assertTrue(CollectionAssist.isEmpty(null));
+      assertTrue(CollectionAssist.isEmpty(new ArrayList<String>()));
       List<String> strList = new ArrayList<String>();
       strList.add("hello");
-      assertFalse(CollectionUtils.isEmpty(strList));
+      assertFalse(CollectionAssist.isEmpty(strList));
     } catch (Exception e) {
       fail();
     }

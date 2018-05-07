@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author dslztx
  */
-public class ZipCompressUtils {
+public class ZipCompressAssist {
 
-  private static final Logger logger = LoggerFactory.getLogger(ZipCompressUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(ZipCompressAssist.class);
 
   public static void compress(File input, File output) {
     ZipOutputStream zipOutputStream = null;
@@ -43,7 +43,7 @@ public class ZipCompressUtils {
       if (input.isFile()) {
         addEntry(input, input.getName(), zipOutputStream);
       } else {
-        if (ArrayUtils.isEmpty(input.listFiles())) {
+        if (ArrayAssist.isEmpty(input.listFiles())) {
           addEntry(input, input.getName(), zipOutputStream);
         } else {
           compressSubDirElements(input.listFiles(), input.getName(), zipOutputStream);
@@ -52,8 +52,8 @@ public class ZipCompressUtils {
     } catch (Exception e) {
       logger.error("", e);
     } finally {
-      CloseableUtils.close(zipOutputStream);
-      CloseableUtils.close(fileOutputStream);
+      CloseableAssist.close(zipOutputStream);
+      CloseableAssist.close(fileOutputStream);
     }
   }
 
@@ -73,7 +73,7 @@ public class ZipCompressUtils {
       if (input.isFile()) {
         addEntry(input, input.getName(), zipOutputStream);
       } else {
-        if (ArrayUtils.isEmpty(input.listFiles())) {
+        if (ArrayAssist.isEmpty(input.listFiles())) {
           addEntry(input, input.getName(), zipOutputStream);
         } else {
           compressSubDirElements(input.listFiles(), input.getName(), zipOutputStream);
@@ -82,7 +82,7 @@ public class ZipCompressUtils {
     } catch (Exception e) {
       logger.error("", e);
     } finally {
-      CloseableUtils.close(zipOutputStream);
+      CloseableAssist.close(zipOutputStream);
     }
   }
 
@@ -119,14 +119,14 @@ public class ZipCompressUtils {
             out.write(buffer, 0, cnt);
           }
 
-          CloseableUtils.close(out);
+          CloseableAssist.close(out);
         }
       }
     } catch (Exception e) {
       logger.error("", e);
     } finally {
-      CloseableUtils.close(zipInputStream);
-      CloseableUtils.close(fileInputStream);
+      CloseableAssist.close(zipInputStream);
+      CloseableAssist.close(fileInputStream);
     }
   }
 
@@ -161,13 +161,13 @@ public class ZipCompressUtils {
             out.write(buffer, 0, cnt);
           }
 
-          CloseableUtils.close(out);
+          CloseableAssist.close(out);
         }
       }
     } catch (Exception e) {
       logger.error("", e);
     } finally {
-      CloseableUtils.close(zipInputStream);
+      CloseableAssist.close(zipInputStream);
     }
   }
 
@@ -188,7 +188,7 @@ public class ZipCompressUtils {
       while ((len = in.read(bytes)) > 0) {
         zipOutputStream.write(bytes, 0, len);
       }
-      CloseableUtils.close(in);
+      CloseableAssist.close(in);
     }
   }
 
@@ -199,7 +199,7 @@ public class ZipCompressUtils {
       if (file.isFile()) {
         addEntry(file, prefix + File.separator + file.getName(), zipOutputStream);
       } else {
-        if (ArrayUtils.isEmpty(file.listFiles())) {
+        if (ArrayAssist.isEmpty(file.listFiles())) {
           addEntry(file, prefix + File.separator + file.getName(), zipOutputStream);
         } else {
           compressSubDirElements(file.listFiles(), prefix + File.separator + file.getName(),

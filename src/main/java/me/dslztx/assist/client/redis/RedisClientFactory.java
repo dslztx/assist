@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import me.dslztx.assist.util.StringUtils;
+import me.dslztx.assist.util.StringAssist;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class RedisClientFactory {
             Configuration configuration = configs.properties(new File(CONFIG_FILE));
 
             String groups = configuration.getString("groups");
-            if (StringUtils.isBlank(groups)) {
+            if (StringAssist.isBlank(groups)) {
               throw new RuntimeException("no groups");
             }
 
@@ -120,7 +120,7 @@ public class RedisClientFactory {
     }
 
     String servers = configuration.getString("redis.servers");
-    if (StringUtils.isBlank(servers)) {
+    if (StringAssist.isBlank(servers)) {
       logger.error("no redis servers");
       return jedisPools;
     }

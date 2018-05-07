@@ -6,9 +6,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SevenZCompressUtilsTest {
+public class SevenZCompressAssistTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(SevenZCompressUtilsTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(SevenZCompressAssistTest.class);
 
   private static final String PATH_PREFIX = "src/test/resources";
 
@@ -19,9 +19,9 @@ public class SevenZCompressUtilsTest {
       File compressed = new File(PATH_PREFIX + File.separator + "test" + File.separator + "a.7z");
       compressed.getParentFile().mkdirs();
 
-      SevenZCompressUtils.compress(original, compressed);
+      SevenZCompressAssist.compress(original, compressed);
 
-      SevenZCompressUtils.decompress(compressed, compressed.getParentFile());
+      SevenZCompressAssist.decompress(compressed, compressed.getParentFile());
 
       Assert.assertTrue(FileAssist.isDirSame(original,
           new File(compressed.getParentFile().getCanonicalPath() + File.separator + "a")));
@@ -41,9 +41,9 @@ public class SevenZCompressUtilsTest {
           PATH_PREFIX + File.separator + "test" + File.separator + "1.xml.7z");
       compressed.getParentFile().mkdirs();
 
-      SevenZCompressUtils.compress(original, compressed);
+      SevenZCompressAssist.compress(original, compressed);
 
-      SevenZCompressUtils.decompress(compressed, compressed.getParentFile());
+      SevenZCompressAssist.decompress(compressed, compressed.getParentFile());
 
       Assert.assertTrue(FileAssist.isContentSame(original,
           new File(compressed.getParentFile().getCanonicalPath() + File.separator + "1.xml")));

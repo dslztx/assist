@@ -1,0 +1,49 @@
+package me.dslztx.assist.client.kafka;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class KafkaConsumerFactory {
+
+  private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerFactory.class);
+
+  private static final String CONFIG_FILE = "kafka.properties";
+
+  public synchronized static KafkaConsumer<String, byte[]> obtainKafkaConsumer() {
+    try {
+      Configurations configs = new Configurations();
+      Configuration configuration = configs.properties(new File(CONFIG_FILE));
+
+      String servers = configuration.getString("kafka.servers");
+
+      if (StringUtils.isBlank(servers)) {
+        throw new RuntimeException("no kafka servers");
+      }
+
+      Map<String, Object> props = new HashMap<String, Object>();
+
+      props.put("bootstrap.servers", servers);
+      props.put("group.id", "defaultGroup");
+      props.put("enable.auto.commit", "true");
+      props.put("auto.commit.interval.ms", "1000");
+      props.put("session.timeout.ms", "30000");
+      props.put("partition.assignment.strategy", "range");
+
+      return new KafkaConsumer<String, byte[]>(props, null,
+          new StringDeserializer(), new ByteArrayDeserializer());
+    } catch (Exception e) {
+      logger.error("", e);
+      return null;
+    }
+  }
+
+}

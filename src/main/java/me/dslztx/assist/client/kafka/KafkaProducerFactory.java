@@ -20,9 +20,9 @@ public class KafkaProducerFactory {
 
   private static volatile boolean init = false;
 
-  private static KafkaProducer kafKaProducer;
+  private static KafkaProducer<String, byte[]> kafKaProducer;
 
-  public static KafkaProducer obtainKafkaProducer() {
+  public static KafkaProducer<String, byte[]> obtainKafkaProducer() {
     if (!init) {
       init();
     }

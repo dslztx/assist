@@ -38,8 +38,8 @@ public class KafkaConsumerFactory {
       props.put("session.timeout.ms", "30000");
       props.put("partition.assignment.strategy", "range");
 
-      return new KafkaConsumer<String, byte[]>(props, null,
-          new StringDeserializer(), new ByteArrayDeserializer());
+      return new KafkaConsumer<String, byte[]>(props, new StringDeserializer(),
+          new ByteArrayDeserializer());
     } catch (Exception e) {
       logger.error("", e);
       return null;

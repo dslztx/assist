@@ -36,7 +36,6 @@ public class KafkaConsumerFactory {
       props.put("enable.auto.commit", "true");
       props.put("auto.commit.interval.ms", "1000");
       props.put("session.timeout.ms", "30000");
-      props.put("partition.assignment.strategy", "range");
 
       return new KafkaConsumer<String, byte[]>(props, new StringDeserializer(),
           new ByteArrayDeserializer());

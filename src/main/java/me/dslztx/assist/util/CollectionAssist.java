@@ -13,4 +13,11 @@ public class CollectionAssist {
     }
     return false;
   }
+
+  public static boolean isNotEmpty(Collection collection) {
+    if (collection != null && !collection.isEmpty()) {
+      return true;
+    }
+    return false;
+  }
 }

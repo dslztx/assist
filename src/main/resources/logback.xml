@@ -1,3 +1,4 @@
+<!--可通过ch.qos.logback.classic.Level查看所有日志级别-->
 <configuration>
   <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <filter class="ch.qos.logback.classic.filter.LevelFilter">

@@ -12,7 +12,7 @@
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <fileNamePattern>${user.dir}/logs/info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
       <!-- each file should be at most 20MB, keep 10 days worth of history, but at most 10GB -->
       <maxFileSize>20MB</maxFileSize>
@@ -35,7 +35,7 @@
     <file>${user.dir}/logs/error.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <fileNamePattern>${user.dir}/logs/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
       <!-- each file should be at most 20MB, keep 10 days worth of history, but at most 10GB -->
       <maxFileSize>20MB</maxFileSize>
@@ -64,7 +64,7 @@
     <file>${user.dir}/logs/other.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>other.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <fileNamePattern>${user.dir}/logs/other.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
       <!-- each file should be at most 20MB, keep 10 days worth of history, but at most 10GB -->
       <maxFileSize>20MB</maxFileSize>

@@ -1,0 +1,84 @@
+<configuration>
+  <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+
+    <file>logs/info.log</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+      <!-- each file should be at most 20MB, keep 10 days worth of history, but at most 10GB -->
+      <maxFileSize>20MB</maxFileSize>
+      <maxHistory>10</maxHistory>
+      <totalSizeCap>10GB</totalSizeCap>
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>[%-5level] %d %file,%line [%thread] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+
+    <file>logs/error.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+      <!-- each file should be at most 20MB, keep 10 days worth of history, but at most 10GB -->
+      <maxFileSize>20MB</maxFileSize>
+      <maxHistory>10</maxHistory>
+      <totalSizeCap>10GB</totalSizeCap>
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>[%-5level] %d %file,%line [%thread] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="OTHER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>DENY</onMatch>
+      <onMismatch>NEUTRAL</onMismatch>
+    </filter>
+
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>DENY</onMatch>
+      <onMismatch>ACCEPT</onMismatch>
+    </filter>
+
+    <file>logs/other.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>other.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+      <!-- each file should be at most 20MB, keep 10 days worth of history, but at most 10GB -->
+      <maxFileSize>20MB</maxFileSize>
+      <maxHistory>10</maxHistory>
+      <totalSizeCap>10GB</totalSizeCap>
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>[%-5level] %d %file,%line [%thread] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="INFO_FILE"/>
+    <appender-ref ref="ERROR_FILE"/>
+    <appender-ref ref="OTHER_FILE"/>
+  </root>
+
+</configuration>

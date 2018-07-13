@@ -21,7 +21,7 @@
     </rollingPolicy>
 
     <encoder>
-      <pattern>[%-5level] %d %file,%line [%thread] - %msg%n</pattern>
+      <pattern>[%-5level] %d %logger{15},%line [%thread] - %msg%n</pattern>
     </encoder>
   </appender>
 
@@ -44,7 +44,7 @@
     </rollingPolicy>
 
     <encoder>
-      <pattern>[%-5level] %d %file,%line [%thread] - %msg%n</pattern>
+      <pattern>[%-5level] %d %logger{15},%line [%thread] - %msg%n</pattern>
     </encoder>
   </appender>
 
@@ -73,7 +73,7 @@
     </rollingPolicy>
 
     <encoder>
-      <pattern>[%-5level] %d %file,%line [%thread] - %msg%n</pattern>
+      <pattern>[%-5level] %d %logger{15},%line [%thread] - %msg%n</pattern>
     </encoder>
   </appender>
 

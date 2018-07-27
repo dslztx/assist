@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
  *
  * 毫秒<br/>
  */
+
+//TODO
 public class DateAssist {
 
   private static final Logger logger = LoggerFactory.getLogger(DateAssist.class);
@@ -93,6 +95,15 @@ public class DateAssist {
     } else {
       return (yearA - yearB) * 12 + (monthA - monthB);
     }
+  }
+
+  public static Date minusInDay(Date a, int minus) {
+    Calendar calendarA = Calendar.getInstance();
+    calendarA.setTime(a);
+
+    //TODO
+
+    return null;
   }
 
   public static long gapInDay(Date a, Date b) {

@@ -16,7 +16,7 @@ public class DateAssistTest {
   public void generate() {
     try {
       Date date = DateAssist.generate(2018, 7, 20);
-      assertTrue("2018-07-20".equals(DateAssist.format(date, "yyyy-MM-dd")));
+      assertTrue("2018-07-20".equals(DateAssist.format(date, DateAssist.YMD)));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -27,7 +27,7 @@ public class DateAssistTest {
   public void generate1() {
     try {
       Date date = DateAssist.generate(2018, 7, 20, 23, 59, 59);
-      assertTrue("2018-07-20 23:59:59".equals(DateAssist.format(date, "yyyy-MM-dd HH:mm:ss")));
+      assertTrue("2018-07-20 23:59:59".equals(DateAssist.format(date, DateAssist.YMD_HMS)));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -39,7 +39,7 @@ public class DateAssistTest {
     try {
       Date date = DateAssist.generate(2018, 7, 20, 23, 59, 59, 999);
       assertTrue(
-          "2018-07-20 23:59:59.999".equals(DateAssist.format(date, "yyyy-MM-dd HH:mm:ss.SSS")));
+          "2018-07-20 23:59:59.999".equals(DateAssist.format(date, DateAssist.YMD_HMS_MS)));
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -49,8 +49,8 @@ public class DateAssistTest {
   @Test
   public void gapInYear() {
     try {
-      Date a = DateAssist.generate(2018, 07, 20);
-      Date b = DateAssist.generate(2017, 07, 20);
+      Date a = DateAssist.generate(2018, 7, 20);
+      Date b = DateAssist.generate(2017, 7, 20);
       assertTrue(DateAssist.gapInYear(a, b) == 1);
     } catch (Exception e) {
       logger.error("", e);
@@ -61,8 +61,8 @@ public class DateAssistTest {
   @Test
   public void gapInMonth() {
     try {
-      Date a = DateAssist.generate(2018, 07, 20);
-      Date b = DateAssist.generate(2017, 05, 20);
+      Date a = DateAssist.generate(2018, 7, 20);
+      Date b = DateAssist.generate(2017, 5, 20);
       assertTrue(DateAssist.gapInMonth(a, b) == 14);
     } catch (Exception e) {
       logger.error("", e);
@@ -75,7 +75,6 @@ public class DateAssistTest {
     try {
       Date a = DateAssist.generate(2018, 3, 1);
       Date b = DateAssist.minusInDay(a, 2);
-
       assertTrue("2018-02-27".equals(DateAssist.format(b, DateAssist.YMD)));
     } catch (Exception e) {
       logger.error("", e);
@@ -88,7 +87,6 @@ public class DateAssistTest {
     try {
       Date a = DateAssist.generate(2018, 3, 1);
       Date b = DateAssist.addInDay(a, 2);
-
       assertTrue("2018-03-03".equals(DateAssist.format(b, DateAssist.YMD)));
     } catch (Exception e) {
       logger.error("", e);
@@ -164,7 +162,7 @@ public class DateAssistTest {
   @Test
   public void format() {
     try {
-      Date date = DateAssist.generate(2018, 07, 24, 10, 13, 56, 110);
+      Date date = DateAssist.generate(2018, 7, 24, 10, 13, 56, 110);
       assertTrue(DateAssist.format(date, DateAssist.YMD_HMS_MS).equals("2018-07-24 10:13:56.110"));
     } catch (Exception e) {
       logger.error("", e);

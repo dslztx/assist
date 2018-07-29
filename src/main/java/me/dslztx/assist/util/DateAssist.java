@@ -7,23 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * yyyy：年<br/>
+ * 在Java中，时间主要涉及到4个类：Date，Calendar，SimpleDateFormat，TimeZone
  *
- * MM：月<br/>
- *
- * dd：日<br/>
- *
- * HH：小时<br/>
- *
- * mm：分钟<br/>
- *
- * ss：秒<br/>
- *
- * 毫秒<br/>
+ * @author dslztx
  */
-
-//TODO
 public class DateAssist {
+
+  public static final String YMD = "yyyy-MM-dd";
+
+  public static final String YMD_HMS = "yyyy-MM-dd HH:mm:ss";
+
+  public static final String YMD_HMS_MS = "yyyy-MM-dd HH:mm:ss.SSS";
 
   private static final Logger logger = LoggerFactory.getLogger(DateAssist.class);
 
@@ -44,6 +38,7 @@ public class DateAssist {
     calendar.set(Calendar.HOUR_OF_DAY, hour);
     calendar.set(Calendar.MINUTE, minute);
     calendar.set(Calendar.SECOND, second);
+
     return calendar.getTime();
   }
 
@@ -58,18 +53,18 @@ public class DateAssist {
     calendar.set(Calendar.MINUTE, minute);
     calendar.set(Calendar.SECOND, second);
     calendar.set(Calendar.MILLISECOND, millisecond);
+
     return calendar.getTime();
   }
 
-  public static int gapInYear(Date a, Date b) {
-    Calendar calendarB = Calendar.getInstance();
-    calendarB.setTime(b);
-
-    int yearB = calendarB.get(Calendar.YEAR);
-
+  public static long gapInYear(Date a, Date b) {
     Calendar calendarA = Calendar.getInstance();
     calendarA.setTime(a);
     int yearA = calendarA.get(Calendar.YEAR);
+
+    Calendar calendarB = Calendar.getInstance();
+    calendarB.setTime(b);
+    int yearB = calendarB.get(Calendar.YEAR);
 
     if (CompareAssist.less(a, b)) {
       return yearB - yearA;
@@ -78,32 +73,22 @@ public class DateAssist {
     }
   }
 
-  public static int gapInMonth(Date a, Date b) {
-    Calendar calendarB = Calendar.getInstance();
-    calendarB.setTime(b);
-
-    int yearB = calendarB.get(Calendar.YEAR);
-    int monthB = calendarB.get(Calendar.MONTH);
-
+  public static long gapInMonth(Date a, Date b) {
     Calendar calendarA = Calendar.getInstance();
     calendarA.setTime(a);
     int yearA = calendarA.get(Calendar.YEAR);
     int monthA = calendarA.get(Calendar.MONTH);
+
+    Calendar calendarB = Calendar.getInstance();
+    calendarB.setTime(b);
+    int yearB = calendarB.get(Calendar.YEAR);
+    int monthB = calendarB.get(Calendar.MONTH);
 
     if (CompareAssist.less(a, b)) {
       return (yearB - yearA) * 12 + (monthB - monthA);
     } else {
       return (yearA - yearB) * 12 + (monthA - monthB);
     }
-  }
-
-  public static Date minusInDay(Date a, int minus) {
-    Calendar calendarA = Calendar.getInstance();
-    calendarA.setTime(a);
-
-    //TODO
-
-    return null;
   }
 
   public static long gapInDay(Date a, Date b) {
@@ -161,19 +146,38 @@ public class DateAssist {
     }
   }
 
+  /**
+   * 常见的格式化字符串：YMD，YMD_HMS，YMD_HMS_MS
+   *
+   * @see java.text.SimpleDateFormat
+   */
   public static String format(Date a, String formatStr) {
     SimpleDateFormat formatter = new SimpleDateFormat(formatStr);
 
     return formatter.format(a);
   }
 
+  /**
+   * 常见的格式化字符串：YMD，YMD_HMS，YMD_HMS_MS
+   *
+   * @see java.text.SimpleDateFormat
+   */
   public static Date parse(String date, String formatStr) {
     SimpleDateFormat formatter = new SimpleDateFormat(formatStr);
+
     try {
       return formatter.parse(date);
     } catch (Exception e) {
       logger.error("", e);
       return null;
     }
+  }
+
+  public static Date minusInDay(Date a, int minusDay) {
+    return new Date(a.getTime() - ((long) minusDay) * 24 * 3600 * 1000);
+  }
+
+  public static Date addInDay(Date a, int addDay) {
+    return new Date(a.getTime() + ((long) addDay) * 24 * 3600 * 1000);
   }
 }

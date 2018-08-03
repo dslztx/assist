@@ -22,6 +22,7 @@
 
     <encoder>
       <pattern>[%-5level] %d %logger{15},%line [%thread] - %msg%n</pattern>
+      <charset>UTF-8</charset> 
     </encoder>
   </appender>
 
@@ -45,6 +46,7 @@
 
     <encoder>
       <pattern>[%-5level] %d %logger{15},%line [%thread] - %msg%n</pattern>
+      <charset>UTF-8</charset> 
     </encoder>
   </appender>
 
@@ -74,6 +76,7 @@
 
     <encoder>
       <pattern>[%-5level] %d %logger{15},%line [%thread] - %msg%n</pattern>
+      <charset>UTF-8</charset> 
     </encoder>
   </appender>
 

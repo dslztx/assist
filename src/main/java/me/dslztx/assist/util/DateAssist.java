@@ -221,10 +221,16 @@ public class DateAssist {
   }
 
   public static Date minusInDay(Date a, int minusDay) {
+    if (minusDay < 0) {
+      throw new RuntimeException("minusDay is negative");
+    }
     return new Date(a.getTime() - ((long) minusDay) * 24 * 3600 * 1000);
   }
 
   public static Date addInDay(Date a, int addDay) {
+    if (addDay < 0) {
+      throw new RuntimeException("addDay is negative");
+    }
     return new Date(a.getTime() + ((long) addDay) * 24 * 3600 * 1000);
   }
 }

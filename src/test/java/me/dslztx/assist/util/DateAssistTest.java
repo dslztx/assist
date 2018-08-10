@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import java.util.Date;
+import java.util.TimeZone;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,37 @@ public class DateAssistTest {
   }
 
   @Test
+  public void generateWithTimeZone() {
+    try {
+      Date date1 = DateAssist.generate(2018, 7, 20);
+
+      Date date2 = DateAssist.generate(2018, 7, 20, TimeZone.getTimeZone("GMT+0700"));
+
+      assertTrue(DateAssist.gapInHour(date1, date2) == 1);
+    } catch (Exception e) {
+      logger.error("", e);
+      fail();
+    }
+  }
+
+  @Test
   public void generate1() {
     try {
       Date date = DateAssist.generate(2018, 7, 20, 23, 59, 59);
       assertTrue("2018-07-20 23:59:59".equals(DateAssist.format(date, DateAssist.YMD_HMS)));
+    } catch (Exception e) {
+      logger.error("", e);
+      fail();
+    }
+  }
+
+  @Test
+  public void generate1WithTimeZone() {
+    try {
+      Date date1 = DateAssist.generate(2018, 7, 20, 23, 59, 59);
+      Date date2 = DateAssist.generate(2018, 7, 20, 23, 59, 59, TimeZone.getTimeZone("GMT+0730"));
+
+      assertTrue(DateAssist.gapInMinute(date1, date2) == 30);
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -40,6 +68,20 @@ public class DateAssistTest {
       Date date = DateAssist.generate(2018, 7, 20, 23, 59, 59, 999);
       assertTrue(
           "2018-07-20 23:59:59.999".equals(DateAssist.format(date, DateAssist.YMD_HMS_MS)));
+    } catch (Exception e) {
+      logger.error("", e);
+      fail();
+    }
+  }
+
+  @Test
+  public void generate2WithTimeZone() {
+    try {
+      Date date1 = DateAssist.generate(2018, 7, 20, 23, 59, 59, 999);
+      Date date2 = DateAssist
+          .generate(2018, 7, 20, 23, 59, 59, 999, TimeZone.getTimeZone("GMT+0720"));
+
+      assertTrue(DateAssist.gapInMinute(date2, date1) == 40L);
     } catch (Exception e) {
       logger.error("", e);
       fail();
@@ -123,8 +165,8 @@ public class DateAssistTest {
   @Test
   public void gapInMinute() {
     try {
-      Date a = DateAssist.generate(2018, 3, 1, 0, 0, 0);
-      Date b = DateAssist.generate(2018, 2, 26, 23, 59, 0);
+      Date a = DateAssist.generate(2018, 3, 1, 0, 0, 0, 0);
+      Date b = DateAssist.generate(2018, 2, 26, 23, 59, 0, 0);
 
       assertTrue(DateAssist.gapInMinute(a, b) == 48 * 60 + 1);
     } catch (Exception e) {
@@ -171,12 +213,39 @@ public class DateAssistTest {
   }
 
   @Test
+  public void formatWithTimeZone() {
+    try {
+      Date date = DateAssist.generate(2018, 7, 24, 10, 13, 56, 110);
+      System.out.println(DateAssist.format(date, "yyyy-MM-dd HH:mm:ss.SSS 'GMT'Z"));
+      assertTrue(DateAssist.format(date, DateAssist.YMD_HMS_MS).equals("2018-07-24 10:13:56.110"));
+    } catch (Exception e) {
+      logger.error("", e);
+      fail();
+    }
+  }
+
+  @Test
   public void parse() {
     try {
       Date a = DateAssist.parse("2018-07-24 10:13:56.110", DateAssist.YMD_HMS_MS);
       Date b = DateAssist.generate(2018, 7, 24, 10, 13, 56, 110);
 
       assertTrue(a.equals(b));
+    } catch (Exception e) {
+      logger.error("", e);
+      fail();
+    }
+  }
+
+  @Test
+  public void parseWithTimeZone() {
+    try {
+
+      Date a = DateAssist.parse("2018-07-24 10:13:56.110 GMT-08:00", "yyyy-MM-dd HH:mm:ss.SSS Z");
+//      Date b = DateAssist.generate(2018, 7, 24, 10, 13, 56, 110);
+
+//      assertTrue(a.equals(b));
+      System.out.println(a);
     } catch (Exception e) {
       logger.error("", e);
       fail();

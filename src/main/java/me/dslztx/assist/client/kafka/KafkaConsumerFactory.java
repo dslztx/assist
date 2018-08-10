@@ -69,6 +69,7 @@ public class KafkaConsumerFactory {
       props.put("enable.auto.commit", "true");
       props.put("auto.commit.interval.ms", "1000");
       props.put("session.timeout.ms", "30000");
+      props.put("fetch.max.bytes", 10 * 1024 * 1024);
 
       return new KafkaConsumer<String, byte[]>(props, new StringDeserializer(),
           new ByteArrayDeserializer());

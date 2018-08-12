@@ -34,15 +34,22 @@
     <mysql-connector.version>5.1.45</mysql-connector.version>
     <curator.version>2.12.0</curator.version>
     <commons-io.version>2.5</commons-io.version>
-    <kafka-client>1.1.0</kafka-client>
+    <kafka-client.version>1.1.0</kafka-client.version>
+    <quartz.version>2.2.3</quartz.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <version>${quartz.version}</version>
+    </dependency>
+
     <!--使用1.1.0版本的kafka-clients需要JDK 1.7+，但是编译不需要-->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
-      <version>${kafka-client}</version>
+      <version>${kafka-client.version}</version>
     </dependency>
 
     <dependency>

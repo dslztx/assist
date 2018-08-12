@@ -9,19 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Ignore
-public class PeriodTaskScheduleAssistTest {
+public class FixedRateScheduleAssistTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(PeriodTaskScheduleAssistTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(FixedRateScheduleAssistTest.class);
 
   private static long id = 0;
 
   @Test
-  public void schedule() throws Exception {
+  public void submitFixedRateJob() throws Exception {
     try {
       System.out.println(new Date());
 
       for (int index = 0; index < 10; index++) {
-        PeriodTaskScheduleAssist.schedule(new Runnable() {
+        FixedRateScheduleAssist.submitFixedRateJob(new Runnable() {
           private long uniqueID = id++;
 
           @Override

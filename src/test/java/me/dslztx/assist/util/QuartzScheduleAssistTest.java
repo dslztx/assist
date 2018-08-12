@@ -1,10 +1,12 @@
 package me.dslztx.assist.util;
 
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Ignore
 public class QuartzScheduleAssistTest {
 
   private static final Logger logger = LoggerFactory.getLogger(QuartzScheduleAssistTest.class);

@@ -1,12 +1,8 @@
 package me.dslztx.assist.util;
 
 import java.io.File;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FilePathAssist {
-
-  private static final Logger logger = LoggerFactory.getLogger(FilePathAssist.class);
 
   public static String obtainParentPath(String path) {
     if (StringAssist.isBlank(path)) {
@@ -37,5 +33,25 @@ public class FilePathAssist {
     } else {
       return path.substring(0, index + 1);
     }
+  }
+
+  public static String[] pathElements(String path) {
+    if (StringAssist.isBlank(path)) {
+      return new String[0];
+    }
+
+    return path.split(File.separator);
+  }
+
+  public static String concat(String rootPath, String... elements) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(rootPath);
+
+    for (String element : elements) {
+      sb.append(File.separatorChar);
+      sb.append(element);
+    }
+
+    return sb.toString();
   }
 }

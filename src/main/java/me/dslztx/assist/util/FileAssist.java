@@ -33,6 +33,19 @@ public class FileAssist {
     imgSuffixes.add("pic");
   }
 
+  public static void createSubDirInDir(String parentDir, String subDir) {
+    try {
+      FileUtils.forceMkdir(new File(parentDir + File.separator + subDir));
+    } catch (Exception e) {
+      logger.error("", e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static File fileInDir(String parentDir, String file) {
+    return new File(parentDir + File.separator + file);
+  }
+
   public static void copyClassPathFileToLocalDir(String name, boolean overwrite) {
     File dst = new File(name);
 

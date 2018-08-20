@@ -3,11 +3,12 @@ package me.dslztx.assist.util;
 import java.util.concurrent.ConcurrentHashMap;
 import me.dslztx.assist.bean.CountAndAverageStat;
 
-//todo
+/**
+ * @author dslztx
+ */
 public class CountAndAverageStatAssist {
 
   private static ConcurrentHashMap<String, CountAndAverageStat> stats = new ConcurrentHashMap<String, CountAndAverageStat>();
-
 
   public static void incr(String name) {
     stats.putIfAbsent(name, new CountAndAverageStat());

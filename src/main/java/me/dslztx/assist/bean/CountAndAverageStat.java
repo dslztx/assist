@@ -2,7 +2,9 @@ package me.dslztx.assist.bean;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-//todo
+/**
+ * @author dslztx
+ */
 public class CountAndAverageStat {
 
   private AtomicLong total = new AtomicLong(0);
@@ -17,32 +19,16 @@ public class CountAndAverageStat {
     return total;
   }
 
-  public void setTotal(AtomicLong total) {
-    this.total = total;
-  }
-
   public AtomicLong getSuccess() {
     return success;
-  }
-
-  public void setSuccess(AtomicLong success) {
-    this.success = success;
   }
 
   public AtomicLong getFail() {
     return fail;
   }
 
-  public void setFail(AtomicLong fail) {
-    this.fail = fail;
-  }
-
   public AtomicLong getTimeCost() {
     return timeCost;
-  }
-
-  public void setTimeCost(AtomicLong timeCost) {
-    this.timeCost = timeCost;
   }
 
   public void incr() {
@@ -63,21 +49,21 @@ public class CountAndAverageStat {
 
   public void incrWithTimeCost(long timeCost) {
     synchronized (this) {
-      total.incrementAndGet();
+      this.total.incrementAndGet();
       this.timeCost.addAndGet(timeCost);
     }
   }
 
   public void incrSuccessWithTimeCost(long timeCost) {
     synchronized (this) {
-      success.incrementAndGet();
+      this.success.incrementAndGet();
       this.timeCost.addAndGet(timeCost);
     }
   }
 
   public void incrFailWithTimeCost(long timeCost) {
     synchronized (this) {
-      fail.incrementAndGet();
+      this.fail.incrementAndGet();
       this.timeCost.addAndGet(timeCost);
     }
   }

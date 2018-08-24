@@ -12,7 +12,7 @@ public class RedisClient {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisClient.class);
 
-    public Jedis jedis;
+    private Jedis jedis;
 
     private JedisPoolProxy jedisPoolProxy;
 
@@ -36,6 +36,10 @@ public class RedisClient {
             jedis = null;
             jedisPoolProxy = null;
         }
+    }
+
+    public Jedis getJedis() {
+        return jedis;
     }
 }
 

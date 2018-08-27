@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author dslztx
  */
-public class DateAssist {
+public class DateTimeAssist {
 
   public static final String YMD = "yyyy-MM-dd";
   public static final String YMD_Z = "yyyy-MM-dd Z";
@@ -25,7 +25,7 @@ public class DateAssist {
 
   public static final String YMD_HMS_MS_Z = "yyyy-MM-dd HH:mm:ss.SSS Z";
 
-  private static final Logger logger = LoggerFactory.getLogger(DateAssist.class);
+  private static final Logger logger = LoggerFactory.getLogger(DateTimeAssist.class);
 
   public static Date generate(int year, int month, int day) {
     Calendar calendar = Calendar.getInstance();

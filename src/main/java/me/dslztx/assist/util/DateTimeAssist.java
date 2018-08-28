@@ -145,7 +145,7 @@ public class DateTimeAssist {
     /**
      * 常见的格式化字符串：YMD，YMD_HMS，YMD_HMS_MS
      * 
-     * @param sourceTimeZone 解析时的源时区，如果在dateTime日期时间字符串中已经包含“时区”信息，该字段则无意义
+     * @param sourceTimeZone 解析时的源时区，如果在dateTime日期时间字符串中已经包含“时区”信息，该参数则无意义
      * @see java.text.SimpleDateFormat
      */
     public static Date parse(String dateTime, String pattern, TimeZone sourceTimeZone) {

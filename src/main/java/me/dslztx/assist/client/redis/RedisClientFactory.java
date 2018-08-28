@@ -129,9 +129,9 @@ public class RedisClientFactory {
         String[] serverArray = servers.split(",");
 
         JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxTotal(MAX_TOTAL);
+        config.setMaxActive(MAX_TOTAL);
         config.setMaxIdle(MAX_IDLE);
-        config.setMaxWaitMillis(MAX_WAIT_MILLIS);
+        config.setMaxWait(MAX_WAIT_MILLIS);
         config.setTestOnBorrow(TEST_ON_BORROW);
         config.setTestWhileIdle(TEST_WHILE_IDLE);
 

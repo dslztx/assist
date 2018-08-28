@@ -105,9 +105,8 @@ public class DateTimeAssistTest {
     public void formatWithTimeZone() {
         try {
             Date date = DateTimeAssist.generate(2018, 7, 24, 10, 13, 56, 110);
-            System.out.println(DateTimeAssist.format(date, "yyyy-MM-dd HH:mm:ss.SSS 'GMT'Z"));
-            assertTrue(DateTimeAssist.format(date, DateTimeAssist.YMD_HMS_MS, TimeZone.getTimeZone("GMT+07:00"))
-                .equals("2018-07-24 09:13:56.110"));
+            assertTrue(DateTimeAssist.format(date, DateTimeAssist.YMD_HMS_MS_Z, TimeZone.getTimeZone("GMT+07:00"))
+                .equals("2018-07-24 09:13:56.110 +0700"));
         } catch (Exception e) {
             logger.error("", e);
             fail();

@@ -3,6 +3,7 @@ package me.dslztx.assist.util;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import junit.framework.Assert;
+import me.dslztx.assist.bean.DayOfWeek;
 
 public class DateTimeAssistTest {
 
@@ -327,6 +329,47 @@ public class DateTimeAssistTest {
 
             // 调用getTime()方法，触发日期时间的计算
             Assert.assertTrue(calendar.getTime().getTime() == 1542771020500L);
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void other4() {
+        try {
+            // 2013-1-31 22:17:14
+            Date date = new Date(1359641834000L);
+
+            String dateStr = "2013-1-31 22:17:14";
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+            // parse时表示源时区为GMT+00:00，因此加上8个小时
+            Date a = dateFormat.parse(dateStr);
+
+            Date b = DateTimeAssist.generate(2013, 2, 1, 6, 17, 14, 0);
+            Assert.assertTrue(a.equals(b));
+
+            // format时表示目标时区为GMT+00:00，因此减去8个小时
+            String dateStrTmp = dateFormat.format(date);
+
+            Assert.assertTrue(dateStrTmp.equals("2013-01-31 14:17:14"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void obtainDayOfWeek() {
+        try {
+            Date date = DateTimeAssist.generate(2018, 8, 29);
+            Assert.assertTrue(DateTimeAssist.obtainDayOfWeek(date) == DayOfWeek.WEDNESDAY);
+
+            date = DateTimeAssist.generate(2018, 5, 20);
+            Assert.assertTrue(DateTimeAssist.obtainDayOfWeek(date) == DayOfWeek.SUNDAY);
         } catch (Exception e) {
             logger.error("", e);
             fail();

@@ -9,6 +9,8 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.dslztx.assist.bean.DayOfWeek;
+
 /**
  * 在Java中，日期时间主要涉及到4个类：Date，Calendar，SimpleDateFormat，TimeZone
  *
@@ -227,5 +229,28 @@ public class DateTimeAssist {
             throw new RuntimeException("addDay is negative");
         }
         return new Date(a.getTime() + ((long)addDay) * 24 * 3600 * 1000);
+    }
+
+    public static DayOfWeek obtainDayOfWeek(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        // 根据Calendar类的使用最佳实践，一般不允许使用“setTime(Date date)”方法
+        calendar.setTime(date);
+
+        int value = calendar.get(Calendar.DAY_OF_WEEK);
+        if (value == 1) {
+            return DayOfWeek.SUNDAY;
+        } else if (value == 2) {
+            return DayOfWeek.MONDAY;
+        } else if (value == 3) {
+            return DayOfWeek.TUESDAY;
+        } else if (value == 4) {
+            return DayOfWeek.WEDNESDAY;
+        } else if (value == 5) {
+            return DayOfWeek.THURSDAY;
+        } else if (value == 6) {
+            return DayOfWeek.FRIDAY;
+        } else {
+            return DayOfWeek.SATURDAY;
+        }
     }
 }

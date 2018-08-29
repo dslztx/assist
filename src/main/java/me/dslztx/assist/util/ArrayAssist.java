@@ -12,6 +12,13 @@ public class ArrayAssist {
         return false;
     }
 
+    public static boolean isNotEmpty(Object[] array) {
+        if (array != null && array.length != 0) {
+            return true;
+        }
+        return false;
+    }
+
     public static boolean isEmpty(byte[] array) {
         if (array == null || array.length == 0) {
             return true;

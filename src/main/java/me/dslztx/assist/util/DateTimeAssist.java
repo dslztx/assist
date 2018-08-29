@@ -1,9 +1,13 @@
 package me.dslztx.assist.util;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -28,6 +32,10 @@ public class DateTimeAssist {
     public static final String YMD_HMS_MS_Z = "yyyy-MM-dd HH:mm:ss.SSS Z";
 
     private static final Logger logger = LoggerFactory.getLogger(DateTimeAssist.class);
+
+    private static Map<String, Integer> holidayArrangement = new HashMap<String, Integer>();
+
+    private static volatile boolean initHolidayArrangement = false;
 
     public static Date generate(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
@@ -251,6 +259,75 @@ public class DateTimeAssist {
             return DayOfWeek.FRIDAY;
         } else {
             return DayOfWeek.SATURDAY;
+        }
+    }
+
+    /**
+     * 判断某天是否为休息日，根据国务院放假安排进行修正
+     * 
+     * @param date
+     * @return
+     */
+    public static boolean isHoliday(Date date) {
+        if (!initHolidayArrangement) {
+            initHolidayArrangement();
+        }
+
+        String dateTimeStr = DateTimeAssist.format(date, YMD);
+        if (holidayArrangement.get(dateTimeStr) == null) {
+            DayOfWeek dayOfWeek = obtainDayOfWeek(date);
+            return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+        } else {
+            return holidayArrangement.get(dateTimeStr).equals(1);
+        }
+    }
+
+    private static void initHolidayArrangement() {
+        if (!initHolidayArrangement) {
+            synchronized (DateTimeAssist.class) {
+                if (!initHolidayArrangement) {
+                    File[] dirs = FileAssist.locateClassPathFiles("holiday_arrangement");
+                    if (ArrayAssist.isNotEmpty(dirs)) {
+                        for (File dir : dirs) {
+                            if (dir == null || !dir.isDirectory()) {
+                                continue;
+                            }
+
+                            if (ArrayAssist.isNotEmpty(dir.listFiles())) {
+                                for (File file : dir.listFiles()) {
+                                    load(file);
+                                }
+                            }
+                        }
+                    }
+
+                    initHolidayArrangement = true;
+                }
+            }
+        }
+    }
+
+    private static void load(File file) {
+        BufferedReader in = null;
+        try {
+            in = IOAssist.bufferedReader(file);
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                try {
+                    if (StringAssist.isBlank(line)) {
+                        continue;
+                    }
+
+                    String[] ss = StringAssist.split(line, ' ', true);
+                    holidayArrangement.put(ss[0], Integer.valueOf(ss[1]));
+                } catch (Exception e) {
+                    logger.error("", e);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("", e);
+        } finally {
+            CloseableAssist.closeQuietly(in);
         }
     }
 }

@@ -375,4 +375,18 @@ public class DateTimeAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void testIsHoliday() {
+        try {
+            Assert.assertTrue(DateTimeAssist.isHoliday(DateTimeAssist.generate(2018, 10, 1)));
+            Assert.assertFalse(DateTimeAssist.isHoliday(DateTimeAssist.generate(2018, 9, 30)));
+            Assert.assertFalse(DateTimeAssist.isHoliday(DateTimeAssist.generate(2018, 9, 30)));
+            Assert.assertFalse(DateTimeAssist.isHoliday(DateTimeAssist.generate(2018, 8, 30)));
+            Assert.assertTrue(DateTimeAssist.isHoliday(DateTimeAssist.generate(2018, 9, 1)));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

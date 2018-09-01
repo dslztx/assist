@@ -5,6 +5,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -125,7 +126,7 @@ public class DateTimeAssist {
 
     /**
      * 常见的格式化字符串：YMD，YMD_HMS，YMD_HMS_MS
-     * 
+     *
      * @param targetTimeZone 格式化时的目标时区
      * @see java.text.SimpleDateFormat
      */
@@ -154,7 +155,7 @@ public class DateTimeAssist {
 
     /**
      * 常见的格式化字符串：YMD，YMD_HMS，YMD_HMS_MS
-     * 
+     *
      * @param sourceTimeZone 解析时的源时区，如果在dateTime日期时间字符串中已经包含“时区”信息，该参数则无意义
      * @see java.text.SimpleDateFormat
      */
@@ -264,9 +265,6 @@ public class DateTimeAssist {
 
     /**
      * 判断某天是否为休息日，根据国务院放假安排进行修正
-     * 
-     * @param date
-     * @return
      */
     public static boolean isHoliday(Date date) {
         if (!initHolidayArrangement) {
@@ -329,5 +327,57 @@ public class DateTimeAssist {
         } finally {
             CloseableAssist.closeQuietly(in);
         }
+    }
+
+    public static TimeZone obtainTimeZoneFromDateTimeStr(String dateTime, String pattern) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.ENGLISH);
+            format.parse(dateTime);
+
+            GregorianCalendar calendar = (GregorianCalendar)format.getCalendar();
+
+            int[] zoneOffsets = (int[])ReflectAssist.obtainInstanceFieldValue(calendar, "zoneOffsets");
+
+            return obtainTimeZoneFromZoneOffsets(zoneOffsets);
+        } catch (Exception e) {
+            logger.error("", e);
+            return null;
+        }
+    }
+
+    private static TimeZone obtainTimeZoneFromZoneOffsets(int[] zoneOffsets) {
+        int sum = zoneOffsets[0] + zoneOffsets[1];
+        if (sum == 0) {
+            return TimeZone.getTimeZone("GMT");
+        } else {
+            if (sum > 0) {
+                return TimeZone.getTimeZone("GMT+" + convertToHourMinute(sum));
+            } else {
+                return TimeZone.getTimeZone("GMT-" + convertToHourMinute(sum * (-1)));
+            }
+        }
+    }
+
+    private static String convertToHourMinute(int offsetSum) {
+        int hour = offsetSum / 1000 / 3600;
+
+        int minute = offsetSum / 1000 / 60 - hour * 60;
+
+        StringBuilder sb = new StringBuilder();
+        if (hour >= 10) {
+            sb.append(hour);
+        } else {
+            sb.append("0");
+            sb.append(hour);
+        }
+        sb.append(":");
+
+        if (minute >= 10) {
+            sb.append(minute);
+        } else {
+            sb.append("0");
+            sb.append(minute);
+        }
+        return sb.toString();
     }
 }

@@ -389,4 +389,28 @@ public class DateTimeAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void obtainTimeZoneFromDateTimeStr() {
+        try {
+            TimeZone timeZone = DateTimeAssist.obtainTimeZoneFromDateTimeStr("Wed, 29 Aug 2018 16:03:15 MDT",
+                "EEE, d MMM yyyy HH:mm:ss Z");
+            Assert.assertTrue(timeZone.getID().equals("GMT-06:00"));
+
+            TimeZone timeZone2 = DateTimeAssist.obtainTimeZoneFromDateTimeStr("Wed, 29 Aug 2018 16:03:15 GMT",
+                "EEE, d MMM yyyy HH:mm:ss Z");
+            Assert.assertTrue(timeZone2.getID().equals("GMT"));
+
+            TimeZone timeZone3 = DateTimeAssist.obtainTimeZoneFromDateTimeStr("Wed, 29 Aug 2018 16:03:15 GMT+05:10",
+                "EEE, d MMM yyyy HH:mm:ss Z");
+            Assert.assertTrue(timeZone3.getID().equals("GMT+05:10"));
+
+            TimeZone timeZone4 =
+                DateTimeAssist.obtainTimeZoneFromDateTimeStr("Wed, 29 Aug 2018 16:03:15", "EEE, d MMM yyyy HH:mm:ss");
+            Assert.assertTrue(timeZone4.getID().equals("GMT+08:00"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

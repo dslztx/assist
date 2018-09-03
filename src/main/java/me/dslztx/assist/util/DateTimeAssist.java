@@ -329,7 +329,7 @@ public class DateTimeAssist {
         }
     }
 
-    public static TimeZone obtainTimeZoneFromDateTimeStr(String dateTime, String pattern) {
+    public static String obtainTimeZoneFromDateTimeStr(String dateTime, String pattern) {
         try {
             SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.ENGLISH);
             format.parse(dateTime);
@@ -345,15 +345,15 @@ public class DateTimeAssist {
         }
     }
 
-    private static TimeZone obtainTimeZoneFromZoneOffsets(int[] zoneOffsets) {
+    private static String obtainTimeZoneFromZoneOffsets(int[] zoneOffsets) {
         int sum = zoneOffsets[0] + zoneOffsets[1];
         if (sum == 0) {
-            return TimeZone.getTimeZone("GMT");
+            return "GMT";
         } else {
             if (sum > 0) {
-                return TimeZone.getTimeZone("GMT+" + convertToHourMinute(sum));
+                return "GMT+" + convertToHourMinute(sum);
             } else {
-                return TimeZone.getTimeZone("GMT-" + convertToHourMinute(sum * (-1)));
+                return "GMT-" + convertToHourMinute(sum * (-1));
             }
         }
     }

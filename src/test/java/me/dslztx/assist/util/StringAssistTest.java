@@ -105,4 +105,15 @@ public class StringAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void testRemoveChar() {
+        try {
+            String s = "abcd\r\n f gh\r\nfdss";
+            Assert.assertTrue(StringAssist.removeChar(s, ' ', '\r', '\n').equals("abcdfghfdss"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

@@ -1,7 +1,9 @@
 package me.dslztx.assist.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author dslztx
@@ -134,5 +136,23 @@ public class StringAssist {
 
             return result.toArray(new String[result.size()]);
         }
+    }
+
+    public static String removeChar(String s, char... cc) {
+        if (StringAssist.isBlank(s)) {
+            return s;
+        }
+        Set<Character> set = new HashSet<Character>();
+        for (char c : cc) {
+            set.add(c);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int index = 0; index < s.length(); index++) {
+            char c = s.charAt(index);
+            if (!set.contains(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 }

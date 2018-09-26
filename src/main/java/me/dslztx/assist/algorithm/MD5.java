@@ -29,4 +29,16 @@ public class MD5 {
 
         return DigestUtils.md5Hex(bb);
     }
+
+    public static String md5(byte[] bb, int len) {
+        if (ArrayAssist.isEmpty(bb)) {
+            return null;
+        }
+
+        byte[] dst = new byte[len];
+
+        System.arraycopy(bb, 0, dst, 0, len);
+
+        return DigestUtils.md5Hex(dst);
+    }
 }

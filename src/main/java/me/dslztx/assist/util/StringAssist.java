@@ -74,6 +74,20 @@ public class StringAssist {
         return true;
     }
 
+    public static boolean isNotBlank(String s) {
+        return !isBlank(s);
+    }
+
+    public static boolean isEmpty(String s) {
+        if (s == null || s.length() == 0)
+            return true;
+        return false;
+    }
+
+    public static boolean isNotEmpty(String s) {
+        return !isEmpty(s);
+    }
+
     public static String toLowerCase(String s) {
         if (s == null) {
             return null;

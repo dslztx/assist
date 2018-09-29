@@ -3,7 +3,9 @@ package me.dslztx.assist.util;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 分布式系统的唯一ID需要借助于redis，mysql等中间件，可直接使用“distributed-tool”等第三方包
+ * 分布式系统的唯一ID需要借助于redis，mysql等中间件，可直接使用“distributed-tool”等第三方包<br/>
+ *
+ * 同一台机器多线程情形下，不同线程获取到UUID可能一致，因此不能保证唯一性
  * 
  * @author dslztx
  */

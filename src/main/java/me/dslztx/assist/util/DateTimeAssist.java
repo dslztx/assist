@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -284,8 +285,8 @@ public class DateTimeAssist {
         if (!initHolidayArrangement) {
             synchronized (DateTimeAssist.class) {
                 if (!initHolidayArrangement) {
-                    File[] dirs = FileAssist.locateClassPathFiles("holiday_arrangement");
-                    if (ArrayAssist.isNotEmpty(dirs)) {
+                    List<File> dirs = ClassPathResourceAssist.locateFilesNotInJar("holiday_arrangement");
+                    if (CollectionAssist.isNotEmpty(dirs)) {
                         for (File dir : dirs) {
                             if (dir == null || !dir.isDirectory()) {
                                 continue;

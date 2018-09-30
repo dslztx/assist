@@ -4,9 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -259,23 +257,5 @@ public class FileAssist {
 
     public static long obtainApplicationUniqueID() {
         return uniqueID.getAndIncrement();
-    }
-
-    public static File[] locateClassPathFiles(String name) {
-        List<File> files = new ArrayList<File>();
-
-        try {
-            Enumeration<URL> urls = ClassLoader.getSystemClassLoader().getResources(name);
-            if (urls != null) {
-                while (urls.hasMoreElements()) {
-                    URL url = urls.nextElement();
-                    files.add(new File(url.getFile()));
-                }
-            }
-        } catch (IOException e) {
-            logger.error("", e);
-        }
-
-        return files.toArray(new File[files.size()]);
     }
 }

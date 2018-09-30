@@ -1,5 +1,6 @@
 package me.dslztx.assist.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -140,5 +141,119 @@ public class ClassPathResourceAssist {
         }
 
         return inputStreams;
+    }
+
+    public static List<File> locateFilesNotInJar(String name) {
+        List<File> files = new ArrayList<File>();
+
+        if (StringAssist.isBlank(name)) {
+            return files;
+        }
+
+        ClassLoader cl = null;
+
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+            files = locateFilesNotInJar(cl, name);
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+
+        if (CollectionAssist.isEmpty(files)) {
+            try {
+                cl = ClassPathResourceAssist.class.getClassLoader();
+                files = locateFilesNotInJar(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        }
+
+        if (CollectionAssist.isEmpty(files)) {
+            try {
+                cl = ClassLoader.getSystemClassLoader();
+                files = locateFilesNotInJar(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        }
+
+        return files;
+    }
+
+    private static List<File> locateFilesNotInJar(ClassLoader cl, String name) throws IOException {
+        List<File> files = new ArrayList<File>();
+
+        if (ObjectAssist.isNull(cl)) {
+            return files;
+        }
+
+        Enumeration<URL> urls = cl.getResources(name);
+
+        if (ObjectAssist.isNotNull(urls)) {
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+
+                File file = new File(url.getFile());
+                if (file.getPath().contains("jar!")) {
+                    // 认为该资源属于JAR包
+                    continue;
+                }
+
+                files.add(file);
+            }
+        }
+
+        return files;
+    }
+
+    public static File locateFileNotInJar(String name) {
+        File file = null;
+
+        ClassLoader cl = null;
+
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+            file = locateFileNotInJar(cl, name);
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+
+        if (ObjectAssist.isNull(file)) {
+            try {
+                cl = ClassPathResourceAssist.class.getClassLoader();
+                file = locateFileNotInJar(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        }
+
+        if (ObjectAssist.isNull(file)) {
+            try {
+                cl = ClassLoader.getSystemClassLoader();
+                file = locateFileNotInJar(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        }
+
+        return file;
+    }
+
+    private static File locateFileNotInJar(ClassLoader cl, String name) throws IOException {
+        if (ObjectAssist.isNull(cl))
+            return null;
+
+        URL url = cl.getResource(name);
+        if (ObjectAssist.isNotNull(url)) {
+            File file = new File(url.getFile());
+            if (file.getPath().contains("jar!")) {
+                // 认为该资源属于JAR包
+                return null;
+            }
+
+            return file;
+        }
+
+        return null;
     }
 }

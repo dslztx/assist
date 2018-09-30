@@ -239,7 +239,7 @@ public class ClassPathResourceAssist {
         return file;
     }
 
-    private static File locateFileNotInJar(ClassLoader cl, String name) throws IOException {
+    private static File locateFileNotInJar(ClassLoader cl, String name) {
         if (ObjectAssist.isNull(cl))
             return null;
 

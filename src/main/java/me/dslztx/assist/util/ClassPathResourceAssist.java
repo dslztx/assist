@@ -1,6 +1,6 @@
 package me.dslztx.assist.util;
 
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,88 +15,69 @@ import org.slf4j.LoggerFactory;
  * 
  * @author dslztx
  */
-// todo
 public class ClassPathResourceAssist {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassPathResourceAssist.class);
 
-    public static List<File> locateFiles(String name) {
-        List<File> files = new ArrayList<File>();
-
-        ClassLoader cl = null;
-
-        try {
-            cl = Thread.currentThread().getContextClassLoader();
-            files = locateFiles(cl, name);
-        } catch (Exception e) {
-        }
-
-        if (CollectionAssist.isEmpty(files)) {
-            cl = ClassPathResourceAssist.class.getClassLoader();
-
-            files = locateFiles(cl, name);
-        }
-
-        if (CollectionAssist.isEmpty(files)) {
-            cl = ClassLoader.getSystemClassLoader();
-            files = locateFiles(cl, name);
-        }
-
-        return files;
-    }
-
-    public static File locateFile(String name) {
-        File file = null;
-
-        ClassLoader cl = null;
-
-        try {
-            cl = Thread.currentThread().getContextClassLoader();
-            file = locateFile(cl, name);
-        } catch (Exception e) {
-        }
-
-        if (ObjectAssist.isNull(file)) {
-
-            cl = ClassPathResourceAssist.class.getClassLoader();
-
-            file = locateFile(cl, name);
-        }
-
-        if (ObjectAssist.isNull(file)) {
-
-            cl = ClassLoader.getSystemClassLoader();
-            file = locateFile(cl, name);
-        }
-
-        return file;
-    }
-
+    /**
+     * 类资源分为两种： <br/>
+     *
+     * 1）JAR包外，可返回File对象，也可返回InputStream对象<br/>
+     *
+     * 2)JAR包内，可返回InputStream对象，如果返回File对象，类似“file:/home/dslztx/xxx.jar!/log4j.properties”，但是如果尝试通过该File对象创建一个FileInputStream流，则会报“Method
+     * threw 'java.io.FileNotFoundException' exception.”异常<br/>
+     *
+     * 因此，统一返回InputStream，而不返回File，在外层根据InputStream读取组装相应的目标对象
+     *
+     */
     public static List<InputStream> locateInputStreams(String name) {
-        List<InputStream> files = new ArrayList<InputStream>();
+        List<InputStream> inputStreams = new ArrayList<InputStream>();
+
+        if (StringAssist.isBlank(name)) {
+            return inputStreams;
+        }
 
         ClassLoader cl = null;
 
         try {
             cl = Thread.currentThread().getContextClassLoader();
-            files = locateInputStreams(cl, name);
+            inputStreams = locateInputStreams(cl, name);
         } catch (Exception e) {
+            logger.error("", e);
         }
 
-        if (CollectionAssist.isEmpty(files)) {
-            cl = ClassPathResourceAssist.class.getClassLoader();
-
-            files = locateInputStreams(cl, name);
+        if (CollectionAssist.isEmpty(inputStreams)) {
+            try {
+                cl = ClassPathResourceAssist.class.getClassLoader();
+                inputStreams = locateInputStreams(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
         }
 
-        if (CollectionAssist.isEmpty(files)) {
-            cl = ClassLoader.getSystemClassLoader();
-            files = locateInputStreams(cl, name);
+        if (CollectionAssist.isEmpty(inputStreams)) {
+            try {
+                cl = ClassLoader.getSystemClassLoader();
+                inputStreams = locateInputStreams(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
         }
 
-        return files;
+        return inputStreams;
     }
 
+    /**
+     * 类资源分为两种： <br/>
+     *
+     * 1）JAR包外，可返回File对象，也可返回InputStream对象<br/>
+     *
+     * 2)JAR包内，可返回InputStream对象，如果返回File对象，类似“file:/home/dslztx/xxx.jar!/log4j.properties”，但是如果尝试通过该File对象创建一个FileInputStream流，则会报“Method
+     * threw 'java.io.FileNotFoundException' exception.”异常<br/>
+     *
+     * 因此，统一返回InputStream，而不返回File，在外层根据InputStream读取组装相应的目标对象
+     *
+     */
     public static InputStream locateInputStream(String name) {
         InputStream in = null;
 
@@ -106,83 +87,58 @@ public class ClassPathResourceAssist {
             cl = Thread.currentThread().getContextClassLoader();
             in = locateInputStream(cl, name);
         } catch (Exception e) {
+            logger.error("", e);
         }
 
         if (ObjectAssist.isNull(in)) {
-            cl = ClassPathResourceAssist.class.getClassLoader();
-
-            in = locateInputStream(cl, name);
+            try {
+                cl = ClassPathResourceAssist.class.getClassLoader();
+                in = locateInputStream(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
         }
 
         if (ObjectAssist.isNull(in)) {
-            cl = ClassLoader.getSystemClassLoader();
-            in = locateInputStream(cl, name);
+            try {
+                cl = ClassLoader.getSystemClassLoader();
+                in = locateInputStream(cl, name);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
         }
 
         return in;
     }
 
-    private static InputStream locateInputStream(ClassLoader cl, String name) {
-        if (cl != null) {
-            try {
-                URL url = cl.getResource(name);
-                if (url != null) {
-                    return url.openStream();
-                }
-            } catch (Exception e) {
-                logger.error("", e);
-            }
+    private static InputStream locateInputStream(ClassLoader cl, String name) throws IOException {
+        if (ObjectAssist.isNull(cl))
+            return null;
+
+        URL url = cl.getResource(name);
+        if (ObjectAssist.isNotNull(url)) {
+            return url.openStream();
         }
+
         return null;
     }
 
-    private static List<InputStream> locateInputStreams(ClassLoader cl, String name) {
-        List<InputStream> files = new ArrayList<InputStream>();
-        if (cl != null) {
-            try {
-                Enumeration<URL> urls = cl.getResources(name);
-                if (urls != null) {
-                    while (urls.hasMoreElements()) {
-                        URL url = urls.nextElement();
-                        files.add(url.openStream());
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("", e);
-            }
-        }
-        return files;
-    }
+    private static List<InputStream> locateInputStreams(ClassLoader cl, String name) throws IOException {
+        List<InputStream> inputStreams = new ArrayList<InputStream>();
 
-    private static File locateFile(ClassLoader cl, String name) {
-        if (cl != null) {
-            try {
-                URL url = cl.getResource(name);
-                if (url != null) {
-                    return new File(url.getFile());
-                }
-            } catch (Exception e) {
-                logger.error("", e);
-            }
+        if (ObjectAssist.isNull(cl)) {
+            return inputStreams;
         }
-        return null;
-    }
 
-    private static List<File> locateFiles(ClassLoader cl, String name) {
-        List<File> files = new ArrayList<File>();
-        if (cl != null) {
-            try {
-                Enumeration<URL> urls = cl.getResources(name);
-                if (urls != null) {
-                    while (urls.hasMoreElements()) {
-                        URL url = urls.nextElement();
-                        files.add(new File(url.getFile()));
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("", e);
+        Enumeration<URL> urls = cl.getResources(name);
+
+        if (ObjectAssist.isNotNull(urls)) {
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+                inputStreams.add(url.openStream());
             }
         }
-        return files;
+
+        return inputStreams;
     }
 }

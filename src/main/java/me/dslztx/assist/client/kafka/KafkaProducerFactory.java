@@ -53,7 +53,7 @@ public class KafkaProducerFactory {
             props.put("batch.size", 16384);
             props.put("linger.ms", 0);
             props.put("max.request.size", 100 * 1024 * 1024);
-            props.put("buffer.memory", 33554432);
+            props.put("buffer.memory",100 * 1024 * 1024);
 
             kafKaProducer = new KafkaProducer<String, byte[]>(props, new StringSerializer(),
                 new ByteArraySerializer());

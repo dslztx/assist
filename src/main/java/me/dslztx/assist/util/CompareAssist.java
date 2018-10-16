@@ -47,9 +47,9 @@ public class CompareAssist {
 
         if (startA == a.length() || startB == b.length()) {
             if (startA == a.length()) {
-                return b.substring(startB);
+                return "" + "\nvs\n" + b.substring(startB);
             } else {
-                return a.substring(startA);
+                return a.substring(startA) + "\nvs\n";
             }
         }
 
@@ -62,19 +62,19 @@ public class CompareAssist {
 
         if (endA < 0 || endB < 0) {
             if (endA < 0) {
-                return b.substring(0, endB + 1);
+                return "\nvs\n" + b.substring(0, endB + 1);
             } else {
-                return a.substring(0, endA + 1);
+                return a.substring(0, endA + 1) + "\nvs\n";
             }
         }
 
         if (startA <= endA && startB <= endB) {
-            return a.substring(startA, endA + 1) + "\n\n\n" + b.substring(startB, endB + 1);
+            return a.substring(startA, endA + 1) + "\nvs\n" + b.substring(startB, endB + 1);
         } else {
             if (endB > endA) {
-                return b.substring(startB, endB + startA - endA);
+                return "\nvs\n" + b.substring(startB, endB + startA - endA);
             } else {
-                return a.substring(startA, endA + startB - endB);
+                return a.substring(startA, endA + startB - endB) + "\nvs\n";
             }
         }
     }

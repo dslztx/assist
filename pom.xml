@@ -30,6 +30,7 @@
     <!--version-->
     <slf4j.version>1.7.12</slf4j.version>
     <junit.version>4.10</junit.version>
+    <quartz.version>2.2.3</quartz.version>
 
     <plugin-compiler.version>2.3.2</plugin-compiler.version>
   </properties>
@@ -50,7 +51,15 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement></dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.quartz-scheduler</groupId>
+        <artifactId>quartz</artifactId>
+        <version>${quartz.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <plugins>

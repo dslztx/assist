@@ -15,10 +15,11 @@ public class ClassPathResourceAssistTest {
     @Test
     public void locateInputStreams() {
         try {
-            List<InputStream> ins = ClassPathResourceAssist.locateInputStreams("logback.xml");
-            Assert.assertTrue(ins.size() == 2);
+            List<InputStream> ins = ClassPathResourceAssist.locateInputStreams("1.xml");
+            Assert.assertTrue(ins.size() == 1);
 
-            List<InputStream> ins2 = ClassPathResourceAssist.locateInputStreams("com/alibaba/druid/Constants.class");
+            List<InputStream> ins2 =
+                ClassPathResourceAssist.locateInputStreams("org/apache/commons/configuration2/Configuration.class");
             Assert.assertTrue(ins2.size() == 1);
         } catch (Exception e) {
             logger.error("", e);
@@ -38,7 +39,7 @@ public class ClassPathResourceAssistTest {
     @Test
     public void locateFilesNotInJar() {
         try {
-            Assert.assertTrue(ClassPathResourceAssist.locateFilesNotInJar("logback.xml").size() == 2);
+            Assert.assertTrue(ClassPathResourceAssist.locateFilesNotInJar("2.xml").size() == 1);
         } catch (Exception e) {
             logger.error("", e);
         }

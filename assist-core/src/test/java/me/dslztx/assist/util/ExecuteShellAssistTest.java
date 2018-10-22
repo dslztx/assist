@@ -13,10 +13,10 @@ public class ExecuteShellAssistTest {
     public void executeShellSync() {
         try {
             TimerAssist.timerStart("execute shell");
-            ExecuteShellAssist.executeShellSync("/bin/bash", "-c", "sleep 100s && echo 'hello world'");
+            ExecuteShellAssist.executeShellSync("/bin/bash", "-c", "sleep 10s && echo 'hello world'");
             TimerAssist.timerStop("execute shell");
 
-            Assert.assertTrue(TimerAssist.timerValue("execute shell").longValue() >= 100000L);
+            Assert.assertTrue(TimerAssist.timerValue("execute shell").longValue() >= 10000L);
         } catch (Exception e) {
             logger.error("", e);
         }
@@ -26,10 +26,10 @@ public class ExecuteShellAssistTest {
     public void executeShellAsync() {
         try {
             TimerAssist.timerStart("execute shell");
-            ExecuteShellAssist.executeShellAsync("/bin/bash", "-c", "sleep 100s && echo 'hello world'");
+            ExecuteShellAssist.executeShellAsync("/bin/bash", "-c", "sleep 10s && echo 'hello world'");
             TimerAssist.timerStop("execute shell");
 
-            Assert.assertTrue(TimerAssist.timerValue("execute shell").longValue() < 1000L);
+            Assert.assertTrue(TimerAssist.timerValue("execute shell").longValue() < 10000L);
         } catch (Exception e) {
             logger.error("", e);
         }

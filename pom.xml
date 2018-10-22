@@ -36,6 +36,12 @@
     <commons-configuration.version>2.0</commons-configuration.version>
     <commons-beanutils.version>1.9.2</commons-beanutils.version>
     <commons-io.version>2.5</commons-io.version>
+    <jedis.version>2.1.0</jedis.version>
+    <alibaba.druid.version>1.1.9</alibaba.druid.version>
+    <mysql-connector.version>5.1.45</mysql-connector.version>
+    <curator.version>2.12.0</curator.version>
+    <kafka-client.version>1.1.0</kafka-client.version>
+    <xz.version>1.5</xz.version>
 
     <plugin-compiler.version>2.3.2</plugin-compiler.version>
   </properties>
@@ -93,6 +99,43 @@
         <artifactId>commons-codec</artifactId>
         <version>${commons-codec.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>${kafka-client.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>curator-recipes</artifactId>
+        <version>${curator.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql-connector.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+        <version>${alibaba.druid.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>${jedis.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.tukaani</groupId>
+        <artifactId>xz</artifactId>
+        <version>${xz.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

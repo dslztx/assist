@@ -44,6 +44,9 @@
     <xz.version>1.5</xz.version>
 
     <plugin-compiler.version>2.3.2</plugin-compiler.version>
+    <plugin-compiler.compile.encoding>UTF-8</plugin-compiler.compile.encoding>
+    <plugin-compiler.compile.source.version>1.6</plugin-compiler.compile.source.version>
+    <plugin-compiler.compile.target.version>1.6</plugin-compiler.compile.target.version>
   </properties>
 
   <dependencies>
@@ -151,9 +154,9 @@
               <goal>testCompile</goal>
             </goals>
             <configuration>
-              <encoding>UTF-8</encoding>
-              <source>1.6</source>
-              <target>1.6</target>
+              <encoding>${plugin-compiler.compile.encoding}</encoding>
+              <source>${plugin-compiler.compile.source.version}</source>
+              <target>${plugin-compiler.compile.target.version}</target>
             </configuration>
           </execution>
           <execution>
@@ -163,9 +166,9 @@
               <goal>compile</goal>
             </goals>
             <configuration>
-              <encoding>UTF-8</encoding>
-              <source>1.6</source>
-              <target>1.6</target>
+              <encoding>${plugin-compiler.compile.encoding}</encoding>
+              <source>${plugin-compiler.compile.source.version}</source>
+              <target>${plugin-compiler.compile.target.version}</target>
             </configuration>
           </execution>
         </executions>

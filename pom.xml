@@ -135,7 +135,6 @@
         <artifactId>xz</artifactId>
         <version>${xz.version}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -151,6 +150,11 @@
             <goals>
               <goal>testCompile</goal>
             </goals>
+            <configuration>
+              <encoding>UTF-8</encoding>
+              <source>1.6</source>
+              <target>1.6</target>
+            </configuration>
           </execution>
           <execution>
             <id>default-compile</id>

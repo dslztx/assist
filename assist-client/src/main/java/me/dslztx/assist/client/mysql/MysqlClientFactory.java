@@ -1,6 +1,5 @@
 package me.dslztx.assist.client.mysql;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,12 +7,12 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
+import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.StringAssist;
 
 public class MysqlClientFactory {
@@ -39,9 +38,7 @@ public class MysqlClientFactory {
             synchronized (MysqlClientFactory.class) {
                 if (!init) {
                     try {
-                        Configurations configs = new Configurations();
-
-                        Configuration configuration = configs.properties(new File(CONFIG_FILE));
+                        Configuration configuration = ConfigLoadAssist.propConfig(CONFIG_FILE);
 
                         String groups = configuration.getString("groups");
                         if (StringAssist.isBlank(groups)) {

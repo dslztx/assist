@@ -1,11 +1,9 @@
 package me.dslztx.assist.client.kafka;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
@@ -13,6 +11,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.StringAssist;
 
 public class KafkaConsumerFactory {
@@ -23,8 +22,7 @@ public class KafkaConsumerFactory {
 
     public synchronized static KafkaConsumer<String, byte[]> obtainKafkaConsumer() {
         try {
-            Configurations configs = new Configurations();
-            Configuration configuration = configs.properties(new File(CONFIG_FILE));
+            Configuration configuration = ConfigLoadAssist.propConfig(CONFIG_FILE);
 
             String servers = configuration.getString("kafka.servers");
 
@@ -54,8 +52,7 @@ public class KafkaConsumerFactory {
                 throw new RuntimeException("groupId is null");
             }
 
-            Configurations configs = new Configurations();
-            Configuration configuration = configs.properties(new File(CONFIG_FILE));
+            Configuration configuration = ConfigLoadAssist.propConfig(CONFIG_FILE);
 
             String servers = configuration.getString("kafka.servers");
 

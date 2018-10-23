@@ -1,16 +1,15 @@
 package me.dslztx.assist.client.redis;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.StringAssist;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -87,9 +86,7 @@ public class RedisClientFactory {
             synchronized (RedisClientFactory.class) {
                 if (!init) {
                     try {
-                        Configurations configs = new Configurations();
-
-                        Configuration configuration = configs.properties(new File(CONFIG_FILE));
+                        Configuration configuration = ConfigLoadAssist.propConfig(CONFIG_FILE);
 
                         String groups = configuration.getString("groups");
                         if (StringAssist.isBlank(groups)) {

@@ -1,17 +1,17 @@
 package me.dslztx.assist.client.kafka;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import me.dslztx.assist.util.ConfigLoadAssist;
 
 public class KafkaProducerFactory {
 
@@ -36,9 +36,8 @@ public class KafkaProducerFactory {
             synchronized (KafkaProducerFactory.class) {
                 if (!init) {
                     try {
-                        Configurations configs = new Configurations();
 
-                        Configuration configuration = configs.properties(new File(CONFIG_FILE));
+                        Configuration configuration = ConfigLoadAssist.propConfig(CONFIG_FILE);
 
                         String servers = configuration.getString("kafka.servers");
 

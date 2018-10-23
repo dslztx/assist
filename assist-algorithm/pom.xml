@@ -9,7 +9,7 @@
     <version>2.0.3</version>
   </parent>
 
-  <artifactId>assist-algotithm</artifactId>
+  <artifactId>assist-algorithm</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>

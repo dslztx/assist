@@ -67,7 +67,7 @@ public class ConfigLoadAssist {
     }
 
     /**
-     * XML文档的字段编码规定为UTF-8
+     * XML文档的字符编码规定为UTF-8
      */
     public static Configuration xmlPropConfig(String path) {
         if (StringAssist.isBlank(path)) {
@@ -101,7 +101,7 @@ public class ConfigLoadAssist {
     }
 
     /**
-     * XML文档的字段编码规定为UTF-8
+     * XML文档的字符编码规定为UTF-8
      */
     public static Document xmlDocumentConfig(String path) {
         if (StringAssist.isBlank(path)) {
@@ -112,8 +112,9 @@ public class ConfigLoadAssist {
             Configurations configs = new Configurations();
             XMLConfiguration configuration = configs.xml(path);
 
-            if (configuration == null)
+            if (configuration == null) {
                 return null;
+            }
 
             Document document = configuration.getDocument();
 

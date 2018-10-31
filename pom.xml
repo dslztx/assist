@@ -13,6 +13,7 @@
     <module>assist-client</module>
     <module>assist-algorithm</module>
     <module>assist-domain</module>
+    <module>assist-pattern-template</module>
   </modules>
 
   <url>https://github.com/dslztx/assist</url>

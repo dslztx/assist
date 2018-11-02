@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * “滑动窗口”QPS控制算法
  */
-public class WindowQPSControl {
+public class QPSControlWindow {
 
     private final Object lock = new Object();
 
@@ -24,7 +24,7 @@ public class WindowQPSControl {
      * @param period QPS控制时间区间，比如“1”
      * @param timeUnit QPS控制时间区间单位，比如单位为“秒”
      */
-    public WindowQPSControl(int capacity, int period, TimeUnit timeUnit) {
+    public QPSControlWindow(int capacity, int period, TimeUnit timeUnit) {
         if (capacity < 1) {
             throw new IllegalArgumentException("illegal capacity: " + capacity);
         }
@@ -38,7 +38,7 @@ public class WindowQPSControl {
         this.period = timeUnit.toMillis(period);
     }
 
-    public boolean isPass() {
+    public boolean canPass() {
         synchronized (lock) {
             long curTime = System.currentTimeMillis();
             if (queue.isNotFull()) {

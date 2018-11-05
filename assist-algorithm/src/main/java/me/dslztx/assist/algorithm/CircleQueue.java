@@ -7,7 +7,14 @@ public class CircleQueue<T> {
 
     private Object[] queue;
 
+    /**
+     * 指向队列首元素，如果不存在则为-1
+     */
     private int head = -1;
+
+    /**
+     * 指向下一个元素放置位置
+     */
     private int tail = 0;
 
     private int capacity = 0;

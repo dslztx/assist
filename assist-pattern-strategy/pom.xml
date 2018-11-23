@@ -9,7 +9,7 @@
     <version>2.0.7</version>
   </parent>
 
-  <artifactId>assist-pattern-template</artifactId>
+  <artifactId>assist-pattern-strategy</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>

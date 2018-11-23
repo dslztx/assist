@@ -20,6 +20,12 @@
     </dependency>
 
     <dependency>
+      <groupId>me.dslztx</groupId>
+      <artifactId>assist-pattern-strategy</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
     </dependency>

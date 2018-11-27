@@ -1,6 +1,7 @@
 package me.dslztx.assist.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -167,6 +168,25 @@ public class StringAssist {
                 sb.append(c);
             }
         }
+        return sb.toString();
+    }
+
+    public static String joinUseSeparator(Collection<String> set, char separator) {
+        if (CollectionAssist.isEmpty(set)) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String element : set) {
+            if (ObjectAssist.isNull(element)) {
+                sb.append("NULL");
+            } else {
+                sb.append(element);
+            }
+            sb.append(separator);
+        }
+
+        sb.setLength(sb.length() - 1);
         return sb.toString();
     }
 }

@@ -1,5 +1,8 @@
 package me.dslztx.assist.algorithm;
 
+import java.security.MessageDigest;
+
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import me.dslztx.assist.util.ArrayAssist;
@@ -31,14 +34,19 @@ public class MD5 {
     }
 
     public static String md5(byte[] bb, int len) {
-        if (ArrayAssist.isEmpty(bb)) {
+        if (ArrayAssist.isEmpty(bb) || len <= 0)
+            return null;
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+            messageDigest.reset();
+            messageDigest.update(bb, 0, len);
+
+            byte[] resultBytes = messageDigest.digest();
+            return Hex.encodeHexString(resultBytes);
+        } catch (Exception e) {
             return null;
         }
-
-        byte[] dst = new byte[len];
-
-        System.arraycopy(bb, 0, dst, 0, len);
-
-        return DigestUtils.md5Hex(dst);
     }
 }

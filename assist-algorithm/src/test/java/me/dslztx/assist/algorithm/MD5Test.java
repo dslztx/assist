@@ -17,6 +17,7 @@ public class MD5Test {
             assertTrue(MD5.md5(bb).equals("cc60dda980ccbf65540520703d91b27c"));
 
             assertTrue(MD5.md5(bb, 4).equals("9f5fb83531d4ceeb734e06cb6a529972"));
+            assertTrue(MD5.md5(bb, 1).equals("69691c7bdcc3ce6d5d8a1361f22d04ac"));
         } catch (Exception e) {
             fail();
         }

@@ -55,6 +55,21 @@ public class DaoFactoryTest {
         }
     }
 
+    @Test
+    @Ignore
+    public void test3() {
+        try {
+            DataSource dataSource = DataSourceFactory.obtainDataSource("in");
+
+            Test2Dao dao = DaoFactory.obtainDao(dataSource, Test2Dao.class);
+
+            Assert.assertTrue(dao.selectCount() == 50);
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
     public static interface TestMapper extends Mapper {
         @Select("select count(*) from User")
         int count();
@@ -99,6 +114,22 @@ public class DaoFactoryTest {
             try {
                 TestMapper testMapper = session.getMapper(TestMapper.class);
                 return testMapper.count();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                CloseableAssist.closeQuietly(session);
+            }
+            return -1;
+        }
+    }
+
+    public static class Test2Dao extends Dao {
+
+        public int selectCount() {
+            SqlSession session = obtainSqlSessionFactory().openSession();
+            try {
+                Test2Mapper testMapper = session.getMapper(Test2Mapper.class);
+                return testMapper.selectCount();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

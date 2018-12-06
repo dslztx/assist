@@ -17,7 +17,7 @@ public class IPAssist {
         }
 
         // can not be -1 here
-        int index = ip.lastIndexOf(".");
+        int index = ip.lastIndexOf('.');
         return ip.substring(0, index);
     }
 
@@ -26,7 +26,7 @@ public class IPAssist {
             return null;
         }
 
-        int index = ip.lastIndexOf(".");
+        int index = ip.lastIndexOf('.');
         if (index == -1)
             return null;
 

@@ -15,9 +15,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.StringAssist;
 
-public class MysqlClientFactory {
+public class DataSourceFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(MysqlClientFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceFactory.class);
 
     private static final String CONFIG_FILE = "mysql.properties";
 
@@ -35,7 +35,7 @@ public class MysqlClientFactory {
 
     private static void init() {
         if (!init) {
-            synchronized (MysqlClientFactory.class) {
+            synchronized (DataSourceFactory.class) {
                 if (!init) {
                     try {
                         Configuration configuration = ConfigLoadAssist.propConfig(CONFIG_FILE);

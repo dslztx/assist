@@ -7,14 +7,14 @@ import javax.sql.DataSource;
  */
 public abstract class Dao {
 
-  private DataSource dataSource;
+    private DataSource dataSource;
 
-  protected Dao(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
+    protected Dao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
-  protected DataSource getDataSource() {
-    return dataSource;
-  }
+    protected DataSource getDataSource() {
+        return dataSource;
+    }
 
 }

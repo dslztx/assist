@@ -52,7 +52,7 @@ public class DaoFactory {
         if (isNull(daoInstanceCache.get(dataSource).get(clz))) {
             try {
                 @SuppressWarnings("JavaReflectionMemberAccess")
-                Constructor<T> constructor = clz.getConstructor();
+                Constructor<T> constructor = clz.getDeclaredConstructor();
                 T obj = constructor.newInstance();
 
                 obj.setDataSource(dataSource);

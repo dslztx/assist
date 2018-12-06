@@ -35,7 +35,7 @@ public class DaoFactoryTest {
         }
     }
 
-    static class UserDao extends Dao {
+    public static class UserDao extends Dao {
 
         public void insertUser(User user) {
             DataSource dataSource = obtainDataSource();

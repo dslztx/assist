@@ -2,6 +2,9 @@ package me.dslztx.assist.dao;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.session.SqlSession;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 import junit.framework.Assert;
 import me.dslztx.assist.client.mysql.DaoFactory;
+import me.dslztx.assist.client.mysql.DataSourceFactory;
+import me.dslztx.assist.util.CloseableAssist;
 
 public class DaoFactoryTest {
 
@@ -33,6 +38,26 @@ public class DaoFactoryTest {
             logger.error("", e);
             Assert.fail();
         }
+    }
+
+    @Test
+    @Ignore
+    public void test2() {
+        try {
+            DataSource dataSource = DataSourceFactory.obtainDataSource("in");
+
+            TestDao dao = DaoFactory.obtainDao(dataSource, TestDao.class);
+
+            Assert.assertTrue(dao.count() == 50);
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    public static interface TestMapper extends Mapper {
+        @Select("select count(*) from User")
+        int count();
     }
 
     public static class UserDao extends Dao {
@@ -67,4 +92,19 @@ public class DaoFactoryTest {
         }
     }
 
+    public static class TestDao extends Dao {
+
+        public int count() {
+            SqlSession session = obtainSqlSessionFactory().openSession();
+            try {
+                TestMapper testMapper = session.getMapper(TestMapper.class);
+                return testMapper.count();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                CloseableAssist.closeQuietly(session);
+            }
+            return -1;
+        }
+    }
 }

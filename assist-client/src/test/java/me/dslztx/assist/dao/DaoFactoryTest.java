@@ -70,12 +70,12 @@ public class DaoFactoryTest {
         }
     }
 
-    public static interface TestMapper extends Mapper {
+    interface TestMapper extends Mapper {
         @Select("select count(*) from User")
         int count();
     }
 
-    public static class UserDao extends Dao {
+    private static class UserDao extends Dao {
 
         public void insertUser(User user) {
             DataSource dataSource = obtainDataSource();

@@ -66,6 +66,33 @@ public class ConfigLoadAssist {
         }
     }
 
+    public static Configuration propConfig(InputStream in) {
+        if (ObjectAssist.isNull(in)) {
+            throw new RuntimeException("input stream is null");
+        }
+
+        try {
+            Properties properties = new Properties();
+
+            properties.load(in);
+
+            Configuration configuration = new PropertiesConfiguration();
+
+            for (Entry entry : properties.entrySet()) {
+                if (entry.getKey() != null) {
+                    String key = String.valueOf(entry.getKey());
+                    Object value = entry.getValue();
+                    configuration.setProperty(key, value);
+                }
+            }
+
+            return configuration;
+        } catch (Exception e) {
+            logger.error("", e);
+            return null;
+        }
+    }
+
     /**
      * XML文档的字符编码规定为UTF-8
      */

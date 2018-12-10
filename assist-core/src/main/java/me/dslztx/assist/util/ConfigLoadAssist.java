@@ -100,13 +100,32 @@ public class ConfigLoadAssist {
         if (StringAssist.isBlank(path)) {
             throw new RuntimeException("no config path");
         }
+
+        InputStream in = null;
+        try {
+            in = ClassPathResourceAssist.locateInputStream(path);
+
+            if (in == null) {
+                throw new RuntimeException("input stream is null");
+            }
+
+            return xmlPropConfig0(in);
+        } finally {
+            CloseableAssist.closeQuietly(in);
+        }
+    }
+
+    public static Configuration xmlPropConfig(InputStream in) {
+        if (ObjectAssist.isNull(in)) {
+            throw new RuntimeException("input stream is null");
+        }
+
+        return xmlPropConfig0(in);
+    }
+
+    private static Configuration xmlPropConfig0(InputStream in) {
         try {
             Properties properties = new Properties();
-
-            InputStream in = ClassPathResourceAssist.locateInputStream(path);
-            if (in == null) {
-                return null;
-            }
 
             properties.loadFromXML(in);
 

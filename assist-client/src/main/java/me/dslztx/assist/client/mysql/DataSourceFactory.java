@@ -33,6 +33,14 @@ public class DataSourceFactory {
         return groupedDataSource.get(group);
     }
 
+    public static DataSource obtainDataSource() {
+        if (!init) {
+            init();
+        }
+
+        return groupedDataSource.get("default");
+    }
+
     private static void init() {
         if (!init) {
             synchronized (DataSourceFactory.class) {
@@ -42,16 +50,17 @@ public class DataSourceFactory {
 
                         String groups = configuration.getString("groups");
                         if (StringAssist.isBlank(groups)) {
-                            throw new RuntimeException("no groups");
-                        }
+                            logger.info("generate druiddatasource for group: default");
+                            groupedDataSource.put("default", generateDruidDataSource(configuration));
+                        } else {
+                            String[] groupArray = groups.split(",");
+                            for (String group : groupArray) {
+                                logger.info("generate druiddatasource for group: {}", group);
 
-                        String[] groupArray = groups.split(",");
-                        for (String group : groupArray) {
-                            logger.info("generate druiddatasource for group: " + group);
+                                Configuration subConfiguration = configuration.subset(group);
 
-                            Configuration subConfiguration = configuration.subset(group);
-
-                            groupedDataSource.put(group, generateDruidDataSource(subConfiguration));
+                                groupedDataSource.put(group, generateDruidDataSource(subConfiguration));
+                            }
                         }
                     } catch (Exception e) {
                         logger.error("", e);

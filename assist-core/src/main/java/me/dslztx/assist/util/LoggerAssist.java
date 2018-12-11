@@ -19,4 +19,8 @@ public class LoggerAssist {
 
         root.addAppender(consoleAppender);
     }
+
+    public static void loggerLevelSetDynamically(org.apache.log4j.Logger logger, Level level) {
+        logger.setLevel(level);
+    }
 }

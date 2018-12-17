@@ -45,7 +45,7 @@ public class RedisClientFactory {
         return obtainRedisClient(groupedJedisPools.get(group));
     }
 
-    private synchronized static RedisClient obtainRedisClient(List<JedisPoolProxy> jedisPools) {
+    private static RedisClient obtainRedisClient(List<JedisPoolProxy> jedisPools) {
         int idx = (int)(Math.random() * jedisPools.size());
 
         for (int index = idx; index < jedisPools.size(); index++) {

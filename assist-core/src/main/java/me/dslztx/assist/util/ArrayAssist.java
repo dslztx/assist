@@ -31,4 +31,17 @@ public class ArrayAssist {
             return true;
         return false;
     }
+
+    public static boolean isEmpty(int[] array) {
+        if (array == null || array.length == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isNotEmpty(int[] array) {
+        if (array != null && array.length != 0)
+            return true;
+        return false;
+    }
 }

@@ -7,31 +7,7 @@ import me.dslztx.assist.util.ObjectAssist;
 
 public class CounterStatistic extends Statistic<ConcurrentHashMap<String, AtomicLong>> {
 
-    private static volatile boolean init = false;
-
-    private static CounterStatistic instance = null;
-
     ConcurrentHashMap<String, AtomicLong> stat = new ConcurrentHashMap<String, AtomicLong>();
-
-    private CounterStatistic() {}
-
-    public static CounterStatistic getInstance() {
-        if (!init) {
-            synchronized (CounterStatistic.class) {
-                if (!init) {
-                    try {
-                        instance = new CounterStatistic();
-
-                        return instance;
-                    } finally {
-                        init = true;
-                    }
-                }
-            }
-        }
-
-        return instance;
-    }
 
     public void incr(String key) {
         doReadLock();

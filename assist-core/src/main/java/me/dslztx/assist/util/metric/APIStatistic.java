@@ -6,31 +6,7 @@ import me.dslztx.assist.util.ObjectAssist;
 
 public class APIStatistic extends Statistic<ConcurrentHashMap<String, APICounter>> {
 
-    private static volatile boolean init = false;
-
-    private static APIStatistic instance = null;
-
     ConcurrentHashMap<String, APICounter> stat = new ConcurrentHashMap<String, APICounter>();
-
-    private APIStatistic() {}
-
-    public static APIStatistic getInstance() {
-        if (!init) {
-            synchronized (APIStatistic.class) {
-                if (!init) {
-                    try {
-                        instance = new APIStatistic();
-
-                        return instance;
-                    } finally {
-                        init = true;
-                    }
-                }
-            }
-        }
-
-        return instance;
-    }
 
     public void incrSuccess(String key, long timeCost) {
         doReadLock();

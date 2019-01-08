@@ -32,7 +32,9 @@ public class LIS {
         dp[len] = sequence[0];
 
         for (int index = 1; index < length; index++) {
+            // 更新dp，看是否值需要更新成sequence[index]
 
+            // 具体策略是：找到最大maxlen，使得dp[maxlen]<sequence[index]，则dp[maxlen+1]=sequence[index]
             int left = 1, right = len, mid;
             while (left <= right) {
                 mid = (left + right) >> 1;

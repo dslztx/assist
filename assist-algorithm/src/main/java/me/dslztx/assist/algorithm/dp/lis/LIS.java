@@ -4,15 +4,15 @@ import me.dslztx.assist.util.ArrayAssist;
 
 public class LIS {
 
-    int[] sequence;
+    private int[] sequence;
 
-    int length;
+    private int length;
 
-    int[] tail;
+    private int lenOfLIS;
 
-    int lenOfLIS;
+    private int[] tail;
 
-    int[] dp;
+    private int[] dp;
 
     public LIS(int[] sequence) {
         if (ArrayAssist.isEmpty(sequence)) {
@@ -30,6 +30,7 @@ public class LIS {
 
         int len = 1;
         dp[len] = sequence[0];
+        tail[0] = len;
 
         for (int index = 1; index < length; index++) {
             // 更新dp，看是否值需要更新成sequence[index]
@@ -46,9 +47,11 @@ public class LIS {
                 }
             }
 
-            len = left;
-            dp[len] = sequence[index];
-            tail[index] = len;
+            dp[left] = sequence[index];
+            tail[index] = left;
+
+            if (left > len)
+                len = left;
         }
 
         lenOfLIS = len;
@@ -57,7 +60,7 @@ public class LIS {
     }
 
     public int numberOfLIS() {
-        if (tail == null) {
+        if (lenOfLIS < 1) {
             lengthOfLIS();
         }
 
@@ -72,6 +75,7 @@ public class LIS {
                     }
                 } else if (sequence[preIndex] == sequence[index]) {
                     if (tail[preIndex] == tail[index]) {
+                        // 去掉重复方案，比如“3 4 3 4 5”只有1种方案，而不是2种
                         number[preIndex] = 0;
                     }
                 }
@@ -96,6 +100,10 @@ public class LIS {
     }
 
     public int[] obtainOneSolutionOfLIS() {
+        if (lenOfLIS < 1) {
+            lengthOfLIS();
+        }
+
         int[] oneSolution = new int[lenOfLIS];
         for (int len = lenOfLIS; len >= 1; len--) {
             oneSolution[len - 1] = dp[len];

@@ -189,4 +189,19 @@ public class StringAssist {
         sb.setLength(sb.length() - 1);
         return sb.toString();
     }
+
+    public static String joinUseSeparator(int[] intArray, char separator) {
+        if (ArrayAssist.isEmpty(intArray)) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int element : intArray) {
+            sb.append(element);
+            sb.append(separator);
+        }
+
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
 }

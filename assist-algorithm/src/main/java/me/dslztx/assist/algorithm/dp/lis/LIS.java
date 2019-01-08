@@ -75,7 +75,7 @@ public class LIS {
                     }
                 } else if (sequence[preIndex] == sequence[index]) {
                     if (tail[preIndex] == tail[index]) {
-                        // 去掉重复方案，比如“3 4 3 4 5”只有1种方案，而不是2种
+                        // 去掉重复方案，比如“3 4 3 4 5”只有1种方案，而不是3种
                         number[preIndex] = 0;
                     }
                 }

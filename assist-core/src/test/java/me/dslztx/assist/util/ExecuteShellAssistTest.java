@@ -16,7 +16,7 @@ public class ExecuteShellAssistTest {
             ExecuteShellAssist.executeShellSync("/bin/bash", "-c", "sleep 10s && echo 'hello world'");
             TimerAssist.timerStop("execute shell");
 
-            Assert.assertTrue(TimerAssist.timerValue("execute shell").longValue() >= 10000L);
+            Assert.assertTrue(TimerAssist.timerValueAndClear("execute shell") >= 10000L);
         } catch (Exception e) {
             logger.error("", e);
         }
@@ -29,7 +29,8 @@ public class ExecuteShellAssistTest {
             ExecuteShellAssist.executeShellAsync("/bin/bash", "-c", "sleep 10s && echo 'hello world'");
             TimerAssist.timerStop("execute shell");
 
-            Assert.assertTrue(TimerAssist.timerValue("execute shell").longValue() < 10000L);
+            Assert.assertTrue(TimerAssist.timerValueAndClear("execute shell") < 10000L);
+
         } catch (Exception e) {
             logger.error("", e);
         }

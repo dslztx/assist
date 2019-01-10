@@ -2,12 +2,11 @@ package me.dslztx.assist.util;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore
 public class TimerAssistTest {
 
     private static final Logger logger = LoggerFactory.getLogger(TimerAssistTest.class);
@@ -27,12 +26,12 @@ public class TimerAssistTest {
                         TimeUnit.MILLISECONDS.sleep(500);
                         TimerAssist.timerStop("P2");
 
-                        System.out.println(TimerAssist.timerPrint());
-
                         TimerAssist.timerStart("P1");
                         TimeUnit.MILLISECONDS.sleep(600);
                         TimerAssist.timerStop("P1");
-                        System.out.println(TimerAssist.timerPrint());
+
+                        Assert.assertTrue(TimerAssist.timerValueAndClear("P1") > 500);
+                        Assert.assertTrue(TimerAssist.timerValueAndClear("P2") > 400);
                     } catch (Exception e) {
                         logger.error("", e);
                     }
@@ -48,7 +47,7 @@ public class TimerAssistTest {
                         TimeUnit.MILLISECONDS.sleep(500);
                         TimerAssist.timerStop("P1");
 
-                        System.out.println(TimerAssist.timerPrint());
+                        Assert.assertTrue(TimerAssist.timerValueAndClear("P1") > 400);
                     } catch (Exception e) {
                         logger.error("", e);
                     }
@@ -56,7 +55,7 @@ public class TimerAssistTest {
             });
             thread2.start();
 
-            TimeUnit.MINUTES.sleep(1);
+            TimeUnit.SECONDS.sleep(10);
         } catch (Exception e) {
             logger.error("", e);
         }
@@ -77,13 +76,13 @@ public class TimerAssistTest {
                         TimeUnit.MILLISECONDS.sleep(500);
                         TimerAssist.timerStop("P2");
 
-                        System.out.println(TimerAssist.timerPrint());
-                        TimerAssist.timerClear();
+                        Assert.assertTrue(TimerAssist.timerValueAndClear("P1") > 300);
+                        Assert.assertTrue(TimerAssist.timerValueAndClear("P2") > 400);
 
                         TimerAssist.timerStart("P1");
                         TimeUnit.MILLISECONDS.sleep(600);
                         TimerAssist.timerStop("P1");
-                        System.out.println(TimerAssist.timerPrint());
+                        Assert.assertTrue(TimerAssist.timerValueAndClear("P1") > 500);
                     } catch (Exception e) {
                         logger.error("", e);
                     }
@@ -99,7 +98,7 @@ public class TimerAssistTest {
                         TimeUnit.MILLISECONDS.sleep(500);
                         TimerAssist.timerStop("P1");
 
-                        System.out.println(TimerAssist.timerPrint());
+                        Assert.assertTrue(TimerAssist.timerValueAndClear("P1") > 400);
                     } catch (Exception e) {
                         logger.error("", e);
                     }
@@ -107,7 +106,7 @@ public class TimerAssistTest {
             });
             thread2.start();
 
-            TimeUnit.MINUTES.sleep(1);
+            TimeUnit.SECONDS.sleep(10);
         } catch (Exception e) {
             logger.error("", e);
         }

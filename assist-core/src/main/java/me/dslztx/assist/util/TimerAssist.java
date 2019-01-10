@@ -31,32 +31,20 @@ public class TimerAssist {
         timerDetail.get(name).stop();
     }
 
-    public static Long timerValue(String name) {
+    public static long timerValueAndClear(String name) {
         Map<String, TimerInterval> timerDetail = timer.get();
 
         if (timerDetail.get(name) == null) {
-            return null;
+            return 0L;
         }
 
-        return timerDetail.get(name).value();
+        Long value = timerDetail.get(name).value();
+
+        timerDetail.remove(name);
+
+        return value;
     }
 
-    public static String timerPrint() {
-        StringBuilder sb = new StringBuilder();
-        Map<String, TimerInterval> timerDetail = timer.get();
-        for (String key : timerDetail.keySet()) {
-            sb.append("[");
-            sb.append(key);
-            sb.append("]");
-            sb.append(timerDetail.get(key).value());
-        }
-        return sb.toString();
-    }
-
-    public static void timerClear() {
-        Map<String, TimerInterval> timerDetail = timer.get();
-        timerDetail.keySet().clear();
-    }
 }
 
 class TimerInterval {

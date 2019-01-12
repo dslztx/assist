@@ -3,7 +3,7 @@ package me.dslztx.assist.algorithm.dp.lcs;
 /**
  * 可进行滚动数组优化，空间复杂度降低，代价是可读性变差
  */
-//todo
+// todo
 public class LCS {
 
     int[] sa;
@@ -22,20 +22,20 @@ public class LCS {
 
         dp[0][0] = 0;
 
-        for (int i = 1; i <= sb.length; i++) {
-            dp[0][i] = 0;
+        for (int indexA = 1; indexA <= sa.length; indexA++) {
+            dp[indexA][0] = 0;
         }
 
-        for (int i = 1; i <= sa.length; i++) {
-            dp[i][0] = 0;
+        for (int indexB = 1; indexB <= sb.length; indexB++) {
+            dp[0][indexB] = 0;
         }
 
-        for (int i = 1; i <= sa.length; i++) {
-            for (int j = 1; j <= sb.length; j++) {
-                if (sa[i - 1] == sb[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
+        for (int indexA = 1; indexA <= sa.length; indexA++) {
+            for (int indexB = 1; indexB <= sb.length; indexB++) {
+                if (sa[indexA - 1] == sb[indexB - 1]) {
+                    dp[indexA][indexB] = dp[indexA - 1][indexB - 1] + 1;
                 } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    dp[indexA][indexB] = Math.max(dp[indexA - 1][indexB], dp[indexA][indexB - 1]);
                 }
             }
         }

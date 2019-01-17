@@ -1,5 +1,9 @@
 package me.dslztx.assist.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author dslztx
  */
@@ -43,5 +47,34 @@ public class ArrayAssist {
         if (array != null && array.length != 0)
             return true;
         return false;
+    }
+
+    /**
+     * 报错：List<Integer> list = Arrays.asList(new int[]{423, 523}); <br/>
+     * 原因分析：将整个int[]作为一个Object<br/>
+     * 不报错：List<Integer> list = Arrays.asList(new Integer[]{423, 523});
+     */
+    public static List<Integer> toList(int[] array) {
+        List<Integer> result = new ArrayList<Integer>();
+        if (isEmpty(array)) {
+            return result;
+        }
+
+        for (int element : array) {
+            result.add(element);
+        }
+
+        return result;
+    }
+
+    public static List<Integer> toList(Integer[] array) {
+        List<Integer> result = new ArrayList<Integer>();
+        if (isEmpty(array)) {
+            return result;
+        }
+
+        result.addAll(Arrays.asList(array));
+
+        return result;
     }
 }

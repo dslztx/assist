@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import me.dslztx.assist.bean.FileFormatEnum;
 
-// todo:
 public class FileFormatAssist {
 
     public static final Logger logger = LoggerFactory.getLogger(FileFormatAssist.class);
@@ -30,6 +29,10 @@ public class FileFormatAssist {
     }
 
     public static FileFormatEnum fromExt(String ext) {
+        if (StringAssist.isBlank(ext)) {
+            throw new RuntimeException("ext is blank");
+        }
+
         ext = trimDotIfExist(ext);
 
         String extLowerCase = ext.toLowerCase();

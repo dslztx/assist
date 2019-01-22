@@ -1,5 +1,7 @@
 package me.dslztx.assist.algorithm.dp.lcs;
 
+import me.dslztx.assist.util.ArrayAssist;
+
 /**
  * 可进行滚动数组优化，空间复杂度降低，代价是可读性变差
  */
@@ -12,6 +14,13 @@ public class LCS {
     int lenOfLCS = -1;
 
     public LCS(int[] sa, int[] sb) {
+        if (ArrayAssist.isEmpty(sa)) {
+            throw new RuntimeException("sa is empty");
+        }
+        if (ArrayAssist.isEmpty(sb)) {
+            throw new RuntimeException("sb is empty");
+        }
+
         this.sa = sa;
         this.sb = sb;
     }

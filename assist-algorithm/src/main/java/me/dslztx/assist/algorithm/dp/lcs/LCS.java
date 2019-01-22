@@ -7,11 +7,11 @@ import me.dslztx.assist.util.ArrayAssist;
  */
 public class LCS {
 
-    int[] sa;
-    int[] sb;
+    private int[] sa;
+    private int[] sb;
 
-    int[][] dp;
-    int lenOfLCS = -1;
+    private int[][] dp;
+    private int lenOfLCS = -1;
 
     public LCS(int[] sa, int[] sb) {
         if (ArrayAssist.isEmpty(sa)) {

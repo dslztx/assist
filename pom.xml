@@ -15,6 +15,7 @@
     <module>assist-domain</module>
     <module>assist-pattern-template</module>
     <module>assist-pattern-strategy</module>
+    <module>assist-server</module>
   </modules>
 
   <url>https://github.com/dslztx/assist</url>

@@ -1,6 +1,7 @@
 package me.dslztx.assist.server;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
@@ -19,9 +20,41 @@ public class TCPSocketServerTest {
             TCPSocketServer tcpSocketServer = new TCPSocketServer("127.0.0.1", 10020);
             tcpSocketServer.start(new HandlerFactoryTest(), null);
 
+            Thread.sleep(10000);
+
+            multiClients();
+
+            Thread.sleep(1000000);
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
+        }
+    }
+
+    private void multiClients() {
+        for (int index = 0; index < 10; index++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Socket socket = new Socket("127.0.0.1", 10020);
+                        socket.setSoTimeout(5000);
+                        OutputStream out = socket.getOutputStream();
+
+                        String s = "hello world";
+
+                        out.write(s.getBytes());
+
+                        out.flush();
+
+                        s = "this is my first socket program";
+                        out.write(s.getBytes());
+                        out.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
     }
 }
@@ -56,6 +89,7 @@ class HandlerTest extends Handler {
 
                 int cnt = 0;
                 while ((cnt = in.read(bb)) != -1) {
+                    System.out.println("test cnt" + cnt);
                     System.out.println(new String(bb, 0, cnt));
                 }
 

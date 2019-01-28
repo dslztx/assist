@@ -18,5 +18,12 @@
       <artifactId>assist-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>me.dslztx</groupId>
+      <artifactId>assist-client</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

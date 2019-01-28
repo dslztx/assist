@@ -1,5 +1,7 @@
 package me.dslztx.assist.server;
 
+import static me.dslztx.assist.util.ObjectAssist.isNotNull;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -21,11 +23,11 @@ public class TCPSocketServer {
 
     int port;
 
-    int maxRequest;
+    int requestQueueLenMax = 100;
 
-    int maxProcessThreads;
+    int processThreadNumMax = 10;
 
-    int maxRejectProcessThreads;
+    int rejectProcessThreadNumMax = 10;
 
     volatile boolean running = false;
 
@@ -34,12 +36,13 @@ public class TCPSocketServer {
         this.port = port;
     }
 
-    public TCPSocketServer(String host, int port, int maxRequest, int maxProcessThreads, int maxRejectProcessThreads) {
+    public TCPSocketServer(String host, int port, int requestQueueLenMax, int processThreadNumMax,
+        int rejectProcessThreadNumMax) {
         this.host = host;
         this.port = port;
-        this.maxRequest = maxRequest;
-        this.maxProcessThreads = maxProcessThreads;
-        this.maxRejectProcessThreads = maxRejectProcessThreads;
+        this.requestQueueLenMax = requestQueueLenMax;
+        this.processThreadNumMax = processThreadNumMax;
+        this.rejectProcessThreadNumMax = rejectProcessThreadNumMax;
     }
 
     public void start(final HandlerFactory handlerFactory, final HandlerFactory rejectHandlerFactory) {
@@ -51,7 +54,7 @@ public class TCPSocketServer {
                             (host == null) ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
 
                         final ServerSocket ss = new ServerSocket();
-                        ss.bind(endpoint, maxRequest);
+                        ss.bind(endpoint, requestQueueLenMax);
 
                         final ScheduledExecutorService threadPool = obtainThreadPool();
 
@@ -73,7 +76,7 @@ public class TCPSocketServer {
                                         threadPool.execute(handlerFactory.createHandler(socket));
                                     } catch (RejectedExecutionException e) {
                                         logger.error("", e);
-                                        if (rejectHandlerFactory != null) {
+                                        if (isNotNull(rejectHandlerFactory)) {
                                             rejectThreadPool.execute(rejectHandlerFactory.createHandler(socket));
                                         }
                                     }
@@ -83,6 +86,7 @@ public class TCPSocketServer {
 
                         thread.start();
                     } catch (Exception e) {
+                        logger.error("", e);
                     } finally {
                         running = true;
                     }
@@ -92,27 +96,26 @@ public class TCPSocketServer {
     }
 
     private ScheduledExecutorService obtainRejectThreadPool() {
-        ScheduledExecutorService threadPool =
-            Executors.newScheduledThreadPool(maxRejectProcessThreads, new ThreadFactory() {
-
-                public Thread newThread(Runnable r) {
-                    Thread t = new Thread(r, "FixedRateScheduleThread");
-                    t.setDaemon(true);
-                    return t;
-                }
-            });
-        return threadPool;
-    }
-
-    private ScheduledExecutorService obtainThreadPool() {
-        ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(maxProcessThreads, new ThreadFactory() {
+        return Executors.newScheduledThreadPool(rejectProcessThreadNumMax, new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "FixedRateScheduleThread");
+                Thread t = new Thread(r, "TCPSocketServerRejectProcessThread");
                 t.setDaemon(true);
                 return t;
             }
+
         });
-        return threadPool;
+    }
+
+    private ScheduledExecutorService obtainThreadPool() {
+        return Executors.newScheduledThreadPool(processThreadNumMax, new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "TCPSocketServerProcessThread");
+                t.setDaemon(true);
+                return t;
+            }
+
+        });
     }
 }

@@ -13,5 +13,10 @@
   <packaging>jar</packaging>
 
   <dependencies>
+    <dependency>
+      <groupId>me.dslztx</groupId>
+      <artifactId>assist-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>

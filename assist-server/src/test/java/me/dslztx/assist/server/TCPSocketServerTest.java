@@ -3,12 +3,14 @@ package me.dslztx.assist.server;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import me.dslztx.assist.client.socket.TCPSocketClient;
+import me.dslztx.assist.util.CloseableAssist;
 
 public class TCPSocketServerTest {
 
@@ -24,7 +26,7 @@ public class TCPSocketServerTest {
 
             multiClients();
 
-            Thread.sleep(1000000);
+            Thread.sleep(100000);
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
@@ -36,10 +38,15 @@ public class TCPSocketServerTest {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    OutputStream out;
+                    InputStream in;
+
                     try {
-                        Socket socket = new Socket("127.0.0.1", 10020);
-                        socket.setSoTimeout(5000);
-                        OutputStream out = socket.getOutputStream();
+                        TCPSocketClient tcpSocketClient = new TCPSocketClient("127.0.0.1", 10020, 5000);
+
+                        Socket socket = tcpSocketClient.getSocket();
+
+                        out = socket.getOutputStream();
 
                         String s = "hello world";
 
@@ -50,8 +57,30 @@ public class TCPSocketServerTest {
                         s = "this is my first socket program";
                         out.write(s.getBytes());
                         out.flush();
+
+                        socket.shutdownOutput();
+
+                        in = socket.getInputStream();
+
+                        int loop = 10;
+                        while (true) {
+                            System.out.println("fuck");
+                            if (loop == 0) {
+                                break;
+                            }
+
+                            byte[] bb = new byte[1024];
+
+                            int cnt = 0;
+                            while ((cnt = in.read(bb)) != -1) {
+                                System.out.println("test cnt" + cnt);
+                                System.out.println(new String(bb, 0, cnt));
+                            }
+
+                            loop--;
+                        }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error("", e);
                     }
                 }
             }).start();
@@ -65,6 +94,7 @@ class HandlerFactoryTest implements HandlerFactory {
     public Handler createHandler(Socket socket) {
         return new HandlerTest(socket);
     }
+
 }
 
 class HandlerTest extends Handler {
@@ -77,11 +107,15 @@ class HandlerTest extends Handler {
 
     @Override
     void handle(Socket socket) {
-        try {
-            InputStream in = socket.getInputStream();
+        InputStream in = null;
+        OutputStream out = null;
 
-            int loop = 20;
+        try {
+            in = socket.getInputStream();
+
+            int loop = 10;
             while (true) {
+                System.out.println("nima ");
                 if (loop == 0)
                     break;
 
@@ -95,10 +129,16 @@ class HandlerTest extends Handler {
 
                 loop--;
 
-                TimeUnit.SECONDS.sleep(5);
             }
+
+            out = socket.getOutputStream();
+            out.write("socket finish".getBytes());
+            out.flush();
         } catch (Exception e) {
             logger.error("", e);
+        } finally {
+            CloseableAssist.closeQuietly(in);
+            CloseableAssist.closeQuietly(out);
         }
     }
 }

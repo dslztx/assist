@@ -38,8 +38,8 @@ public class TCPSocketServerTest {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    OutputStream out;
-                    InputStream in;
+                    OutputStream out = null;
+                    InputStream in = null;
 
                     try {
                         TCPSocketClient tcpSocketClient = new TCPSocketClient("127.0.0.1", 10020, 5000);
@@ -62,25 +62,21 @@ public class TCPSocketServerTest {
 
                         in = socket.getInputStream();
 
-                        int loop = 10;
-                        while (true) {
-                            System.out.println("fuck");
-                            if (loop == 0) {
-                                break;
-                            }
+                        // socket.shutdownInput();
 
-                            byte[] bb = new byte[1024];
+                        byte[] bb = new byte[1024];
 
-                            int cnt = 0;
-                            while ((cnt = in.read(bb)) != -1) {
-                                System.out.println("test cnt" + cnt);
-                                System.out.println(new String(bb, 0, cnt));
-                            }
-
-                            loop--;
+                        int cnt = 0;
+                        while ((cnt = in.read(bb)) != -1) {
+                            System.out.println(new String(bb, 0, cnt));
                         }
+
+                        socket.close();
                     } catch (Exception e) {
                         logger.error("", e);
+                    } finally {
+                        CloseableAssist.closeQuietly(in);
+                        CloseableAssist.closeQuietly(out);
                     }
                 }
             }).start();
@@ -113,27 +109,18 @@ class HandlerTest extends Handler {
         try {
             in = socket.getInputStream();
 
-            int loop = 10;
-            while (true) {
-                System.out.println("nima ");
-                if (loop == 0)
-                    break;
+            byte[] bb = new byte[1024];
 
-                byte[] bb = new byte[1024];
-
-                int cnt = 0;
-                while ((cnt = in.read(bb)) != -1) {
-                    System.out.println("test cnt" + cnt);
-                    System.out.println(new String(bb, 0, cnt));
-                }
-
-                loop--;
-
+            int cnt = 0;
+            while ((cnt = in.read(bb)) != -1) {
+                System.out.println(new String(bb, 0, cnt));
             }
 
             out = socket.getOutputStream();
             out.write("socket finish".getBytes());
             out.flush();
+
+            socket.shutdownOutput();
         } catch (Exception e) {
             logger.error("", e);
         } finally {

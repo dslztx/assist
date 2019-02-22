@@ -46,7 +46,7 @@ public class ZooKeeperAssist {
         return result;
     }
 
-    public static void traverseLeafNode0(CuratorFramework curatorFramework, String path, Map<String, String> map)
+    private static void traverseLeafNode0(CuratorFramework curatorFramework, String path, Map<String, String> map)
         throws Exception {
 
         String[] childPaths = curatorFramework.getChildren().forPath(path).toArray(new String[0]);

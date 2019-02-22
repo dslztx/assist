@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +57,46 @@ public class ZooKeeperAssist {
 
         for (String childPath : childPaths) {
             traverseLeafNode0(curatorFramework, path + "/" + childPath, map);
+        }
+    }
+
+    public static void heartbeat(String beatPath) {
+        try {
+            CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
+
+            if (curatorFramework.checkExists().forPath(beatPath) != null) {
+                // 如果存在先删除，针对“这个路径是上一个会话临时创建的，该会话即将结束，同时该临时路径即将被删除”的情形
+                curatorFramework.delete().forPath(beatPath);
+                logger.info("delete first successfully if exists");
+
+                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath);
+                logger.info("create successfully");
+            } else {
+                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath);
+                logger.info("create successfully");
+            }
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+    }
+
+    public static void heartbeat(String beatPath, String content) {
+        try {
+            CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
+
+            if (curatorFramework.checkExists().forPath(beatPath) != null) {
+                // 如果存在先删除，针对“这个路径是上一个会话临时创建的，该会话即将结束，同时该临时路径即将被删除”的情形
+                curatorFramework.delete().forPath(beatPath);
+                logger.info("delete first successfully if exists");
+
+                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath, content.getBytes());
+                logger.info("create successfully");
+            } else {
+                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath, content.getBytes());
+                logger.info("create successfully");
+            }
+        } catch (Exception e) {
+            logger.error("", e);
         }
     }
 }

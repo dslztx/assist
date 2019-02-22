@@ -19,6 +19,10 @@ public class FileInDirProcessBackup implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(FileInDirProcessBackup.class);
 
+    /**
+     * 从设计意图上说，本任务的run()只有一个线程执行，stop()方法可以由另外一个线程执行，因此，SimpleDateFormat没有线程安全问题的<br/>
+     * 因此，这里使用ThreadLocal不是必需的
+     */
     private static ThreadLocal<SimpleDateFormat> simpleDateFormatThreadLocal = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {

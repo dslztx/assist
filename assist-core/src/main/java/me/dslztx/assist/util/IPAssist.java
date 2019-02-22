@@ -32,4 +32,53 @@ public class IPAssist {
 
         return ip.substring(0, index);
     }
+
+    public static Long encodeIP(String ip) {
+        if (StringAssist.isBlank(ip)) {
+            return null;
+        }
+
+        if (!IPV4_PATTERN.matcher(ip).matches()) {
+            return null;
+        }
+
+        String[] ipSegments = ip.split("\\.");
+
+        return (Long.parseLong(ipSegments[0]) << 24) + (Long.parseLong(ipSegments[1]) << 16)
+            + (Long.parseLong(ipSegments[2]) << 8) + Long.parseLong(ipSegments[3]);
+    }
+
+    public static String decodeIP(Long encodedIPValue) {
+        if (ObjectAssist.isNull(encodedIPValue)) {
+            return null;
+        }
+
+        Long ipSegment0 = encodedIPValue >>> 24;
+        if (ipSegment0 > 255 || ipSegment0 < 0) {
+            return null;
+        }
+
+        Long ipSegment1 = (encodedIPValue & 0x00FFFFFF) >>> 16;
+        if (ipSegment1 > 255 || ipSegment1 < 0) {
+            return null;
+        }
+
+        Long ipSegment2 = (encodedIPValue & 0x0000FFFF) >>> 8;
+        if (ipSegment2 > 255 || ipSegment2 < 0) {
+            return null;
+        }
+
+        Long ipSegment3 = (encodedIPValue & 0x000000FF);
+        if (ipSegment3 > 255 || ipSegment3 < 0) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(ipSegment0).append(".");
+        sb.append(ipSegment1).append(".");
+        sb.append(ipSegment2).append(".");
+        sb.append(ipSegment3);
+
+        return sb.toString();
+    }
 }

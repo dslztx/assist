@@ -42,4 +42,24 @@ public class IPAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void encodeDecodeIP() {
+        try {
+            String ip1 = "255.255.255.255";
+            Assert.assertTrue(ip1.equals(IPAssist.decodeIP(IPAssist.encodeIP(ip1))));
+
+            String ip2 = "0.0.0.0";
+            Assert.assertTrue(ip2.equals(IPAssist.decodeIP(IPAssist.encodeIP(ip2))));
+
+            String ip3 = "127.247.21.9";
+            Assert.assertTrue(ip3.equals(IPAssist.decodeIP(IPAssist.encodeIP(ip3))));
+
+            String ip4 = "012.04.013.231";
+            Assert.assertTrue("12.4.13.231".equals(IPAssist.decodeIP(IPAssist.encodeIP(ip4))));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

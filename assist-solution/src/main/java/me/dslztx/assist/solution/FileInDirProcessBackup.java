@@ -83,6 +83,12 @@ public class FileInDirProcessBackup implements Runnable {
             } finally {
                 lock.readLock().unlock();
             }
+
+            try {
+                Thread.sleep(10000);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
         }
     }
 

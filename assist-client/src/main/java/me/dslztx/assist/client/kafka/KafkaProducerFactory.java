@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
@@ -47,16 +48,17 @@ public class KafkaProducerFactory {
 
                         Map<String, Object> props = new HashMap<String, Object>();
 
-                        props.put("bootstrap.servers", servers);
-                        props.put("acks", "all");
-                        props.put("retries", 3);
-                        props.put("batch.size", 16384);
-                        props.put("linger.ms", 0);
-                        props.put("max.request.size", 100 * 1024 * 1024);
-                        props.put("buffer.memory", 100 * 1024 * 1024);
+                        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
+                        props.put(ProducerConfig.ACKS_CONFIG, "all");
+                        props.put(ProducerConfig.RETRIES_CONFIG, 3);
+                        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
+                        props.put(ProducerConfig.LINGER_MS_CONFIG, 0);
+                        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 100 * 1024 * 1024);
+                        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 100 * 1024 * 1024);
 
                         kafKaProducer =
                             new KafkaProducer<String, byte[]>(props, new StringSerializer(), new ByteArraySerializer());
+
                     } catch (Exception e) {
                         logger.error("", e);
                         throw new RuntimeException(e);

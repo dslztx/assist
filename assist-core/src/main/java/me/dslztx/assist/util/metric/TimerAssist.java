@@ -31,6 +31,9 @@ public class TimerAssist {
         timerDetail.get(name).stop();
     }
 
+    /**
+     * 获取值并clear版本，防止内存泄漏
+     */
     public static long timerValueAndClear(String name) {
         Map<String, TimerInterval> timerDetail = timer.get();
 
@@ -38,13 +41,22 @@ public class TimerAssist {
             return 0L;
         }
 
-        Long value = timerDetail.get(name).value();
+        long value = timerDetail.get(name).value();
 
         timerDetail.remove(name);
 
         return value;
     }
 
+    public static long timerValue(String name) {
+        Map<String, TimerInterval> timerDetail = timer.get();
+
+        if (timerDetail.get(name) == null) {
+            return 0L;
+        }
+
+        return timerDetail.get(name).value();
+    }
 }
 
 class TimerInterval {
@@ -59,9 +71,9 @@ class TimerInterval {
         this.stop = System.currentTimeMillis();
     }
 
-    public Long value() {
+    public long value() {
         if (start == -1 || stop == -1) {
-            return null;
+            return 0L;
         } else {
             return stop - start;
         }

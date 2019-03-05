@@ -1,4 +1,4 @@
-package me.dslztx.assist.util;
+package me.dslztx.assist.util.metric;
 
 import java.util.HashMap;
 import java.util.Map;

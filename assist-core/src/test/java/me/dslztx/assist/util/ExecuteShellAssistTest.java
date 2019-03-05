@@ -1,5 +1,6 @@
 package me.dslztx.assist.util;
 
+import me.dslztx.assist.util.metric.TimerAssist;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;

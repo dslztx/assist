@@ -117,6 +117,14 @@ public class CharCodingAssistTest {
             Assert.assertTrue(CharCodingAssist.unescapedHTMLEscapeSequence(
                 "h&#104;&#116;&#116;&#112;&#58;&#47;&#47;&#119;&#119;&#119;&#46;&#102;&#97;&#99;&#101;&#98;&#111;&#111;&#107;&#46;&#99;qllll&#111;&#109;m")
                 .equals("hhttp://www.facebook.cqllllomm"));
+
+            Assert.assertTrue(CharCodingAssist.unescapedHTMLEscapeSequence(
+                "h&#104;&#116;&#116;&#112;&#58;&#47;&#47;&#119;&#119;&#119;&#46;&#102;&#97;&#99;&#101;&#98;&#111;&#111;&#107;&#46;&#99;qllll&#111;&#109;m&#109")
+                .equals("hhttp://www.facebook.cqllllomm&#109"));
+
+            Assert.assertTrue(CharCodingAssist.unescapedHTMLEscapeSequence(
+                "h&#104;&#116;&#116;&#112;&#58;&#47;&#47;&#119;&#119;&#119;&#46;&#102;&#97;&#99;&#101;&#98;&#111;&#111;&#107;&#46;&#99;qllll&#111;&#109;m&#3")
+                .equals("hhttp://www.facebook.cqllllomm&#3"));
         } catch (Exception e) {
             logger.error("", e);
             fail();

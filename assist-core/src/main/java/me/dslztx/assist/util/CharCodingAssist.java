@@ -144,6 +144,11 @@ public class CharCodingAssist {
             }
         }
 
+        if (buffer.length() > 0) {
+            sb.append(buffer.toString());
+            buffer.setLength(0);
+        }
+
         return sb.toString();
     }
 

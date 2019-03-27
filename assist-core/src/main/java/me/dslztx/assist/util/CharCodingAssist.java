@@ -43,6 +43,135 @@ public class CharCodingAssist {
         return new String(bytes, charset);
     }
 
+    public static String unescapedHTMLEscapeSequence(String s) {
+        if (StringAssist.isBlank(s)) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        StringBuilder buffer = new StringBuilder();
+
+        char c;
+
+        for (int index = 0; index < s.length(); index++) {
+            c = s.charAt(index);
+            if (c == '&') {
+                if (buffer.length() == 0) {
+                    buffer.append(c);
+                } else {
+                    sb.append(buffer.toString());
+
+                    buffer.setLength(0);
+                    buffer.append(c);
+                }
+            } else if (c == '#') {
+                if (buffer.length() == 1) {
+                    buffer.append(c);
+                } else {
+                    if (buffer.length() > 0) {
+                        sb.append(buffer.toString());
+                        buffer.setLength(0);
+                    }
+
+                    sb.append(c);
+                }
+            } else if (c == 'x' || c == 'X') {
+                if (buffer.length() == 2) {
+                    buffer.append(c);
+                } else {
+                    if (buffer.length() > 0) {
+                        sb.append(buffer.toString());
+                        buffer.setLength(0);
+                    }
+
+                    sb.append(c);
+                }
+            } else if (CharAssist.isDigitChar(c) || CharAssist.isHexChar(c)) {
+                if (CharAssist.isDigitChar(c)) {
+                    if (buffer.length() >= 2) {
+                        buffer.append(c);
+                    } else {
+                        if (buffer.length() > 0) {
+                            sb.append(buffer.toString());
+                            buffer.setLength(0);
+                        }
+
+                        sb.append(c);
+                    }
+                } else {
+                    if (buffer.length() > 2 && (buffer.charAt(2) == 'X' || buffer.charAt(2) == 'x')) {
+                        buffer.append(c);
+                    } else {
+                        if (buffer.length() > 0) {
+                            sb.append(buffer.toString());
+                            buffer.setLength(0);
+                        }
+
+                        sb.append(c);
+                    }
+                }
+            } else if (c == ';') {
+                if (buffer.length() > 2) {
+                    if (buffer.length() == 3 && (buffer.charAt(2) == 'x' || buffer.charAt(2) == 'X')) {
+                        sb.append(buffer.toString());
+                        buffer.setLength(0);
+
+                        sb.append(c);
+                    } else {
+                        try {
+                            buffer.append(c);
+                            sb.append(charFromHTMLEscapeSequence(buffer.toString()));
+                        } catch (NumberFormatException e) {
+                            sb.append(buffer.toString());
+                        }
+
+                        buffer.setLength(0);
+                    }
+                } else {
+                    if (buffer.length() > 0) {
+                        sb.append(buffer.toString());
+                        buffer.setLength(0);
+                    }
+
+                    sb.append(c);
+                }
+            } else {
+                if (buffer.length() > 0) {
+                    sb.append(buffer.toString());
+                    buffer.setLength(0);
+                }
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public static char charFromHTMLEscapeSequence(String s) throws NumberFormatException {
+        if (StringAssist.isEmpty(s) || s.length() < 4) {
+            throw new NumberFormatException("illegal html escape sequence");
+        }
+
+        if (s.charAt(0) != '&' || s.charAt(1) != '#' || s.charAt(s.length() - 1) != ';') {
+            throw new NumberFormatException("illegal html escape sequence");
+        }
+
+        int start = 2;
+        int end = s.length() - 2;
+
+        if (s.charAt(start) == 'x' || s.charAt(start) == 'X') {
+            if (start + 1 == end) {
+                throw new NumberFormatException("illegal html escape sequence");
+            }
+
+            int value = NumberAssist.hexStrToDec(s, start + 1, end);
+            return (char)value;
+        } else {
+            int value = NumberAssist.decStrToDec(s, start, end);
+            return (char)value;
+        }
+    }
+
     public static boolean isFileNotEncodedWith(File file, Charset charset) throws IOException {
         if (file == null || !file.exists()) {
             throw new RuntimeException("file not exists");

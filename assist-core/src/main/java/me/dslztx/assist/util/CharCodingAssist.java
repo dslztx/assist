@@ -147,6 +147,22 @@ public class CharCodingAssist {
         return sb.toString();
     }
 
+    public static String escapeHTMLEscapeSequence(String s) {
+        if (StringAssist.isEmpty(s)) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int index = 0; index < s.length(); index++) {
+            sb.append(charToHTMLEscapeSequence(s.charAt(index)));
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 扩展的，不局限于ASCII编码集
+     */
     public static char charFromHTMLEscapeSequence(String s) throws NumberFormatException {
         if (StringAssist.isEmpty(s) || s.length() < 4) {
             throw new NumberFormatException("illegal html escape sequence");
@@ -172,6 +188,13 @@ public class CharCodingAssist {
         }
     }
 
+    /**
+     * 扩展的，不局限于ASCII编码集
+     */
+    public static String charToHTMLEscapeSequence(char c) {
+        return "&#" + (int)c + ";";
+    }
+
     public static boolean isFileNotEncodedWith(File file, Charset charset) throws IOException {
         if (file == null || !file.exists()) {
             throw new RuntimeException("file not exists");
@@ -195,5 +218,8 @@ public class CharCodingAssist {
         String b =
             CharCodingAssist.decode(CharCodingAssist.encode("�", Charset.forName("GBK")), Charset.forName("GBK"));
         System.out.println(a.equals(b));
+
+        char c = '好';
+        System.out.println((int)c);
     }
 }

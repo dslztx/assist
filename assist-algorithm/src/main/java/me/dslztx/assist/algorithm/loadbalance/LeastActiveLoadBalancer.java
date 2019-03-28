@@ -3,7 +3,7 @@ package me.dslztx.assist.algorithm.loadbalance;
 import java.util.List;
 import java.util.Random;
 
-public class LeastActiveLoadBalancer extends AbstractLoadBalancer {
+public class LeastActiveLoadBalancer<T extends ServiceProvider> extends AbstractLoadBalancer<T> {
 
     private final Random random = new Random();
 
@@ -11,7 +11,7 @@ public class LeastActiveLoadBalancer extends AbstractLoadBalancer {
      * @param serviceProviderList 列表大小大于1
      */
     @Override
-    protected ServiceProvider doSelect(List<ServiceProvider> serviceProviderList) {
+    protected T doSelect(List<T> serviceProviderList) {
         int size = serviceProviderList.size();
 
         int leastActive = -1;

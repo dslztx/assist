@@ -2,9 +2,9 @@ package me.dslztx.assist.algorithm.loadbalance;
 
 import java.util.List;
 
-public abstract class AbstractLoadBalancer {
+public abstract class AbstractLoadBalancer<T extends ServiceProvider> {
 
-    public ServiceProvider select(List<ServiceProvider> serviceProviderList) {
+    public T select(List<T> serviceProviderList) {
         if (serviceProviderList == null || serviceProviderList.size() == 0) {
             return null;
         }
@@ -16,5 +16,5 @@ public abstract class AbstractLoadBalancer {
         return doSelect(serviceProviderList);
     }
 
-    protected abstract ServiceProvider doSelect(List<ServiceProvider> serviceProviderList);
+    protected abstract T doSelect(List<T> serviceProviderList);
 }

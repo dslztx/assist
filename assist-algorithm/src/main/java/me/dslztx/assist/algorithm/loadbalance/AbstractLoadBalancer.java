@@ -2,10 +2,12 @@ package me.dslztx.assist.algorithm.loadbalance;
 
 import java.util.List;
 
+import me.dslztx.assist.util.CollectionAssist;
+
 public abstract class AbstractLoadBalancer<T extends ServiceProvider> {
 
     public T select(List<T> serviceProviderList) {
-        if (serviceProviderList == null || serviceProviderList.size() == 0) {
+        if (CollectionAssist.isEmpty(serviceProviderList)) {
             return null;
         }
 

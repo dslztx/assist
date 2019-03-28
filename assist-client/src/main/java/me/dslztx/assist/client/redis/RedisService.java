@@ -69,7 +69,27 @@ public class RedisService {
         return new RedisFutureProxy<List<String>>(result, client);
     }
 
+    public static RedisFutureProxy<String> setAsync(String redisClusterName, String key, String value) {
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            return null;
+        }
+
+        RedisFuture<String> result = client.getRedisAsyncConnection().set(key, value);
+
+        client.incActive();
+
+        return new RedisFutureProxy<String>(result, client);
+    }
+
     public static List<String> mgetSync(String redisClusterName, String... keys) {
+        throw new UnsupportedOperationException("sync operation is not supported now");
+    }
+
+    public static String setSync(String redisClusterName, String key, String value) {
         throw new UnsupportedOperationException("sync operation is not supported now");
     }
 }

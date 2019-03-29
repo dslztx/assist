@@ -47,9 +47,11 @@ public class RedisService {
             logger.error("", e);
             throw new RuntimeException(e);
         } finally {
-            if (loadBalancer == null) {
+            if (ObjectAssist.isNull(loadBalancer)) {
                 loadBalancer = new LeastActiveLoadBalancer<LettuceAsyncClientProxy>();
             }
+
+            logger.info("used load balancer is {}", loadBalancer.getClass().getSimpleName());
         }
     }
 

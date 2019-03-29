@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import me.dslztx.assist.bean.FileFormatEnum;
 
-public class FileFormatAssist {
+public class FileTypeAssist {
 
-    public static final Logger logger = LoggerFactory.getLogger(FileFormatAssist.class);
+    public static final Logger logger = LoggerFactory.getLogger(FileTypeAssist.class);
 
     private static final Set<String> imageExts = new HashSet<String>(16);
 

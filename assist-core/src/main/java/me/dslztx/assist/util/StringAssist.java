@@ -204,4 +204,44 @@ public class StringAssist {
         sb.setLength(sb.length() - 1);
         return sb.toString();
     }
+
+    /**
+     * 参考日志框架的格式字符串语义
+     */
+    public static String format(String formatStr, String... elements) {
+        if (StringAssist.isBlank(formatStr)) {
+            return formatStr;
+        }
+
+        if (elements == null || elements.length == 0) {
+            return formatStr;
+        }
+
+        String[] elementArray = new String[elements.length];
+        int eIndex = 0;
+        for (String element : elements) {
+            elementArray[eIndex++] = element;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        eIndex = 0;
+        for (int index = 0; index < formatStr.length(); index++) {
+            if (formatStr.charAt(index) == '{') {
+                if (index + 1 < formatStr.length() && formatStr.charAt(index + 1) == '}') {
+                    sb.append(elementArray[eIndex++]);
+                    index++;
+
+                    if (eIndex == elementArray.length) {
+                        sb.append(formatStr.substring(index + 1));
+                    }
+                } else {
+                    sb.append(formatStr.charAt(index));
+                }
+            } else {
+                sb.append(formatStr.charAt(index));
+            }
+        }
+
+        return sb.toString();
+    }
 }

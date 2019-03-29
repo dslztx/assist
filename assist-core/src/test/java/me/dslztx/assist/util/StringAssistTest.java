@@ -116,4 +116,17 @@ public class StringAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void formatTest() {
+        try {
+            Assert.assertTrue(StringAssist.format("hello {} world", "a", "b").equals("hello a world"));
+            Assert.assertTrue(StringAssist.format("hello {} world{", "a", "b").equals("hello a world{"));
+            Assert.assertTrue(StringAssist.format("hello {} worl{fd", "a", "b").equals("hello a worl{fd"));
+            Assert.assertTrue(StringAssist.format("hello {} worl{fd").equals("hello {} worl{fd"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

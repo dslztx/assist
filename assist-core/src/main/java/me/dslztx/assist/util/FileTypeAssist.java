@@ -2,8 +2,10 @@ package me.dslztx.assist.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +25,64 @@ public class FileTypeAssist {
 
     private static final Map<String, FileType> imageExts = new HashMap<String, FileType>();
 
-    private static List<FileTypeMatcher> imageMatchChains = new ArrayList<FileTypeMatcher>();
+    private static final List<FileTypeMatcher> imageMatchChains = new ArrayList<FileTypeMatcher>();
+
+    private static final Set<String> generalFileExts = new HashSet<String>();
 
     static {
         initImageExts();
 
         initImageMatchChains();
+
+        initGeneralFileExts();
+    }
+
+    private static void initGeneralFileExts() {
+        generalFileExts.addAll(imageExts.keySet());
+
+        generalFileExts.add("wav");
+        generalFileExts.add("avi");
+        generalFileExts.add("ram");
+        generalFileExts.add("rm");
+        generalFileExts.add("mpg");
+        generalFileExts.add("swf");
+        generalFileExts.add("mov");
+        generalFileExts.add("mp4");
+        generalFileExts.add("flv");
+        generalFileExts.add("mp3");
+        generalFileExts.add("asf");
+        generalFileExts.add("mid");
+
+        generalFileExts.add("doc");
+        generalFileExts.add("docx");
+        generalFileExts.add("xls");
+        generalFileExts.add("xlsx");
+        generalFileExts.add("ppt");
+        generalFileExts.add("pptx");
+        generalFileExts.add("pdf");
+
+        generalFileExts.add("rar");
+        generalFileExts.add("zip");
+        generalFileExts.add("7z");
+        generalFileExts.add("gz");
+        generalFileExts.add("z");
+
+        generalFileExts.add("txt");
+        generalFileExts.add("html");
+        generalFileExts.add("xml");
+        generalFileExts.add("eml");
+        generalFileExts.add("json");
+        generalFileExts.add("md");
+
+        generalFileExts.add("exe");
+        generalFileExts.add("sh");
+        generalFileExts.add("bat");
+
+        generalFileExts.add("iso");
+
+        generalFileExts.add("bak");
+
+        generalFileExts.add("dot");
     }
 
     private static void initImageMatchChains() {
@@ -92,5 +146,20 @@ public class FileTypeAssist {
         }
 
         return imageExts.get(ext);
+    }
+
+    public static boolean isGeneralFile(String name) {
+        String ext = FilenameAssist.obtainExt(name);
+
+        if (StringAssist.isBlank(ext)) {
+            return false;
+        }
+
+        ext = ext.toLowerCase();
+        if (generalFileExts.contains(ext)) {
+            return true;
+        }
+
+        return false;
     }
 }

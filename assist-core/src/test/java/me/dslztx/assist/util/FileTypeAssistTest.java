@@ -45,4 +45,18 @@ public class FileTypeAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void isGeneralFileTest() {
+        try {
+            Assert.assertTrue(FileTypeAssist.isGeneralFile("1.txt"));
+            Assert.assertTrue(FileTypeAssist.isGeneralFile("1.mp3"));
+            Assert.assertTrue(FileTypeAssist.isGeneralFile("1.mp4"));
+            Assert.assertFalse(FileTypeAssist.isGeneralFile("1.wps"));
+            Assert.assertFalse(FileTypeAssist.isGeneralFile("1"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

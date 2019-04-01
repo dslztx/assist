@@ -8,5 +8,5 @@ public enum FileType {
 
     DOC, DOCX, XLS, PDF,
 
-    UNKNOWN
+    UNKNOWN, NOT_IMAGE
 }

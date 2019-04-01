@@ -1,55 +1,96 @@
 package me.dslztx.assist.util;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.dslztx.assist.bean.FileFormatEnum;
+import me.dslztx.assist.bean.filetype.FileType;
+import me.dslztx.assist.util.filetype.BMPMatcher;
+import me.dslztx.assist.util.filetype.FileTypeMatcher;
+import me.dslztx.assist.util.filetype.GIFMatcher;
+import me.dslztx.assist.util.filetype.JPEGMatcher;
+import me.dslztx.assist.util.filetype.PNGMatcher;
+import me.dslztx.assist.util.filetype.PSDMatcher;
+import me.dslztx.assist.util.filetype.TIFFMatcher;
 
 public class FileTypeAssist {
 
     public static final Logger logger = LoggerFactory.getLogger(FileTypeAssist.class);
 
-    private static final Set<String> imageExts = new HashSet<String>(16);
+    private static final Map<String, FileType> imageExts = new HashMap<String, FileType>();
+
+    private static List<FileTypeMatcher> imageMatchChains = new ArrayList<FileTypeMatcher>();
 
     static {
         initImageExts();
+
+        initImageMatchChains();
+    }
+
+    private static void initImageMatchChains() {
+        imageMatchChains.add(new PNGMatcher());
+        imageMatchChains.add(new BMPMatcher());
+        imageMatchChains.add(new JPEGMatcher());
+        imageMatchChains.add(new TIFFMatcher());
+        imageMatchChains.add(new PSDMatcher());
+        imageMatchChains.add(new GIFMatcher());
     }
 
     private static void initImageExts() {
-        String imageExtensions =
-            "jpg|jpeg|jpe|bmp|gif|tiff|tif|psd|png|pcx|tga|exif|ico|svg|fpx|cdr|pcd|dxf|ufo|eps|webp|raw";
+        imageExts.put("jpg", FileType.JPEG);
+        imageExts.put("jpeg", FileType.JPEG);
+        imageExts.put("jpe", FileType.JPEG);
 
-        String[] ss = StringUtils.split(imageExtensions, '|');
-        imageExts.addAll(Arrays.asList(ss));
+        imageExts.put("bmp", FileType.BMP);
+
+        imageExts.put("gif", FileType.GIF);
+
+        imageExts.put("tiff", FileType.TIFF);
+        imageExts.put("tif", FileType.TIFF);
+
+        imageExts.put("psd", FileType.PSD);
+
+        imageExts.put("png", FileType.PNG);
+
+        imageExts.put("exif", FileType.EXIF);
+
+        imageExts.put("ico", FileType.ICO);
+        imageExts.put("svg", FileType.SVG);
+        imageExts.put("eps", FileType.EPS);
+        imageExts.put("webp", FileType.WEBP);
     }
 
-    public static FileFormatEnum fromExt(String ext) {
+    public static FileType recognizeImage(byte[] data) {
+        if (ArrayAssist.isEmpty(data)) {
+            return FileType.NOT_IMAGE;
+        }
+
+        for (FileTypeMatcher matcher : imageMatchChains) {
+            if (matcher.match(data)) {
+                return matcher.obtainFileType();
+            }
+        }
+
+        return FileType.NOT_IMAGE;
+    }
+
+    public static FileType recognizeImage(String name) {
+        String ext = FilenameAssist.obtainExt(name);
+
         if (StringAssist.isBlank(ext)) {
-            throw new RuntimeException("ext is blank");
+            return FileType.NOT_IMAGE;
         }
 
-        ext = trimDotIfExist(ext);
+        ext = ext.toLowerCase();
 
-        String extLowerCase = ext.toLowerCase();
-
-        if (imageExts.contains(extLowerCase)) {
-            return FileFormatEnum.IMAGE;
-        } else {
-            return FileFormatEnum.UNKNOWN;
+        if (ObjectAssist.isNull(imageExts.get(ext))) {
+            return FileType.NOT_IMAGE;
         }
-    }
 
-    private static String trimDotIfExist(String ext) {
-        int index = ext.lastIndexOf(".");
-        if (index != -1) {
-            return ext.substring(index + 1);
-        } else {
-            return ext;
-        }
+        return imageExts.get(ext);
     }
 }

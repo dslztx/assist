@@ -12,6 +12,7 @@ import com.lambdaworks.redis.RedisFuture;
 import me.dslztx.assist.algorithm.loadbalance.AbstractLoadBalancer;
 import me.dslztx.assist.algorithm.loadbalance.LeastActiveLoadBalancer;
 import me.dslztx.assist.algorithm.loadbalance.LoadBalancerEnum;
+import me.dslztx.assist.util.ArrayAssist;
 import me.dslztx.assist.util.CollectionAssist;
 import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.ObjectAssist;
@@ -73,7 +74,7 @@ public class RedisService {
         return new RedisFutureProxy<List<String>>(result, client);
     }
 
-    public static RedisFutureProxy<String> setAsync(String redisClusterName, String key, String value) {
+    public static RedisFutureProxy<String> setAsync(String redisClusterName, String key, String value, long seconds) {
 
         LettuceAsyncClientProxy client =
             loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
@@ -82,7 +83,7 @@ public class RedisService {
             return null;
         }
 
-        RedisFuture<String> result = client.getRedisAsyncConnection().set(key, value);
+        RedisFuture<String> result = client.getRedisAsyncConnection().setex(key, seconds, value);
 
         client.incActive();
 
@@ -117,5 +118,55 @@ public class RedisService {
 
     public static String msetSync(String redisClusterName, Map<String, String> keyValues) {
         throw new UnsupportedOperationException("sync operation is not supported now");
+    }
+
+    public static Long rpush(String redisClusterName, String key, String... values) {
+        if (StringAssist.isEmpty(redisClusterName) || StringAssist.isEmpty(key) || ArrayAssist.isEmpty(values)) {
+            return null;
+        }
+
+        RedisClient redisClient = null;
+        try {
+            redisClient = RedisClientFactory.obtainRedisClient(redisClusterName);
+
+            if (ObjectAssist.isNotNull(redisClient.getJedis())) {
+                synchronized (redisClient.getJedis()) {
+                    return redisClient.getJedis().rpush(key, values);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (ObjectAssist.isNotNull(redisClient)) {
+                redisClient.returnResource();
+            }
+        }
+
+        return null;
+    }
+
+    public static Long expire(String redisClusterName, String key, long seconds) {
+        if (StringAssist.isEmpty(redisClusterName) || StringAssist.isEmpty(key)) {
+            return null;
+        }
+
+        RedisClient redisClient = null;
+        try {
+            redisClient = RedisClientFactory.obtainRedisClient(redisClusterName);
+
+            if (ObjectAssist.isNotNull(redisClient.getJedis())) {
+                synchronized (redisClient.getJedis()) {
+                    return redisClient.getJedis().expire(key, (int)seconds);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (ObjectAssist.isNotNull(redisClient)) {
+                redisClient.returnResource();
+            }
+        }
+
+        return null;
     }
 }

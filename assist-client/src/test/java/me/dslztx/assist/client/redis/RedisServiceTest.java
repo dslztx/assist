@@ -1,6 +1,8 @@
 package me.dslztx.assist.client.redis;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -17,8 +19,8 @@ public class RedisServiceTest {
     @Test
     public void obtainRedisClient() {
         try {
-            RedisFutureProxy<String> z1 = RedisService.setAsync("in", "a1", "v1");
-            RedisFutureProxy<String> z2 = RedisService.setAsync("in", "a2", "v2");
+            RedisFutureProxy<String> z1 = RedisService.setAsync("in", "a1", "v1", 60L);
+            RedisFutureProxy<String> z2 = RedisService.setAsync("in", "a2", "v2", 60L);
 
             String vv1 = z1.get(1, TimeUnit.SECONDS);
             String vv2 = z2.get(1, TimeUnit.SECONDS);
@@ -35,6 +37,14 @@ public class RedisServiceTest {
             System.out.println(z1.obtainServer());
             System.out.println(z2.obtainServer());
             System.out.println(result.obtainServer());
+
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("mapKey1", "mapValue1");
+            map.put("mapKey2", "mapValue2");
+            map.put("mapKey3", "mapValue3");
+
+            RedisFutureProxy<String> result2 = RedisService.msetAsync("in", map);
+            Assert.assertTrue(result2.get(100, TimeUnit.MILLISECONDS).equals("OK"));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

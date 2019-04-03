@@ -18,7 +18,8 @@ import org.slf4j.LoggerFactory;
 import me.dslztx.assist.bean.DayOfWeek;
 
 /**
- * 在Java中，日期时间主要涉及到4个类：Date，Calendar，SimpleDateFormat，TimeZone
+ * 在Java中，日期时间主要涉及到4个类：Date，Calendar，SimpleDateFormat，TimeZone<br/>
+ * 最后应该迁移到JDK 1.8+的时间包，就不要迁移到Joda-Time包这个中间状态了
  *
  * @author dslztx
  */

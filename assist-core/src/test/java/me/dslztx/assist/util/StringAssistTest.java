@@ -129,4 +129,19 @@ public class StringAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void joinUseSeparatorTest() {
+        try {
+            Assert.assertNull(StringAssist.joinUseSeparator('#'));
+            Assert.assertTrue(StringAssist.joinUseSeparator('#', "").equals(""));
+            Assert.assertTrue(StringAssist.joinUseSeparator('#', "", null).equals("#NULL"));
+            Assert.assertTrue(StringAssist.joinUseSeparator('#', null, "").equals("NULL#"));
+            Assert.assertTrue(StringAssist.joinUseSeparator('#', "", "").equals("#"));
+            Assert.assertTrue(StringAssist.joinUseSeparator('#', "hello", "world").equals("hello#world"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

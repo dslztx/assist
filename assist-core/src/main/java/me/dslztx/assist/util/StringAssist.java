@@ -190,6 +190,26 @@ public class StringAssist {
         return sb.toString();
     }
 
+    public static String joinUseSeparator(char separator, String... elements) {
+        if (ArrayAssist.isEmpty(elements)) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (String element : elements) {
+            if (ObjectAssist.isNull(element)) {
+                sb.append("NULL");
+            } else {
+                sb.append(element);
+            }
+            sb.append(separator);
+        }
+
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
+
     public static String joinUseSeparator(int[] intArray, char separator) {
         if (ArrayAssist.isEmpty(intArray)) {
             return "";

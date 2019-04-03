@@ -120,6 +120,8 @@ public class DateTimeAssist {
      * @see java.text.SimpleDateFormat
      */
     public static String format(Date a, String pattern) {
+        // TODO 可以优化成线程ThreadLocal变量
+
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, Locale.ENGLISH);
 
         return formatter.format(a);

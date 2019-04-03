@@ -1,6 +1,7 @@
 package me.dslztx.assist.client.redis;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import com.lambdaworks.redis.RedisFuture;
 import me.dslztx.assist.algorithm.loadbalance.AbstractLoadBalancer;
 import me.dslztx.assist.algorithm.loadbalance.LeastActiveLoadBalancer;
 import me.dslztx.assist.algorithm.loadbalance.LoadBalancerEnum;
+import me.dslztx.assist.util.CollectionAssist;
 import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.ObjectAssist;
 import me.dslztx.assist.util.StringAssist;
@@ -87,11 +89,33 @@ public class RedisService {
         return new RedisFutureProxy<String>(result, client);
     }
 
+    // TODO 最少连接数如何定义呢，异步的根本不能定义这个指标，否则就得依赖于用户的是否get了呢
+    public static RedisFutureProxy<String> msetAsync(String redisClusterName, Map<String, String> keyValues) {
+        if (ObjectAssist.isNull(keyValues) || CollectionAssist.isEmpty(keyValues.keySet())) {
+            return null;
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            return null;
+        }
+
+        RedisFuture<String> result = client.getRedisAsyncConnection().mset(keyValues);
+
+        return new RedisFutureProxy<String>(result, client);
+    }
+
     public static List<String> mgetSync(String redisClusterName, String... keys) {
         throw new UnsupportedOperationException("sync operation is not supported now");
     }
 
     public static String setSync(String redisClusterName, String key, String value) {
+        throw new UnsupportedOperationException("sync operation is not supported now");
+    }
+
+    public static String msetSync(String redisClusterName, Map<String, String> keyValues) {
         throw new UnsupportedOperationException("sync operation is not supported now");
     }
 }

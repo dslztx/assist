@@ -59,48 +59,73 @@ public class RedisService {
     }
 
     public static RedisFutureProxy<List<String>> mgetAsync(String redisClusterName, String... keys) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (ArrayAssist.isEmpty(keys)) {
+            throw new RuntimeException("keys is empty");
+        }
 
         LettuceAsyncClientProxy client =
             loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
 
         if (ObjectAssist.isNull(client)) {
-            return null;
+            throw new RuntimeException("no redis client");
         }
 
         RedisFuture<List<String>> result = client.getRedisAsyncConnection().mget(keys);
-
-        client.incActive();
 
         return new RedisFutureProxy<List<String>>(result, client);
     }
 
     public static RedisFutureProxy<String> setAsync(String redisClusterName, String key, String value, long seconds) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        if (StringAssist.isBlank(value)) {
+            throw new RuntimeException("value is blank");
+        }
 
         LettuceAsyncClientProxy client =
             loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
 
         if (ObjectAssist.isNull(client)) {
-            return null;
+            throw new RuntimeException("no redis client");
         }
 
         RedisFuture<String> result = client.getRedisAsyncConnection().setex(key, seconds, value);
 
-        client.incActive();
-
         return new RedisFutureProxy<String>(result, client);
     }
 
-    // TODO 最少连接数如何定义呢，异步的根本不能定义这个指标，否则就得依赖于用户的是否get了呢
     public static RedisFutureProxy<String> msetAsync(String redisClusterName, Map<String, String> keyValues) {
-        if (ObjectAssist.isNull(keyValues) || CollectionAssist.isEmpty(keyValues.keySet())) {
-            return null;
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (CollectionAssist.isEmpty(keyValues.keySet())) {
+            throw new RuntimeException("keyValues is empty");
+        }
+
+        if (keyValues.containsKey(null)) {
+            keyValues.remove(null);
+
+            if (CollectionAssist.isEmpty(keyValues.keySet())) {
+                throw new RuntimeException("keyValues is empty after excluding null key");
+            }
         }
 
         LettuceAsyncClientProxy client =
             loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
 
         if (ObjectAssist.isNull(client)) {
-            return null;
+            throw new RuntimeException("no redis client");
         }
 
         RedisFuture<String> result = client.getRedisAsyncConnection().mset(keyValues);
@@ -112,7 +137,7 @@ public class RedisService {
         throw new UnsupportedOperationException("sync operation is not supported now");
     }
 
-    public static String setSync(String redisClusterName, String key, String value) {
+    public static String setSync(String redisClusterName, String key, String value, long seconds) {
         throw new UnsupportedOperationException("sync operation is not supported now");
     }
 
@@ -121,18 +146,28 @@ public class RedisService {
     }
 
     public static Long rpush(String redisClusterName, String key, String... values) {
-        if (StringAssist.isEmpty(redisClusterName) || StringAssist.isEmpty(key) || ArrayAssist.isEmpty(values)) {
-            return null;
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        if (ArrayAssist.isEmpty(values)) {
+            throw new RuntimeException("value is empty");
         }
 
         RedisClient redisClient = null;
         try {
             redisClient = RedisClientFactory.obtainRedisClient(redisClusterName);
+            if (ObjectAssist.isNull(redisClient) || ObjectAssist.isNull(redisClient.getJedis())) {
+                throw new RuntimeException("no redis client");
+            }
 
-            if (ObjectAssist.isNotNull(redisClient.getJedis())) {
-                synchronized (redisClient.getJedis()) {
-                    return redisClient.getJedis().rpush(key, values);
-                }
+            // JedisPool有个bug，这里只能用synchronized关键词临时解决
+            synchronized (redisClient.getJedis()) {
+                return redisClient.getJedis().rpush(key, values);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -141,23 +176,28 @@ public class RedisService {
                 redisClient.returnResource();
             }
         }
-
-        return null;
     }
 
     public static Long expire(String redisClusterName, String key, long seconds) {
-        if (StringAssist.isEmpty(redisClusterName) || StringAssist.isEmpty(key)) {
-            return null;
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
         }
 
         RedisClient redisClient = null;
         try {
             redisClient = RedisClientFactory.obtainRedisClient(redisClusterName);
 
-            if (ObjectAssist.isNotNull(redisClient.getJedis())) {
-                synchronized (redisClient.getJedis()) {
-                    return redisClient.getJedis().expire(key, (int)seconds);
-                }
+            if (ObjectAssist.isNull(redisClient) || ObjectAssist.isNull(redisClient.getJedis())) {
+                throw new RuntimeException("no redis client");
+            }
+
+            // JedisPool有个bug，这里只能用synchronized关键词临时解决
+            synchronized (redisClient.getJedis()) {
+                return redisClient.getJedis().expire(key, (int)seconds);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -166,7 +206,5 @@ public class RedisService {
                 redisClient.returnResource();
             }
         }
-
-        return null;
     }
 }

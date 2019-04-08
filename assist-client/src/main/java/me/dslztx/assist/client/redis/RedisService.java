@@ -178,6 +178,39 @@ public class RedisService {
         }
     }
 
+    public static Long sadd(String redisClusterName, String key, String... values) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        if (ArrayAssist.isEmpty(values)) {
+            throw new RuntimeException("value is empty");
+        }
+
+        RedisClient redisClient = null;
+        try {
+            redisClient = RedisClientFactory.obtainRedisClient(redisClusterName);
+            if (ObjectAssist.isNull(redisClient) || ObjectAssist.isNull(redisClient.getJedis())) {
+                throw new RuntimeException("no redis client");
+            }
+
+            // JedisPool有个bug，这里只能用synchronized关键词临时解决
+            synchronized (redisClient.getJedis()) {
+                return redisClient.getJedis().sadd(key, values);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (ObjectAssist.isNotNull(redisClient)) {
+                redisClient.returnResource();
+            }
+        }
+    }
+
     public static Long expire(String redisClusterName, String key, long seconds) {
         if (StringAssist.isBlank(redisClusterName)) {
             throw new RuntimeException("redisClusterName is blank");

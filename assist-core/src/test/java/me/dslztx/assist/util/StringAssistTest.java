@@ -144,4 +144,28 @@ public class StringAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void splitFirstPartTest() {
+        try {
+            Assert.assertTrue(StringAssist.splitFirstPart("hello_world", '_').equals("hello"));
+            Assert.assertTrue(StringAssist.splitFirstPart("hello", '_').equals("hello"));
+            Assert.assertTrue(StringAssist.splitFirstPart("", '_').equals(""));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void splitLastPartTest() {
+        try {
+            Assert.assertTrue(StringAssist.splitLastPart("hello_world", '_').equals("world"));
+            Assert.assertTrue(StringAssist.splitLastPart("hello", '_').equals("hello"));
+            Assert.assertTrue(StringAssist.splitLastPart("", '_').equals(""));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

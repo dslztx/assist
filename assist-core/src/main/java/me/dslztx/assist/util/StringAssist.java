@@ -153,6 +153,32 @@ public class StringAssist {
         }
     }
 
+    public static String splitLastPart(String s, char separator) {
+        if (StringAssist.isBlank(s)) {
+            return "";
+        }
+
+        int index = s.lastIndexOf(separator);
+        if (index == -1) {
+            return s;
+        }
+
+        return s.substring(index + 1);
+    }
+
+    public static String splitFirstPart(String s, char separator) {
+        if (StringAssist.isBlank(s)) {
+            return "";
+        }
+
+        int index = s.indexOf(separator);
+        if (index == -1) {
+            return s;
+        }
+
+        return s.substring(0, index);
+    }
+
     public static String removeChar(String s, char... cc) {
         if (StringAssist.isBlank(s)) {
             return s;

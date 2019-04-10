@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +65,56 @@ public class FileAssist {
         } catch (Throwable e) {
             logger.error("", e);
         }
+    }
+
+    public static File[] listFilesModifyTimeAsc(File dir) {
+        if (ObjectAssist.isNull(dir)) {
+            return null;
+        }
+
+        File[] files = dir.listFiles();
+        if (ArrayAssist.isEmpty(files)) {
+            return files;
+        }
+
+        Arrays.sort(files, new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                long diff = f1.lastModified() - f2.lastModified();
+                if (diff > 0)
+                    return 1;
+                else if (diff == 0)
+                    return 0;
+                else
+                    return -1;
+            }
+        });
+
+        return files;
+    }
+
+    public static File[] listFilesModifyTimeDesc(File dir) {
+        if (ObjectAssist.isNull(dir)) {
+            return null;
+        }
+
+        File[] files = dir.listFiles();
+        if (ArrayAssist.isEmpty(files)) {
+            return files;
+        }
+
+        Arrays.sort(files, new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                long diff = f1.lastModified() - f2.lastModified();
+                if (diff > 0)
+                    return -1;
+                else if (diff == 0)
+                    return 0;
+                else
+                    return 1;
+            }
+        });
+
+        return files;
     }
 
     public static void copyClassPathFileToDst(String name, String destination, boolean overwrite) {

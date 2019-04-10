@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import me.dslztx.assist.pattern.strategy.FileProcessor;
 import me.dslztx.assist.pattern.strategy.IncludeFilter;
 import me.dslztx.assist.util.ArrayAssist;
+import me.dslztx.assist.util.FileAssist;
 import me.dslztx.assist.util.ObjectAssist;
 
 public class FileInDirProcessBackup implements Runnable {
@@ -59,9 +60,18 @@ public class FileInDirProcessBackup implements Runnable {
                     return;
                 }
 
-                File[] files = srcDir.listFiles();
+                File[] files = FileAssist.listFilesModifyTimeDesc(srcDir);
+
+                boolean firstFile = true;
+
                 if (ArrayAssist.isNotEmpty(files)) {
                     for (File file : files) {
+                        if (firstFile) {
+                            // 默认在当前轮次中排除掉修改时间最近的文件，避免操作还在更新中的文件
+                            firstFile = false;
+                            continue;
+                        }
+
                         if (!includeFilter.include(file)) {
                             continue;
                         }

@@ -69,10 +69,13 @@ public class FileInDirProcessBackup implements Runnable {
                         if (firstFile) {
                             // 默认在当前轮次中排除掉修改时间最近的文件，避免操作还在更新中的文件
                             firstFile = false;
+
+                            logger.info("skip file {}", file.getName());
                             continue;
                         }
 
                         if (!includeFilter.include(file)) {
+                            logger.info("skip file {}", file.getName());
                             continue;
                         }
 

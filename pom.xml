@@ -52,6 +52,7 @@
     <mybatis.version>3.3.0</mybatis.version>
     <spring.version>4.0.0.RELEASE</spring.version>
     <reflections.version>0.9.10</reflections.version>
+    <influxdb.client.version>1.5</influxdb.client.version>
 
     <plugin-compiler.version>2.3.2</plugin-compiler.version>
     <plugin-compiler.compile.encoding>UTF-8</plugin-compiler.compile.encoding>
@@ -77,6 +78,12 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.influxdb</groupId>
+        <artifactId>influxdb-java</artifactId>
+        <version>${influxdb.client.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.quartz-scheduler</groupId>
         <artifactId>quartz</artifactId>

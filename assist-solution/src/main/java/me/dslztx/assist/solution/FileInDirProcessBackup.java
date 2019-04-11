@@ -54,8 +54,9 @@ public class FileInDirProcessBackup implements Runnable {
     @Override
     public void run() {
         while (true) {
-            lock.readLock().lock();
             try {
+                lock.readLock().lock();
+
                 if (stop) {
                     return;
                 }
@@ -66,16 +67,18 @@ public class FileInDirProcessBackup implements Runnable {
 
                 if (ArrayAssist.isNotEmpty(files)) {
                     for (File file : files) {
+                        logger.info("to handle file {}", file.getName());
+
                         if (firstFile) {
                             // 默认在当前轮次中排除掉修改时间最近的文件，避免操作还在更新中的文件
                             firstFile = false;
 
-                            logger.info("skip file {}", file.getName());
+                            logger.info("skip first file {}", file.getName());
                             continue;
                         }
 
-                        if (!includeFilter.include(file)) {
-                            logger.info("skip file {}", file.getName());
+                        if (ObjectAssist.isNotNull(includeFilter) && !includeFilter.include(file)) {
+                            logger.info("skip file {} by filter", file.getName());
                             continue;
                         }
 
@@ -93,6 +96,8 @@ public class FileInDirProcessBackup implements Runnable {
                         }
                     }
                 }
+            } catch (Exception e) {
+                logger.error("", e);
             } finally {
                 lock.readLock().unlock();
             }

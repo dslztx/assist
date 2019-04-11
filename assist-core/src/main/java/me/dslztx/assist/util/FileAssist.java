@@ -49,6 +49,27 @@ public class FileAssist {
         return new File(parentDir + File.separator + file);
     }
 
+    public static void deleteSubFilesExclude(File dir, Set<String> excludeFileNames) throws IOException {
+        if (ObjectAssist.isNull(dir)) {
+            return;
+        }
+
+        File[] files = dir.listFiles();
+        if (ArrayAssist.isEmpty(files)) {
+            return;
+        }
+
+        if (ObjectAssist.isNull(excludeFileNames)) {
+            excludeFileNames = new HashSet<String>();
+        }
+
+        for (File file : files) {
+            if (!excludeFileNames.contains(file.getName())) {
+                FileUtils.forceDelete(file);
+            }
+        }
+    }
+
     public static void copyClassPathFileToLocalDir(String name, boolean overwrite) {
         File dst = new File(name);
 

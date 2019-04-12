@@ -20,7 +20,7 @@ public class InfluxDBServiceTest {
         try {
             InfluxDBPoint point = new InfluxDBPoint();
 
-            point.setTimestamp(DateTimeAssist.generate(2019, 4, 10, 10, 20, 10).getTime());
+            point.setTime(DateTimeAssist.generate(2019, 4, 10, 10, 20, 10).getTime());
 
             point.setMeasurement("measurementTest2");
 

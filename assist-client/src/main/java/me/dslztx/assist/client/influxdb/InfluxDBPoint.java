@@ -14,7 +14,7 @@ public class InfluxDBPoint {
 
     private static final Logger logger = LoggerFactory.getLogger(InfluxDBPoint.class);
 
-    private long timestamp = -1;
+    private long time = -1;
 
     private String measurement;
 
@@ -49,7 +49,7 @@ public class InfluxDBPoint {
 
         sb.append(" ");
 
-        sb.append(timestamp);
+        sb.append(time);
 
         return sb.toString();
     }
@@ -78,12 +78,12 @@ public class InfluxDBPoint {
         fields.add(new FieldKeyValue(key, value));
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public long getTime() {
+        return time;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public String getMeasurement() {
@@ -95,8 +95,8 @@ public class InfluxDBPoint {
     }
 
     public boolean isValid() {
-        if (timestamp == -1) {
-            logger.info("timestamp is not set");
+        if (time == -1) {
+            logger.info("time is not set");
             return false;
         }
 

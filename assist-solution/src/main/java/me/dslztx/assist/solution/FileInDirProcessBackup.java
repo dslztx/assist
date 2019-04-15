@@ -116,4 +116,8 @@ public class FileInDirProcessBackup implements Runnable {
             lock.writeLock().unlock();
         }
     }
+
+    public File getDestDir() {
+        return destDir;
+    }
 }

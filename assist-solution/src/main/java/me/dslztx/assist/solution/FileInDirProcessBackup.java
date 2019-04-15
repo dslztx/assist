@@ -39,8 +39,6 @@ public class FileInDirProcessBackup implements Runnable {
 
     IncludeFilter<File> includeFilter;
 
-    volatile boolean stop = false;
-
     ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public FileInDirProcessBackup(File srcDir, File destDir, IncludeFilter<File> includeFilter,
@@ -56,10 +54,6 @@ public class FileInDirProcessBackup implements Runnable {
         while (true) {
             try {
                 lock.readLock().lock();
-
-                if (stop) {
-                    return;
-                }
 
                 File[] files = FileAssist.listFilesModifyTimeDesc(srcDir);
 
@@ -114,10 +108,10 @@ public class FileInDirProcessBackup implements Runnable {
         return simpleDateFormatThreadLocal.get().format(new Date());
     }
 
-    public void stop() {
+    public void changeToNewDestDir(File newDestDir) {
         lock.writeLock().lock();
         try {
-            stop = true;
+            this.destDir = newDestDir;
         } finally {
             lock.writeLock().unlock();
         }

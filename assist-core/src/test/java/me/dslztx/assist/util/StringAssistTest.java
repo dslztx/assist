@@ -100,6 +100,9 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.split(ss, ';', true).length == 1);
             Assert.assertTrue(StringAssist.split(ss, ',', false).length == 4);
             Assert.assertTrue(StringAssist.split(ss, ',', true).length == 2);
+
+            String sss = "100,,53,";
+            Assert.assertTrue(StringAssist.split(sss, ',', false).length == 4);
         } catch (Exception e) {
             logger.error("", e);
             fail();

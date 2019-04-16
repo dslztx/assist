@@ -27,6 +27,28 @@ public class KMP {
         // System.out.println("hello world");
     }
 
+//  void GetNext(int next[])
+//  {
+//    next[0] = -1;
+//    int j = 0;
+//    int k = next[j];
+//
+//    while (j < pLen - 1)
+//    {
+//      //p[k]表示前缀，p[j]表示后缀
+//      if (k == -1 || p[j] == p[k])
+//      {
+//        ++k;
+//        ++j;
+//        next[j] = k;
+//      }
+//      else
+//      {
+//        k = next[k];
+//      }
+//    }
+//  }
+
     public boolean match(String str) {
         return false;
     }

@@ -7,8 +7,6 @@ public class KMP {
 
     int[] fail;
 
-    int[] longestCommon;
-
     public KMP(String pattern) {
         this.pattern = pattern;
 
@@ -27,27 +25,30 @@ public class KMP {
         // System.out.println("hello world");
     }
 
-//  void GetNext(int next[])
-//  {
-//    next[0] = -1;
-//    int j = 0;
-//    int k = next[j];
-//
-//    while (j < pLen - 1)
-//    {
-//      //p[k]表示前缀，p[j]表示后缀
-//      if (k == -1 || p[j] == p[k])
-//      {
-//        ++k;
-//        ++j;
-//        next[j] = k;
-//      }
-//      else
-//      {
-//        k = next[k];
-//      }
-//    }
-//  }
+    // void GetNext(int next[]) {
+    // next[0] = -1;
+    // int j = 0;
+    // int k = next[j];
+    //
+    // for (int j = 1; j < pattern.length();) {
+    // {
+    // // p[k]表示前缀，p[j]表示后缀
+    // if (k == -1 || pattern.charAt(j - 1) == pattern.charAt(k)) {
+    // ++k;
+    //
+    // if (pattern.charAt(j) != pattern.charAt(k)) {
+    // next[j] = k;
+    // } else {
+    // next[j] = next[k];
+    // }
+    //
+    // j++;
+    // } else {
+    // k = next[k];
+    // }
+    // }
+    // }
+    // }
 
     public boolean match(String str) {
         return false;
@@ -63,8 +64,11 @@ public class KMP {
 
     private void buildFailOptimize() {}
 
+    /**
+     * 分为3个步骤，可读性强
+     */
     private void buildFail() {
-        longestCommon = new int[pattern.length()];
+        int[] longestCommon = new int[pattern.length()];
 
         longestCommon[0] = 0;
 
@@ -90,6 +94,14 @@ public class KMP {
         }
 
         fail[0] = -1;
+
+        for (int j = 0; j < pattern.length(); j++) {
+            if (fail[j] != -1 && pattern.charAt(j) == pattern.charAt(fail[j])) {
+                fail[j] = fail[fail[j]];
+            }
+        }
+
+        return;
     }
 
 }

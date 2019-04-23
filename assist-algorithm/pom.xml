@@ -22,5 +22,9 @@
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.hankcs</groupId>
+      <artifactId>aho-corasick-double-array-trie</artifactId>
+    </dependency>
   </dependencies>
 </project>

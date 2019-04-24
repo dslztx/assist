@@ -38,7 +38,7 @@ public class DaoFactory {
     private static ConcurrentHashMap<DataSource, SqlSessionFactory> sqlSessionFactoryCache =
         new ConcurrentHashMap<DataSource, SqlSessionFactory>();
 
-    public static <T extends Dao> T obtainDao(DataSource dataSource, Class<T> clz) {
+    public static synchronized <T extends Dao> T obtainDao(DataSource dataSource, Class<T> clz) {
         if (isNull(dataSource)) {
             throw new RuntimeException("no datasource");
         }
@@ -59,6 +59,7 @@ public class DaoFactory {
                 obj.setDataSource(dataSource);
                 obj.setSqlSessionFactory(sqlSessionFactoryCache.get(dataSource));
 
+                // 需要考虑并发情形，否则很容易导致重复生成Dao实例
                 daoInstanceCache.get(dataSource).putIfAbsent(clz, obj);
             } catch (Exception e) {
                 logger.error("", e);
@@ -70,6 +71,7 @@ public class DaoFactory {
 
     private static void injectCacheIfNotExist(DataSource dataSource) {
         if (isNull(sqlSessionFactoryCache.get(dataSource))) {
+            // 需要考虑并发情形，否则很容易导致重复generateSqlSessionFactory(dataSource)，进而重复扫描mapper多次
             sqlSessionFactoryCache.putIfAbsent(dataSource, generateSqlSessionFactory(dataSource));
         }
 
@@ -114,6 +116,9 @@ public class DaoFactory {
     }
 
     private static void scanRegisterMapper(Configuration configuration, String[] mapperPathPrefixArray) {
+        logger.info("the mapper scan path is [{}]", StringAssist.joinUseSeparator(mapperPathPrefixArray, ','));
+
+        // 非线程安全的，详见“https://github.com/ronmamo/reflections/issues/81”
         Reflections reflections = new Reflections((Object[])mapperPathPrefixArray);
 
         Set<Class<? extends Mapper>> subTypes = reflections.getSubTypesOf(Mapper.class);
@@ -121,6 +126,7 @@ public class DaoFactory {
         if (CollectionAssist.isNotEmpty(subTypes)) {
             for (Class clz : subTypes) {
                 if (clz.isInterface()) {
+                    logger.info("mapper class {} is scanned and added", clz.getCanonicalName());
                     configuration.addMapper(clz);
                 }
             }

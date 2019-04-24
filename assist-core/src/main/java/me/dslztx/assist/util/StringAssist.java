@@ -251,6 +251,21 @@ public class StringAssist {
         return sb.toString();
     }
 
+    public static String joinUseSeparator(String[] strArray, char separator) {
+        if (ArrayAssist.isEmpty(strArray)) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String element : strArray) {
+            sb.append(element);
+            sb.append(separator);
+        }
+
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
+
     /**
      * 参考日志框架的格式字符串语义
      */

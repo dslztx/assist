@@ -15,6 +15,13 @@
     <dependencies>
         <dependency>
             <groupId>me.dslztx</groupId>
+            <artifactId>assist-log</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>me.dslztx</groupId>
             <artifactId>assist-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -81,18 +88,6 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

@@ -15,10 +15,6 @@ public class BeanAssistTest {
 
     private static final Logger logger = LoggerFactory.getLogger(BeanAssistTest.class);
 
-    static {
-        LoggerAssist.openLogAllConsole();
-    }
-
     @Test
     public void convertFromMap() {
         try {

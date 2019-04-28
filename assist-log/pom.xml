@@ -13,6 +13,12 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!--由于需要特殊处理，因此未桥接转发使用Java Logging API打印的日志-->
+        <!--<dependency>-->
+        <!--<groupId>org.slf4j</groupId>-->
+        <!--<artifactId>jul-to-slf4j</artifactId>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>

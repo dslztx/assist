@@ -17,6 +17,7 @@
     <module>assist-pattern-strategy</module>
     <module>assist-server</module>
     <module>assist-solution</module>
+    <module>assist-log</module>
   </modules>
 
   <url>https://github.com/dslztx/assist</url>
@@ -34,6 +35,7 @@
     <!--version-->
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
+    <log4j2.version>2.3</log4j2.version>
     <junit.version>4.10</junit.version>
     <quartz.version>2.2.3</quartz.version>
     <commons-codec.version>1.10</commons-codec.version>
@@ -212,14 +214,34 @@
 
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
+        <artifactId>log4j-over-slf4j</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${log4j.version}</version>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+      <!--log4j2的核心包：log4j-ap和log4j-core-->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j2.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${log4j2.version}</version>
+      </dependency>
+
+      <!--slf4j与log4j2的桥接-->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j2.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

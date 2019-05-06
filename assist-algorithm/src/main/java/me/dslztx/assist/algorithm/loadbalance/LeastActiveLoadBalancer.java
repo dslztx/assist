@@ -3,6 +3,9 @@ package me.dslztx.assist.algorithm.loadbalance;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 参考Dubbo的“最少活跃数”负载均衡算法
+ */
 public class LeastActiveLoadBalancer<T extends ServiceProvider> extends AbstractLoadBalancer<T> {
 
     private final Random random = new Random();

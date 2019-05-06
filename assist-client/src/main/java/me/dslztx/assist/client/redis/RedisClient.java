@@ -38,6 +38,23 @@ public class RedisClient {
         }
     }
 
+    /**
+     * 当使用Jedis时，如果出现JedisConnectionException异常，那么使用`returnBrokenResource()`方法归还该Jedis对象，否则后续再使用该Jedis的时候，容易出现串包现象
+     * 详细描述见：https://juejin.im/entry/5902b80b61ff4b0066923b86
+     */
+    public void returnBrokenResource() {
+        try {
+            if (jedis != null && jedisPoolProxy != null) {
+                jedisPoolProxy.getPool().returnBrokenResource(jedis);
+            }
+        } catch (Exception e) {
+            logger.error("", e);
+        } finally {
+            jedis = null;
+            jedisPoolProxy = null;
+        }
+    }
+
     public Jedis getJedis() {
         return jedis;
     }

@@ -1,10 +1,9 @@
 package me.dslztx.assist.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -23,6 +22,38 @@ public class CollectionAssistTest {
             List<String> strList = new ArrayList<String>();
             strList.add("hello");
             assertFalse(CollectionAssist.isEmpty(strList));
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void convertToIntArray() {
+        try {
+            List<Integer> a = new ArrayList<Integer>();
+            a.add(1);
+            a.add(2);
+            a.add(3);
+
+            Assert.assertTrue(Arrays.equals(CollectionAssist.convertToIntArray(a), new int[] {1, 2, 3}));
+
+            List<Integer> b = new ArrayList<Integer>();
+            Assert.assertTrue(CollectionAssist.convertToIntArray(b).length == 0);
+
+            List<Integer> c = new ArrayList<Integer>();
+            c.add(1);
+            c.add(2);
+            c.add(null);
+            c.add(3);
+
+            Assert.assertTrue(Arrays.equals(CollectionAssist.convertToIntArray(c), new int[] {1, 2, 3}));
+
+            List<Integer> d = new ArrayList<Integer>();
+            d.add(null);
+            d.add(null);
+            d.add(null);
+
+            Assert.assertTrue(CollectionAssist.convertToIntArray(d).length == 0);
         } catch (Exception e) {
             fail();
         }

@@ -1,5 +1,6 @@
 package me.dslztx.assist.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import me.dslztx.assist.pattern.strategy.ExcludeFilter;
@@ -22,6 +23,28 @@ public class CollectionAssist {
             return true;
         }
         return false;
+    }
+
+    public static int[] convertToIntArray(Collection<Integer> collection) {
+        if (CollectionAssist.isEmpty(collection)) {
+            return new int[0];
+        }
+
+        int[] intArray = new int[collection.size()];
+        int size = 0;
+        for (Integer e : collection) {
+            if (ObjectAssist.isNull(e)) {
+                continue;
+            }
+
+            intArray[size++] = e;
+        }
+
+        if (size == intArray.length) {
+            return intArray;
+        } else {
+            return Arrays.copyOfRange(intArray, 0, size);
+        }
     }
 
     public static <T> void filterExclude(Collection<T> source, ExcludeFilter<T> filter, Collection<T> to) {

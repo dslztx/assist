@@ -4,12 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.io.FileUtils;
@@ -124,6 +119,10 @@ public class FileAssist {
         }
 
         Arrays.sort(files, new Comparator<File>() {
+
+            /**
+             * 返回-1，表示f1在f2之前；返回1，表示f1在f2之后；返回0，表示f1和f2相等
+             */
             public int compare(File f1, File f2) {
                 long diff = f1.lastModified() - f2.lastModified();
                 if (diff > 0)

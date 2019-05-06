@@ -121,7 +121,7 @@ public class FileAssist {
         Arrays.sort(files, new Comparator<File>() {
 
             /**
-             * 返回-1，表示f1在f2之前；返回1，表示f1在f2之后；返回0，表示f1和f2相等
+             * 返回-1，表示f1在f2之前；返回1，表示f1在f2之后；返回0，表示f1和f2相等，两者的前后关系取决于采用的排序算法是否稳定
              */
             public int compare(File f1, File f2) {
                 long diff = f1.lastModified() - f2.lastModified();

@@ -89,13 +89,13 @@ public class ZooKeeperService {
         }
     }
 
-    public static void heartbeat(String beatPath, String content) {
+    public static void heartbeat(String beatPath, String value) {
         if (StringAssist.isBlank(beatPath)) {
             throw new RuntimeException("beatPath is blank");
         }
 
-        if (ObjectAssist.isNull(content)) {
-            throw new RuntimeException("content is null");
+        if (ObjectAssist.isNull(value)) {
+            throw new RuntimeException("value is null");
         }
 
         try {
@@ -107,7 +107,7 @@ public class ZooKeeperService {
                 logger.info("delete first successfully if exists");
             }
 
-            curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath, content.getBytes());
+            curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath, value.getBytes());
 
             logger.info("create successfully");
         } catch (Exception e) {

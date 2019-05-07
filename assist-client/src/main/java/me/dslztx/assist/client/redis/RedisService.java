@@ -12,11 +12,7 @@ import com.lambdaworks.redis.RedisFuture;
 import me.dslztx.assist.algorithm.loadbalance.AbstractLoadBalancer;
 import me.dslztx.assist.algorithm.loadbalance.LeastActiveLoadBalancer;
 import me.dslztx.assist.algorithm.loadbalance.LoadBalancerEnum;
-import me.dslztx.assist.util.ArrayAssist;
-import me.dslztx.assist.util.CollectionAssist;
-import me.dslztx.assist.util.ConfigLoadAssist;
-import me.dslztx.assist.util.ObjectAssist;
-import me.dslztx.assist.util.StringAssist;
+import me.dslztx.assist.util.*;
 
 public class RedisService {
 
@@ -77,6 +73,27 @@ public class RedisService {
         RedisFuture<List<String>> result = client.getRedisAsyncConnection().mget(keys);
 
         return new RedisFutureProxy<List<String>>(result, client);
+    }
+
+    public static RedisFutureProxy<String> getAsync(String redisClusterName, String key) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<String> result = client.getRedisAsyncConnection().get(key);
+
+        return new RedisFutureProxy<String>(result, client);
     }
 
     public static RedisFutureProxy<String> setAsync(String redisClusterName, String key, String value, long seconds) {

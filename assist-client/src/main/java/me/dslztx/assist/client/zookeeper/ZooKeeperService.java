@@ -169,4 +169,20 @@ public class ZooKeeperService {
             logger.error("", e);
         }
     }
+
+    public static String obtainData(String path) {
+        if (StringAssist.isBlank(path)) {
+            throw new RuntimeException("path is blank");
+        }
+
+        try {
+            CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
+
+            return new String(curatorFramework.getData().forPath(path));
+        } catch (Exception e) {
+            logger.error("", e);
+
+            return null;
+        }
+    }
 }

@@ -11,13 +11,14 @@ import org.slf4j.LoggerFactory;
 import me.dslztx.assist.util.ObjectAssist;
 import me.dslztx.assist.util.StringAssist;
 
-public class ZooKeeperAssist {
+public class ZooKeeperService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ZooKeeperAssist.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZooKeeperService.class);
 
-    public static Map<String, String> traverseLeafNode(CuratorFramework curatorFramework, String rootPath) {
+    public static Map<String, String> traverseLeafNode(String rootPath) {
         Map<String, String> result = new HashMap<String, String>();
-        if (ObjectAssist.isNull(curatorFramework) || StringAssist.isBlank(rootPath)) {
+
+        if (StringAssist.isBlank(rootPath)) {
             return result;
         }
 
@@ -37,6 +38,12 @@ public class ZooKeeperAssist {
         }
 
         rootPath = rootPath.substring(0, pos + 1);
+
+        CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
+
+        if (ObjectAssist.isNull(curatorFramework)) {
+            return result;
+        }
 
         try {
             traverseLeafNode0(curatorFramework, rootPath, result);
@@ -68,13 +75,11 @@ public class ZooKeeperAssist {
                 // 如果存在先删除，针对“这个路径是上一个会话临时创建的，该会话即将结束，同时该临时路径即将被删除”的情形
                 curatorFramework.delete().forPath(beatPath);
                 logger.info("delete first successfully if exists");
-
-                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath);
-                logger.info("create successfully");
-            } else {
-                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath);
-                logger.info("create successfully");
             }
+
+            curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath);
+
+            logger.info("create successfully");
         } catch (Exception e) {
             logger.error("", e);
         }
@@ -88,13 +93,66 @@ public class ZooKeeperAssist {
                 // 如果存在先删除，针对“这个路径是上一个会话临时创建的，该会话即将结束，同时该临时路径即将被删除”的情形
                 curatorFramework.delete().forPath(beatPath);
                 logger.info("delete first successfully if exists");
-
-                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath, content.getBytes());
-                logger.info("create successfully");
-            } else {
-                curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath, content.getBytes());
-                logger.info("create successfully");
             }
+
+            curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(beatPath, content.getBytes());
+
+            logger.info("create successfully");
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+    }
+
+    public static void create(String path, String value) {
+        if (StringAssist.isBlank(path)) {
+            throw new RuntimeException("path is blank");
+        }
+
+        if (ObjectAssist.isNull(value)) {
+            throw new RuntimeException("value is null");
+        }
+
+        try {
+            CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
+
+            curatorFramework.create().withMode(CreateMode.PERSISTENT).forPath(path, value.getBytes());
+
+            logger.info("create {} successfully", path);
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+    }
+
+    public static void delete(String path) {
+        if (StringAssist.isBlank(path)) {
+            throw new RuntimeException("path is blank");
+        }
+
+        try {
+            CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
+
+            curatorFramework.delete().forPath(path);
+
+            logger.info("delete {} successfully", path);
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+    }
+
+    public static void update(String path, String value) {
+        if (StringAssist.isBlank(path)) {
+            throw new RuntimeException("path is blank");
+        }
+
+        if (ObjectAssist.isNull(value)) {
+            throw new RuntimeException("value is null");
+        }
+        try {
+            CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
+
+            curatorFramework.setData().forPath(path, value.getBytes());
+
+            logger.info("update {} successfully", path);
         } catch (Exception e) {
             logger.error("", e);
         }

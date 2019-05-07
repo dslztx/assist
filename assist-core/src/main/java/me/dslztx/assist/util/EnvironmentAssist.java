@@ -57,9 +57,25 @@ public class EnvironmentAssist {
         }
     }
 
+    /**
+     * @return 返回执行java命令时，所在的目录
+     */
+    public static String obtainExecuteCWD() {
+        return System.getProperty("user.dir");
+    }
+
+    /**
+     * @return 返回类路径
+     */
+    public static String obtainClassPath() {
+        return System.getProperty("java.class.path");
+    }
+
     public static void main(String[] args) {
         System.out.println(obtainLongMachineName());
         System.out.println(obtainShortMachineName());
+        System.out.println(obtainExecuteCWD());
+        System.out.println(obtainClassPath());
     }
 
 }

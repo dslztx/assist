@@ -68,6 +68,10 @@ public class ZooKeeperService {
     }
 
     public static void heartbeat(String beatPath) {
+        if (StringAssist.isBlank(beatPath)) {
+            throw new RuntimeException("beatPath is blank");
+        }
+
         try {
             CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
 
@@ -86,6 +90,14 @@ public class ZooKeeperService {
     }
 
     public static void heartbeat(String beatPath, String content) {
+        if (StringAssist.isBlank(beatPath)) {
+            throw new RuntimeException("beatPath is blank");
+        }
+
+        if (ObjectAssist.isNull(content)) {
+            throw new RuntimeException("content is null");
+        }
+
         try {
             CuratorFramework curatorFramework = ZooKeeperClientFactory.obtainZooKeeperClient();
 

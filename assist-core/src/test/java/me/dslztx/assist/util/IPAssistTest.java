@@ -62,4 +62,24 @@ public class IPAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void isLanIPv4Test() {
+        try {
+            Assert.assertTrue(IPAssist.isLanIPv4("10.110.20.22"));
+            Assert.assertTrue(IPAssist.isLanIPv4("172.16.20.52"));
+            Assert.assertTrue(IPAssist.isLanIPv4("172.31.20.52"));
+            Assert.assertTrue(IPAssist.isLanIPv4("192.168.20.22"));
+
+            Assert.assertFalse(IPAssist.isLanIPv4("10.110.20.522"));
+            Assert.assertFalse(IPAssist.isLanIPv4("172.32.20.52"));
+            Assert.assertFalse(IPAssist.isLanIPv4("172.15.20.52"));
+            Assert.assertFalse(IPAssist.isLanIPv4("173.15.20.52"));
+            Assert.assertFalse(IPAssist.isLanIPv4("192.169.20.52"));
+            Assert.assertFalse(IPAssist.isLanIPv4("193.168.20.52"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

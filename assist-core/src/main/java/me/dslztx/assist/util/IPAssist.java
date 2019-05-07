@@ -81,4 +81,22 @@ public class IPAssist {
 
         return sb.toString();
     }
+
+    public static boolean isLanIPv4(String ip) {
+        if (StringAssist.isBlank(ip)) {
+            return false;
+        }
+
+        if (!IPV4_PATTERN.matcher(ip).matches()) {
+            return false;
+        }
+
+        String[] ss = StringAssist.split(ip, '.', false);
+
+        // 通过上面的正则表达式验证，这里不会再报错
+        int ip0 = Integer.valueOf(ss[0]);
+        int ip1 = Integer.valueOf(ss[1]);
+
+        return ip0 == 10 || (ip0 == 172 && (ip1 >= 16 && ip1 <= 31)) || (ip0 == 192 && ip1 == 168);
+    }
 }

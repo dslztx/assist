@@ -1,10 +1,6 @@
 package me.dslztx.assist.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author dslztx
@@ -269,7 +265,7 @@ public class StringAssist {
     /**
      * 参考日志框架的格式字符串语义
      */
-    public static String format(String formatStr, String... elements) {
+    public static String format(String formatStr, Object... elements) {
         if (StringAssist.isBlank(formatStr)) {
             return formatStr;
         }
@@ -278,9 +274,9 @@ public class StringAssist {
             return formatStr;
         }
 
-        String[] elementArray = new String[elements.length];
+        Object[] elementArray = new Object[elements.length];
         int eIndex = 0;
-        for (String element : elements) {
+        for (Object element : elements) {
             elementArray[eIndex++] = element;
         }
 
@@ -294,6 +290,7 @@ public class StringAssist {
 
                     if (eIndex == elementArray.length) {
                         sb.append(formatStr.substring(index + 1));
+                        return sb.toString();
                     }
                 } else {
                     sb.append(formatStr.charAt(index));

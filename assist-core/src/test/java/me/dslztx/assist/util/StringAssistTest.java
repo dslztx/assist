@@ -1,9 +1,6 @@
 package me.dslztx.assist.util;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -127,6 +124,8 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.format("hello {} world{", "a", "b").equals("hello a world{"));
             Assert.assertTrue(StringAssist.format("hello {} worl{fd", "a", "b").equals("hello a worl{fd"));
             Assert.assertTrue(StringAssist.format("hello {} worl{fd").equals("hello {} worl{fd"));
+
+            Assert.assertTrue(StringAssist.format("hello {} world {}", "a").equals("hello a world {}"));
         } catch (Exception e) {
             logger.error("", e);
             fail();

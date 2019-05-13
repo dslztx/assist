@@ -3,7 +3,23 @@ package me.dslztx.assist.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO
+import me.dslztx.assist.util.StringAssist;
+
+/**
+ * <p>
+ * KMP算法：相较于朴素匹配，根据模式串的自身特点，构造一个fail数组，表征对于主串的p位，如果模式串的q位匹配失败，应该再尝试模式串的fail[q]位
+ * </p>
+ * 
+ * <p>
+ * 参考1中构造next数组（即这里的fail数组）时，几个步骤合并在一起，虽然性能有点提升，代码也更加简练，但是可读性差。这里是作者参考自己实现的，buildFail()是2个步骤，buildFailOptimize()是3个步骤
+ * </p>
+ * 
+ * <br/>
+ * 参考：<br/>
+ * 1）https://blog.csdn.net/v_july_v/article/details/7041827<br/>
+ * 2）http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html <br/>
+ * 
+ */
 public class KMP {
 
     String pattern;
@@ -11,63 +27,27 @@ public class KMP {
     int[] fail;
 
     public KMP(String pattern) {
+        if (StringAssist.isBlank(pattern)) {
+            throw new RuntimeException("pattern can not be blank");
+        }
+
         this.pattern = pattern;
 
-        buildFail();
-
-        // buildFailOptimize();
+        // buildFail();
+        buildFailOptimize();
     }
-
-    public static void main(String[] args) {
-        // KMP kmp = new KMP();
-        // kmp.t = "ABCDABD".toCharArray();
-        //
-        // kmp.lent = 7;
-        // kmp.nextval = new int[8];
-        //
-        // System.out.println("hello world");
-    }
-
-    // void GetNextval(char* p, int next[])
-    // {
-    // int pLen = strlen(p);
-    // next[0] = -1;
-    // int k = -1;
-    // int j = 0;
-    // while (j < pLen - 1)
-    // {
-    // //p[k]表示前缀，p[j]表示后缀
-    // if (k == -1 || p[j] == p[k])
-    // {
-    // ++j;
-    // ++k;
-    // //较之前next数组求法，改动在下面4行
-    // if (p[j] != p[k])
-    // next[j] = k; //之前只有这一行
-    // else
-    // //因为不能出现p[j] = p[ next[j ]]，所以当出现时需要继续递归，k = next[k] = next[next[k]]
-    // next[j] = next[k];
-    // }
-    // else
-    // {
-    // k = next[k];
-    // }
-    // }
-    //
-    // int len=-1;
-    // for(int j=1;j<pLen-1;j++){
-    // while(len>-1 && )
-    // }
-    // }
 
     public boolean match(String str) {
+        if (StringAssist.isBlank(str)) {
+            return false;
+        }
+
         int i = 0;
         int j = 0;
         while (i < str.length() && j < pattern.length()) {
-            if (str.charAt(i) == str.charAt(j)) {
+            if (str.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
-
                 if (j == pattern.length()) {
                     return true;
                 }
@@ -84,16 +64,20 @@ public class KMP {
         return false;
     }
 
-    public int firstMatchIndex(String str) {
+    public PattternHit firstMatch(String str) {
+        if (StringAssist.isBlank(str)) {
+            return null;
+        }
+
         int i = 0;
         int j = 0;
         while (i < str.length() && j < pattern.length()) {
-            if (str.charAt(i) == str.charAt(j)) {
+            if (str.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
 
                 if (j == pattern.length()) {
-                    return i - pattern.length();
+                    return new PattternHit(i - pattern.length(), i - 1, pattern);
                 }
             } else {
                 if (fail[j] == -1) {
@@ -105,21 +89,25 @@ public class KMP {
             }
         }
 
-        return -1;
+        return null;
     }
 
-    public int[] wholeMatchIndexes(String str) {
-        List<Integer> result = new ArrayList<Integer>();
+    public List<PattternHit> matchAll(String str) {
+        List<PattternHit> result = new ArrayList<PattternHit>();
+
+        if (StringAssist.isBlank(str)) {
+            return result;
+        }
 
         int i = 0;
         int j = 0;
         while (i < str.length() && j < pattern.length()) {
-            if (str.charAt(i) == str.charAt(j)) {
+            if (str.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
 
                 if (j == pattern.length()) {
-                    result.add(i - pattern.length());
+                    result.add(new PattternHit(i - pattern.length(), i - 1, pattern));
 
                     j = 0;
                 }
@@ -133,26 +121,28 @@ public class KMP {
             }
         }
 
-        int[] result2 = new int[result.size()];
-        for (int index = 0; index < result.size(); index++) {
-            result2[index++] = result.get(index);
-        }
-
-        return result2;
+        return result;
     }
 
-    public int[] wholeMatchIndexesOverride(String str) {
-        List<Integer> result = new ArrayList<Integer>();
+    /**
+     * 允许重合匹配
+     */
+    public List<PattternHit> matchAllCoincide(String str) {
+        List<PattternHit> result = new ArrayList<PattternHit>();
+
+        if (StringAssist.isBlank(str)) {
+            return result;
+        }
 
         int i = 0;
         int j = 0;
         while (i < str.length() && j < pattern.length()) {
-            if (str.charAt(i) == str.charAt(j)) {
+            if (str.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
 
                 if (j == pattern.length()) {
-                    result.add(i - pattern.length());
+                    result.add(new PattternHit(i - pattern.length(), i - 1, pattern));
 
                     i = i - pattern.length() + 1;
                     j = 0;
@@ -167,50 +157,8 @@ public class KMP {
             }
         }
 
-        int[] result2 = new int[result.size()];
-        for (int index = 0; index < result.size(); index++) {
-            result2[index++] = result.get(index);
-        }
-
-        return result2;
+        return result;
     }
-
-    // private void buildFailOptimize() {
-    // next[0] = -1;
-    // int j = 0;
-    // int k = next[j];
-    //
-    // int len = -1;
-    // for (int j = 1; j < pattern.length() - 1; j++) {
-    // {
-    //
-    // while (len >= 0 && (pattern.charAt(j) != pattern.charAt(len))) {
-    // len = next[k];
-    // }
-    //
-    // if (len == -1) {
-    // next[j + 1] = -1;
-    // } else {
-    // next[j + 1] = len + 1;
-    // len = len + 1;
-    // }
-    // // p[k]表示前缀，p[j]表示后缀
-    // if (k == -1 || pattern.charAt(j - 1) == pattern.charAt(k)) {
-    // ++k;
-    //
-    // if (pattern.charAt(j) != pattern.charAt(k)) {
-    // next[j] = k;
-    // } else {
-    // next[j] = next[k];
-    // }
-    //
-    // j++;
-    // } else {
-    // k = next[k];
-    // }
-    // }
-    // }
-    // }
 
     /**
      * 分为3个步骤，可读性强，易理解
@@ -245,13 +193,45 @@ public class KMP {
 
         fail[0] = -1;
 
-        for (int j = 0; j < pattern.length(); j++) {
-            if (fail[j] != -1 && pattern.charAt(j) == pattern.charAt(fail[j])) {
-                fail[j] = fail[fail[j]];
-            }
-        }
+        optimizeFailTable(fail);
 
         return;
     }
 
+    /**
+     * 简化为两个步骤，可读性较强，较易理解<br/>
+     * 基于buildFail()
+     */
+    private void buildFailOptimize() {
+        fail = new int[pattern.length()];
+
+        fail[0] = -1;
+
+        int len;
+
+        // 构造下一个
+        for (int j = 0; j < pattern.length() - 1; j++) {
+            len = fail[j];
+
+            while (len != -1 && (pattern.charAt(len) != pattern.charAt(j))) {
+                len = fail[len];
+            }
+
+            fail[j + 1] = len + 1;
+        }
+
+        optimizeFailTable(fail);
+    }
+
+    private void optimizeFailTable(int[] fail) {
+        for (int j = 0; j < fail.length; j++) {
+            if (fail[j] == -1) {
+                continue;
+            }
+
+            if (pattern.charAt(j) == pattern.charAt(fail[j])) {
+                fail[j] = fail[fail[j]];
+            }
+        }
+    }
 }

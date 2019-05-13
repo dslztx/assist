@@ -40,8 +40,8 @@ public class ACAutomaton {
         acAutomaton.build(map);
     }
 
-    public List<Hit> hit(String text) {
-        List<Hit> result = new ArrayList<Hit>();
+    public List<PatternHit> hit(String text) {
+        List<PatternHit> result = new ArrayList<PatternHit>();
 
         if (StringAssist.isBlank(text)) {
             return result;
@@ -51,7 +51,7 @@ public class ACAutomaton {
 
         if (CollectionAssist.isNotEmpty(hitList)) {
             for (AhoCorasickDoubleArrayTrie.Hit<String> hit : hitList) {
-                result.add(new Hit(hit.begin, hit.end, hit.value));
+                result.add(new PatternHit(hit.begin, hit.end, hit.value));
             }
         }
 

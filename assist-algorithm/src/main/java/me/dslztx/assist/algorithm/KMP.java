@@ -64,7 +64,7 @@ public class KMP {
         return false;
     }
 
-    public PattternHit firstMatch(String str) {
+    public PatternHit firstMatch(String str) {
         if (StringAssist.isBlank(str)) {
             return null;
         }
@@ -77,7 +77,7 @@ public class KMP {
                 j++;
 
                 if (j == pattern.length()) {
-                    return new PattternHit(i - pattern.length(), i - 1, pattern);
+                    return new PatternHit(i - pattern.length(), i - 1, pattern);
                 }
             } else {
                 if (fail[j] == -1) {
@@ -92,8 +92,8 @@ public class KMP {
         return null;
     }
 
-    public List<PattternHit> matchAll(String str) {
-        List<PattternHit> result = new ArrayList<PattternHit>();
+    public List<PatternHit> matchAll(String str) {
+        List<PatternHit> result = new ArrayList<PatternHit>();
 
         if (StringAssist.isBlank(str)) {
             return result;
@@ -107,7 +107,7 @@ public class KMP {
                 j++;
 
                 if (j == pattern.length()) {
-                    result.add(new PattternHit(i - pattern.length(), i - 1, pattern));
+                    result.add(new PatternHit(i - pattern.length(), i - 1, pattern));
 
                     j = 0;
                 }
@@ -127,8 +127,8 @@ public class KMP {
     /**
      * 允许重合匹配
      */
-    public List<PattternHit> matchAllCoincide(String str) {
-        List<PattternHit> result = new ArrayList<PattternHit>();
+    public List<PatternHit> matchAllCoincide(String str) {
+        List<PatternHit> result = new ArrayList<PatternHit>();
 
         if (StringAssist.isBlank(str)) {
             return result;
@@ -142,7 +142,7 @@ public class KMP {
                 j++;
 
                 if (j == pattern.length()) {
-                    result.add(new PattternHit(i - pattern.length(), i - 1, pattern));
+                    result.add(new PatternHit(i - pattern.length(), i - 1, pattern));
 
                     i = i - pattern.length() + 1;
                     j = 0;

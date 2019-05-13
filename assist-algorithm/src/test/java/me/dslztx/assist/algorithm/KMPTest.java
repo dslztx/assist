@@ -30,8 +30,8 @@ public class KMPTest {
         try {
             KMP kmp = new KMP("hello world");
 
-            PattternHit hit = kmp.firstMatch("12345hello world678910");
-            Assert.assertTrue(hit.equals(new PattternHit(5, 15, "hello world")));
+            PatternHit hit = kmp.firstMatch("12345hello world678910");
+            Assert.assertTrue(hit.equals(new PatternHit(5, 15, "hello world")));
         } catch (Exception e) {
             logger.error("", e);
             fail();
@@ -43,9 +43,9 @@ public class KMPTest {
         try {
             KMP kmp = new KMP("hhh");
 
-            List<PattternHit> hits = kmp.matchAll("12345hhhhworld");
+            List<PatternHit> hits = kmp.matchAll("12345hhhhworld");
 
-            Assert.assertTrue(hits.get(0).equals(new PattternHit(5, 7, "hhh")));
+            Assert.assertTrue(hits.get(0).equals(new PatternHit(5, 7, "hhh")));
         } catch (Exception e) {
             logger.error("", e);
             fail();
@@ -57,17 +57,17 @@ public class KMPTest {
         try {
             KMP kmp = new KMP("hello world");
 
-            List<PattternHit> hits = kmp.matchAllCoincide("12345hello world678910hello world");
+            List<PatternHit> hits = kmp.matchAllCoincide("12345hello world678910hello world");
 
-            Assert.assertTrue(hits.get(0).equals(new PattternHit(5, 15, "hello world")));
-            Assert.assertTrue(hits.get(1).equals(new PattternHit(22, 32, "hello world")));
+            Assert.assertTrue(hits.get(0).equals(new PatternHit(5, 15, "hello world")));
+            Assert.assertTrue(hits.get(1).equals(new PatternHit(22, 32, "hello world")));
 
             KMP kmp2 = new KMP("hhh");
 
-            List<PattternHit> hits2 = kmp2.matchAllCoincide("12345hhhhworld");
+            List<PatternHit> hits2 = kmp2.matchAllCoincide("12345hhhhworld");
 
-            Assert.assertTrue(hits2.get(0).equals(new PattternHit(5, 7, "hhh")));
-            Assert.assertTrue(hits2.get(1).equals(new PattternHit(6, 8, "hhh")));
+            Assert.assertTrue(hits2.get(0).equals(new PatternHit(5, 7, "hhh")));
+            Assert.assertTrue(hits2.get(1).equals(new PatternHit(6, 8, "hhh")));
         } catch (Exception e) {
             logger.error("", e);
             fail();

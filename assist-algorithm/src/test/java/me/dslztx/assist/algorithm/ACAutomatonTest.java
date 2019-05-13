@@ -23,10 +23,10 @@ public class ACAutomatonTest {
 
             ACAutomaton automaton = new ACAutomaton(keywordList);
 
-            List<Hit> hitList = automaton.hit("uhers");
+            List<PatternHit> patternHitList = automaton.hit("uhers");
 
-            Assert.assertTrue(hitList.get(0).toString().equals("[1:3]=he"));
-            Assert.assertTrue(hitList.get(1).toString().equals("[1:5]=hers"));
+            Assert.assertTrue(patternHitList.get(0).toString().equals("[1:3]=he"));
+            Assert.assertTrue(patternHitList.get(1).toString().equals("[1:5]=hers"));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

@@ -2,11 +2,17 @@ package me.dslztx.assist.util.metric;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class AverageCounter {
+public class RTCounter {
+
+    final Object lock = new Object();
 
     AtomicLong cnt = new AtomicLong(0);
 
     AtomicLong timeCost = new AtomicLong(0);
+
+    long maxRT = Long.MIN_VALUE;
+
+    long minRT = Long.MAX_VALUE;
 
     public AtomicLong getCnt() {
         return cnt;
@@ -22,18 +28,31 @@ public class AverageCounter {
     public void incr(long timeCost) {
         this.cnt.incrementAndGet();
         this.timeCost.addAndGet(timeCost);
+
+        synchronized (lock) {
+            if (timeCost > maxRT) {
+                maxRT = timeCost;
+            }
+
+            if (timeCost < minRT) {
+                minRT = timeCost;
+            }
+        }
     }
 
-    public void add(long num, long timeCost) {
-        this.cnt.addAndGet(num);
-        this.timeCost.addAndGet(timeCost);
-    }
-
-    public long avg() {
+    public long avgRT() {
         if (cnt.get() == 0L) {
             return 0L;
         } else {
             return timeCost.get() / cnt.get();
         }
+    }
+
+    public long maxRT() {
+        return maxRT;
+    }
+
+    public long minRT() {
+        return minRT;
     }
 }

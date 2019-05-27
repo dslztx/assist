@@ -7,6 +7,28 @@ public class IPAssist {
     private static final Pattern IPV4_PATTERN =
         Pattern.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
 
+    /**
+     * 是否是合法的IPv4地址
+     */
+    public static boolean isIPv4(String ip) {
+        return IPV4_PATTERN.matcher(ip).matches();
+    }
+
+    /**
+     * 是否是合法的IPv6地址
+     */
+    public static boolean isIPv6(String ip) {
+        // todo
+        return false;
+    }
+
+    /**
+     * 是否是合法的IPv4地址或者IPv6地址
+     */
+    public static boolean isIP(String ip) {
+        return isIPv4(ip) || isIPv6(ip);
+    }
+
     public static String obtainIPCIPv4(String ip) {
         if (StringAssist.isBlank(ip)) {
             return null;

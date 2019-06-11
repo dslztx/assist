@@ -1,6 +1,9 @@
 package me.dslztx.assist.util;
 
-import java.net.*;
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,8 +73,13 @@ public class EnvironmentAssist {
         }
     }
 
+    /**
+     * 在复杂的网络情形中，获取本机局域网IP可能有多个结果，比如“在存在一个虚IP的情形中，获取本机局域网IP就有两个结果”，因此，最好不要依赖于本方法的获取值，而在配置文件中配置
+     */
     private static void doObtainLanIPv4() {
         try {
+            Inet4Address hit = null;
+
             if (ObjectAssist.isNotNull(NetworkInterface.getNetworkInterfaces())) {
                 networkInterfaceList = Collections.list(NetworkInterface.getNetworkInterfaces());
 
@@ -89,12 +97,26 @@ public class EnvironmentAssist {
 
                         if (ia instanceof Inet4Address) {
                             if (IPAssist.isLanIPv4(ia.getHostAddress())) {
-                                lanIPv4 = ia.getHostAddress();
-                                return;
+                                if (ObjectAssist.isNull(hit)) {
+                                    hit = (Inet4Address)ia;
+                                } else {
+                                    // 存在多个本机局域网IP（可能是因为存在虚IP导致），则直接通过域名解析服务获得一个结果，当然这个结果值也依赖于获得的域名和域名解析服务，即这个结果也不一定是我们想要的
+                                    InetAddress inetAddress = InetAddress.getLocalHost();
+                                    if (inetAddress instanceof Inet4Address) {
+                                        if (IPAssist.isLanIPv4(inetAddress.getHostAddress())) {
+                                            lanIPv4 = inetAddress.getHostAddress();
+                                        }
+                                    }
+                                    return;
+                                }
                             }
                         }
                     }
                 }
+            }
+
+            if (ObjectAssist.isNotNull(hit)) {
+                lanIPv4 = hit.getHostAddress();
             }
         } catch (Exception e) {
             logger.error("", e);
@@ -115,7 +137,7 @@ public class EnvironmentAssist {
         return System.getProperty("java.class.path");
     }
 
-    public static void main(String[] args) throws UnknownHostException, SocketException {
+    public static void main(String[] args) throws IOException {
         System.out.println(obtainLongMachineName());
         System.out.println(obtainShortMachineName());
         System.out.println(obtainExecuteCWD());

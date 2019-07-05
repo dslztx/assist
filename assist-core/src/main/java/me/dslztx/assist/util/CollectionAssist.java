@@ -13,17 +13,11 @@ import me.dslztx.assist.pattern.strategy.IncludeFilter;
 public class CollectionAssist {
 
     public static boolean isEmpty(Collection collection) {
-        if (collection == null || collection.isEmpty()) {
-            return true;
-        }
-        return false;
+        return collection == null || collection.isEmpty();
     }
 
     public static boolean isNotEmpty(Collection collection) {
-        if (collection != null && !collection.isEmpty()) {
-            return true;
-        }
-        return false;
+        return collection != null && !collection.isEmpty();
     }
 
     public static int[] convertToIntArray(Collection<Integer> collection) {

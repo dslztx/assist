@@ -1,5 +1,6 @@
 package me.dslztx.assist.util;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -79,5 +80,14 @@ public class CollectionAssist {
                 to.add(element);
             }
         }
+    }
+
+    public static <T> T[] toArray(Collection<T> source, Class<T> elementClz) {
+        if (ObjectAssist.isNull(source)) {
+            return null;
+        }
+
+        // noinspection unchecked
+        return source.toArray((T[])Array.newInstance(elementClz, source.size()));
     }
 }

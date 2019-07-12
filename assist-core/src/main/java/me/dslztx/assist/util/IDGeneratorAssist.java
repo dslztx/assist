@@ -8,7 +8,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * 同一台机器多线程情形下，不同线程获取到UUID可能一致，因此不能保证唯一性
  * 
  * @author dslztx
+ * @refactored dslztx
  */
+@SuppressWarnings("unused")
 public class IDGeneratorAssist {
 
     private static ThreadLocal<Long> threadScopeId = new ThreadLocal<Long>() {
@@ -22,7 +24,7 @@ public class IDGeneratorAssist {
     /**
      * @return 线程唯一ID
      */
-    public static Long obtainThreadUniqueId() {
+    public static Long obtainThreadScopeId() {
         Long id = threadScopeId.get();
 
         if (id.equals(Long.MAX_VALUE)) {
@@ -36,7 +38,7 @@ public class IDGeneratorAssist {
     /**
      * @return 应用唯一ID
      */
-    public static Long obtainApplicationUniqueId() {
+    public static Long obtainApplicationScopeId() {
         Long result = applicationScopeId.getAndIncrement();
 
         if (result.compareTo(0L) < 0) {
@@ -50,5 +52,21 @@ public class IDGeneratorAssist {
         }
 
         return result;
+    }
+
+    public static String obtainApplicationScopeIdPrefix(String prefix) {
+        if (StringAssist.isBlank(prefix)) {
+            throw new RuntimeException("prefix can not be blank");
+        }
+
+        return prefix + obtainApplicationScopeId();
+    }
+
+    public static String obtainApplicationScopeIdSuffix(String suffix) {
+        if (StringAssist.isBlank(suffix)) {
+            throw new RuntimeException("suffix can not be blank");
+        }
+
+        return obtainApplicationScopeId() + suffix;
     }
 }

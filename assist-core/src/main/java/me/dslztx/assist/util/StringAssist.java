@@ -212,6 +212,23 @@ public class StringAssist {
         return sb.toString();
     }
 
+    public static String concat(Collection<String> set) {
+        if (CollectionAssist.isEmpty(set)) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String element : set) {
+            if (ObjectAssist.isNull(element)) {
+                sb.append("NULL");
+            } else {
+                sb.append(element);
+            }
+        }
+
+        return sb.toString();
+    }
+
     public static String joinUseSeparator(char separator, String... elements) {
         if (ArrayAssist.isEmpty(elements)) {
             return null;

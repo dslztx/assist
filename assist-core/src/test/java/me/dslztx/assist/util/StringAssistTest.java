@@ -2,6 +2,9 @@ package me.dslztx.assist.util;
 
 import static junit.framework.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,6 +180,20 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.truncateWhitespace("     ").equals(""));
             Assert.assertTrue(StringAssist.truncateWhitespace(" he \r\n\t llo  ").equals("hello"));
             Assert.assertTrue(StringAssist.truncateWhitespace("hello world").equals("helloworld"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void concatTest() {
+        try {
+            List<String> s = new ArrayList<String>();
+            s.add("hello");
+            s.add("world");
+
+            Assert.assertTrue(StringAssist.concat(s).equals("helloworld"));
         } catch (Exception e) {
             logger.error("", e);
             fail();

@@ -176,6 +176,7 @@ public class StringAssistTest {
         try {
             Assert.assertTrue(StringAssist.truncateWhitespace("     ").equals(""));
             Assert.assertTrue(StringAssist.truncateWhitespace(" he \r\n\t llo  ").equals("hello"));
+            Assert.assertTrue(StringAssist.truncateWhitespace("hello world").equals("helloworld"));
         } catch (Exception e) {
             logger.error("", e);
             fail();

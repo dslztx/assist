@@ -302,4 +302,21 @@ public class StringAssist {
 
         return sb.toString();
     }
+
+    public static String truncateWhitespace(String s) {
+        if (StringAssist.isEmpty(s)) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        char c;
+        for (int index = 0; index < s.length(); index++) {
+            c = s.charAt(index);
+            if (!Character.isWhitespace(c)) {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
 }

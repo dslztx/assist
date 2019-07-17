@@ -170,4 +170,15 @@ public class StringAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void truncateWhitespaceTest() {
+        try {
+            Assert.assertTrue(StringAssist.truncateWhitespace("     ").equals(""));
+            Assert.assertTrue(StringAssist.truncateWhitespace(" he \r\n\t llo  ").equals("hello"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

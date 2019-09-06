@@ -144,6 +144,7 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.joinUseSeparator('#', null, "").equals("NULL#"));
             Assert.assertTrue(StringAssist.joinUseSeparator('#', "", "").equals("#"));
             Assert.assertTrue(StringAssist.joinUseSeparator('#', "hello", "world").equals("hello#world"));
+            Assert.assertTrue(StringAssist.joinUseSeparator('#', 1, 2, 3, null, "hel").equals("1#2#3#NULL#hel"));
         } catch (Exception e) {
             logger.error("", e);
             fail();

@@ -6,12 +6,12 @@ package me.dslztx.assist.util.metric;
 @SuppressWarnings("unused")
 public class PartRatioStatistic extends Statistic<PartRatioCounter> {
 
-    PartRatioCounter stat = new PartRatioCounter();
+    private PartRatioCounter stat = new PartRatioCounter();
 
-    public void incrPart(String partKey) {
+    public void incrPart(String groupName, String partKey) {
         doReadLock();
         try {
-            stat.incrPart(partKey);
+            stat.incrPart(groupName, partKey);
         } finally {
             doReadUnLock();
         }

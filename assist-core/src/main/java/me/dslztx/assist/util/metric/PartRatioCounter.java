@@ -1,7 +1,11 @@
 package me.dslztx.assist.util.metric;
 
+import me.dslztx.assist.util.CollectionAssist;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,21 +15,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class PartRatioCounter {
 
-    ConcurrentHashMap<String, AtomicInteger> partStat = new ConcurrentHashMap<String, AtomicInteger>();
+    ConcurrentHashMap<String, ConcurrentHashMap<String, AtomicInteger>> partStat = new ConcurrentHashMap<String, ConcurrentHashMap<String, AtomicInteger>>();
 
 
-    public void incrPart(String partKey) {
-        partStat.putIfAbsent(partKey, new AtomicInteger(0));
+    public void incrPart(String groupName, String partKey) {
+        partStat.putIfAbsent(groupName, new ConcurrentHashMap<String, AtomicInteger>());
 
-        partStat.get(partKey).incrementAndGet();
+        ConcurrentHashMap<String, AtomicInteger> groupStat = partStat.get(groupName);
+
+        groupStat.putIfAbsent(partKey, new AtomicInteger(0));
+
+        groupStat.get(partKey).incrementAndGet();
     }
 
-    public List<PartRatio> obtainPartRatioList() {
+    public List<PartRatio> generatePartRatioList(ConcurrentHashMap<String, AtomicInteger> groupStat) {
         List<PartRatio> result = new ArrayList<PartRatio>();
 
         int sum = 0;
-        for (String key : partStat.keySet()) {
-            sum += partStat.get(key).get();
+        for (String key : groupStat.keySet()) {
+            sum += groupStat.get(key).get();
         }
 
         if (sum == 0) {
@@ -34,10 +42,24 @@ public class PartRatioCounter {
 
         double ratioPercent;
 
-        for (String key : partStat.keySet()) {
-            ratioPercent = partStat.get(key).get() * 1.0 / sum * 100;
+        for (String key : groupStat.keySet()) {
+            ratioPercent = groupStat.get(key).get() * 1.0 / sum * 100;
 
             result.add(new PartRatio(key, (int) ratioPercent));
+        }
+
+        return result;
+    }
+
+    public Map<String, List<PartRatio>> obtainGroupPartRatioMap() {
+        Map<String, List<PartRatio>> result = new HashMap<String, List<PartRatio>>();
+
+        if (CollectionAssist.isEmpty(partStat.keySet())) {
+            return result;
+        }
+
+        for (String groupName : partStat.keySet()) {
+            result.put(groupName, generatePartRatioList(partStat.get(groupName)));
         }
 
         return result;

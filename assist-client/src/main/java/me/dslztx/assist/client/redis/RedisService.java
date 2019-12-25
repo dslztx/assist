@@ -171,6 +171,52 @@ public class RedisService {
         return new RedisFutureProxy<String>(result, client);
     }
 
+    public static RedisFutureProxy<Long> saddAsync(String redisClusterName, String key, String... values) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        if (ArrayAssist.isEmpty(values)) {
+            throw new RuntimeException("value is empty");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<Long> result = client.getRedisAsyncConnection().sadd(key, values);
+
+        return new RedisFutureProxy<Long>(result, client);
+    }
+
+    public static RedisFutureProxy<Boolean> expireAsync(String redisClusterName, String key, long seconds) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<Boolean> result = client.getRedisAsyncConnection().expire(key, seconds);
+
+        return new RedisFutureProxy<Boolean>(result, client);
+    }
+
     public static List<String> mgetSync(String redisClusterName, String... keys) {
         throw new UnsupportedOperationException("sync operation is not supported now");
     }

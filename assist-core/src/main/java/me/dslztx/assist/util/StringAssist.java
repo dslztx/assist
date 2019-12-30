@@ -2,10 +2,14 @@ package me.dslztx.assist.util;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author dslztx
  */
 public class StringAssist {
+    private static final Logger logger = LoggerFactory.getLogger(StringAssist.class);
 
     /**
      * judge whether legal hexadecimal number string
@@ -355,5 +359,55 @@ public class StringAssist {
         }
 
         return sb.toString();
+    }
+
+    public static List<String> allPossibleSuffixesAtLeastNParts(String[] parts, int n, char separator) {
+        List<String> result = new ArrayList<String>();
+
+        if (n < 1) {
+            logger.info("n must >= 1");
+            return result;
+        }
+
+        if (ArrayAssist.isEmpty(parts) || parts.length < n) {
+            return result;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        String suffix = null;
+        if (n == 1) {
+            suffix = parts[parts.length - 1];
+        } else {
+            int startPos = parts.length - n;
+
+            sb.setLength(0);
+
+            for (int index = startPos; index < parts.length; index++) {
+                sb.append(parts[index]);
+                sb.append(separator);
+            }
+
+            sb.setLength(sb.length() - 1);
+
+            suffix = sb.toString();
+        }
+
+        result.add(suffix);
+
+        for (int index = parts.length - n - 1; index >= 0; index--) {
+
+            sb.setLength(0);
+
+            sb.append(parts[index]);
+            sb.append(separator);
+            sb.append(suffix);
+
+            suffix = sb.toString();
+
+            result.add(suffix);
+        }
+
+        return result;
     }
 }

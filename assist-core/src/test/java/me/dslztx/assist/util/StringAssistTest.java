@@ -200,4 +200,25 @@ public class StringAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void allPossibleSuffixesAtLeastNPartsTest() {
+        try {
+            Assert.assertTrue(StringAssist.allPossibleSuffixesAtLeastNParts(null, 3, '.').size() == 0);
+            Assert.assertTrue(StringAssist.allPossibleSuffixesAtLeastNParts(new String[0], 3, '.').size() == 0);
+            Assert.assertTrue(
+                StringAssist.allPossibleSuffixesAtLeastNParts(new String[] {"hello", "world"}, 3, '.').size() == 0);
+
+            List<String> result =
+                StringAssist.allPossibleSuffixesAtLeastNParts(new String[] {"sina", "baidu", "com", "cn"}, 2, '.');
+            Assert.assertTrue(result.size() == 3);
+            Assert.assertTrue(result.get(0).equals("com.cn"));
+            Assert.assertTrue(result.get(1).equals("baidu.com.cn"));
+            Assert.assertTrue(result.get(2).equals("sina.baidu.com.cn"));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

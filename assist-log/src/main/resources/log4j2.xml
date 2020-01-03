@@ -27,7 +27,7 @@
         </RollingFile>
 
         <RollingFile name="WARN_FILE" fileName="${log_dir}/warn.log"
-                     filePattern="${log_dir}/warn.log.$i">
+                     filePattern="${log_dir}/warn.log.%i">
             <filters>
                 <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
                 <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -45,7 +45,7 @@
         </RollingFile>
 
         <RollingFile name="ERROR_UP_FILE" fileName="${log_dir}/error.log"
-                     filePattern="${log_dir}/error.log.$i">
+                     filePattern="${log_dir}/error.log.%i">
             <filters>
                 <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             </filters>
@@ -62,7 +62,7 @@
         </RollingFile>
 
         <RollingFile name="DEBUG_BELOW_FILE" fileName="${log_dir}/debug.log"
-                     filePattern="${log_dir}/debug.log.$i">
+                     filePattern="${log_dir}/debug.log.%i">
             <filters>
                 <ThresholdFilter level="INFO" onMatch="DENY" onMismatch="ACCEPT"/>
             </filters>

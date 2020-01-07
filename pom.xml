@@ -18,6 +18,7 @@
         <module>assist-server</module>
         <module>assist-solution</module>
         <module>assist-log</module>
+        <module>assist-text</module>
     </modules>
 
     <url>https://github.com/dslztx/assist</url>

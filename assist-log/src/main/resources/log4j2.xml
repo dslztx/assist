@@ -16,6 +16,7 @@
             </filters>
 
             <PatternLayout>
+                <Charset>UTF-8</Charset>
                 <Pattern>${pattern_layout}</Pattern>
             </PatternLayout>
 
@@ -34,6 +35,7 @@
             </filters>
 
             <PatternLayout>
+                <Charset>UTF-8</Charset>
                 <Pattern>${pattern_layout}</Pattern>
             </PatternLayout>
 
@@ -51,6 +53,7 @@
             </filters>
 
             <PatternLayout>
+                <Charset>UTF-8</Charset>
                 <Pattern>${pattern_layout}</Pattern>
             </PatternLayout>
 
@@ -68,6 +71,7 @@
             </filters>
 
             <PatternLayout>
+                <Charset>UTF-8</Charset>
                 <Pattern>${pattern_layout}</Pattern>
             </PatternLayout>
 
@@ -80,6 +84,7 @@
 
         <Console name="STDOUT" target="SYSTEM_OUT">
             <PatternLayout>
+                <Charset>UTF-8</Charset>
                 <Pattern>${pattern_layout}</Pattern>
             </PatternLayout>
         </Console>

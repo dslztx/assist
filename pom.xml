@@ -52,7 +52,7 @@
         <kafka-client.version>1.1.0</kafka-client.version>
         <xz.version>1.5</xz.version>
         <mybatis.version>3.3.0</mybatis.version>
-        <spring.version>4.0.0.RELEASE</spring.version>
+        <spring.version>5.2.3.RELEASE</spring.version>
         <reflections.version>0.9.10</reflections.version>
         <influxdb.client.version>1.5</influxdb.client.version>
         <ac.algorithm.version>1.2.1</ac.algorithm.version>

@@ -1,17 +1,18 @@
 package me.dslztx.assist.server;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
+import me.dslztx.assist.client.socket.TCPSocketClient;
+import me.dslztx.assist.util.CloseableAssist;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.dslztx.assist.client.socket.TCPSocketClient;
-import me.dslztx.assist.util.CloseableAssist;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
+@Ignore
 public class TCPSocketServerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(TCPSocketServer.class);

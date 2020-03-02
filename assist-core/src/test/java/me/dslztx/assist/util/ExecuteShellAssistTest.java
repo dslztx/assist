@@ -2,10 +2,12 @@ package me.dslztx.assist.util;
 
 import me.dslztx.assist.util.metric.TimerAssist;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Ignore
 public class ExecuteShellAssistTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecuteShellAssistTest.class);

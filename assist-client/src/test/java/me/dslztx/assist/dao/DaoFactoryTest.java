@@ -1,30 +1,46 @@
 package me.dslztx.assist.dao;
 
-import javax.sql.DataSource;
-
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.session.SqlSession;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.druid.pool.DruidDataSource;
-
 import junit.framework.Assert;
 import me.dslztx.assist.client.mysql.DaoFactory;
 import me.dslztx.assist.client.mysql.DataSourceFactory;
 import me.dslztx.assist.util.CloseableAssist;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.session.SqlSession;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DaoFactoryTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DaoFactoryTest.class);
 
+
+    public void initDBData() throws SQLException {
+        DataSource dataSource = DataSourceFactory.obtainDataSource("in");
+
+        Connection connection = dataSource.getConnection();
+
+
+        Statement statement = connection.createStatement();
+        statement.execute("delete from `User`");
+
+        String sql = "insert into `User`(`id`,`name`) values(1,'dslztx');";
+
+        statement.executeUpdate(sql);
+    }
+
     @Test
-    public void obtainDao() throws Exception {
+    public void obtainTheSameDao() {
         try {
             DataSource dataSource = new DruidDataSource();
-            System.out.println(dataSource.hashCode());
 
             UserDao userDaoFirst = DaoFactory.obtainDao(dataSource, UserDao.class);
 
@@ -32,62 +48,81 @@ public class DaoFactoryTest {
 
             Assert.assertTrue(userDaoFirst == userDaoSecond);
 
-            userDaoFirst.insertUser(new User());
-            userDaoSecond.insertUser(new User());
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
         }
     }
+
 
     @Test
-    @Ignore
-    public void test2() {
+    public void test0() {
         try {
+            initDBData();
+
             DataSource dataSource = DataSourceFactory.obtainDataSource("in");
 
-            TestDao dao = DaoFactory.obtainDao(dataSource, TestDao.class);
+            UserDao dao = DaoFactory.obtainDao(dataSource, UserDao.class);
 
-            Assert.assertTrue(dao.count() == 50);
+            Assert.assertTrue(dao.count() == 1);
+
+            Assert.assertTrue(dao.listUsers().size() == 1);
+
+            User user = dao.listUsers().get(0);
+            Assert.assertTrue(user.getName().equals("dslztx"));
+            Assert.assertTrue(user.getId() == 1);
+
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
         }
     }
 
-    @Test
-    @Ignore
-    public void test3() {
-        try {
-            DataSource dataSource = DataSourceFactory.obtainDataSource("in");
 
-            Test2Dao dao = DaoFactory.obtainDao(dataSource, Test2Dao.class);
+    static interface UserMapper extends Mapper {
 
-            Assert.assertTrue(dao.selectCount() == 50);
-        } catch (Exception e) {
-            logger.error("", e);
-            Assert.fail();
-        }
-    }
+        @Select("select * from User")
+        List<User> listUsers();
 
-    interface TestMapper extends Mapper {
         @Select("select count(*) from User")
         int count();
     }
 
-    private static class UserDao extends Dao {
+    static class UserDao extends Dao {
 
-        public void insertUser(User user) {
-            DataSource dataSource = obtainDataSource();
-            // 使用dataSource把User插入到数据库
+        public List<User> listUsers() {
 
-            System.out.println(dataSource.hashCode());
+            SqlSession session = obtainSqlSessionFactory().openSession();
+            try {
+                UserMapper userMapper = session.getMapper(UserMapper.class);
+                return userMapper.listUsers();
+            } catch (Exception e) {
+                logger.error("", e);
+            } finally {
+                CloseableAssist.closeQuietly(session);
+            }
+
+            return new ArrayList<User>();
+        }
+
+        public int count() {
+            SqlSession session = obtainSqlSessionFactory().openSession();
+            try {
+                UserMapper userMapper = session.getMapper(UserMapper.class);
+                return userMapper.count();
+            } catch (Exception e) {
+                logger.error("", e);
+            } finally {
+                CloseableAssist.closeQuietly(session);
+            }
+            return -1;
         }
     }
 
     static class User {
 
         Long id;
+
         String name;
 
         public Long getId() {
@@ -104,38 +139,6 @@ public class DaoFactoryTest {
 
         public void setName(String name) {
             this.name = name;
-        }
-    }
-
-    public static class TestDao extends Dao {
-
-        public int count() {
-            SqlSession session = obtainSqlSessionFactory().openSession();
-            try {
-                TestMapper testMapper = session.getMapper(TestMapper.class);
-                return testMapper.count();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                CloseableAssist.closeQuietly(session);
-            }
-            return -1;
-        }
-    }
-
-    public static class Test2Dao extends Dao {
-
-        public int selectCount() {
-            SqlSession session = obtainSqlSessionFactory().openSession();
-            try {
-                Test2Mapper testMapper = session.getMapper(Test2Mapper.class);
-                return testMapper.selectCount();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                CloseableAssist.closeQuietly(session);
-            }
-            return -1;
         }
     }
 }

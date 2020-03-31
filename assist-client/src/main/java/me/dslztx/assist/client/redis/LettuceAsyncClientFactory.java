@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lambdaworks.redis.RedisAsyncConnection;
+import com.lambdaworks.redis.RedisClusterAsyncConnection;
 import com.lambdaworks.redis.RedisURI;
 
 import me.dslztx.assist.util.ConfigLoadAssist;
@@ -77,6 +78,41 @@ public class LettuceAsyncClientFactory {
             return clientPools;
         }
 
+        if (servers.toLowerCase().startsWith("master(") && servers.toLowerCase().endsWith(")")) {
+            buildClusterConnections(servers, clientPools);
+        } else {
+            buildNonClusterConnections(servers, clientPools);
+        }
+
+        logger.info("clientPools size : " + clientPools.size());
+
+        return clientPools;
+    }
+
+    private static void buildClusterConnections(String servers, List<LettuceAsyncClientProxy> clientPools) {
+
+        servers = servers.substring(7, servers.length() - 1);
+
+        if (StringAssist.isBlank(servers)) {
+            logger.error("no redis servers");
+        }
+
+        String[] serverArray = servers.split(",");
+
+        for (String server : serverArray) {
+            try {
+                com.lambdaworks.redis.cluster.RedisClusterClient client =
+                    com.lambdaworks.redis.cluster.RedisClusterClient.create(RedisURI.create("redis://" + server));
+                RedisClusterAsyncConnection<String, String> connection = client.connectClusterAsync();
+
+                clientPools.add(new LettuceAsyncClientProxy(connection, server));
+            } catch (Exception e) {
+                logger.error(server, e);
+            }
+        }
+    }
+
+    private static void buildNonClusterConnections(String servers, List<LettuceAsyncClientProxy> clientPools) {
         String[] serverArray = servers.split(",");
 
         for (String server : serverArray) {
@@ -90,9 +126,5 @@ public class LettuceAsyncClientFactory {
                 logger.error(server, e);
             }
         }
-
-        logger.info("clientPools size : " + clientPools.size());
-
-        return clientPools;
     }
 }

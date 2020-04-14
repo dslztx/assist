@@ -71,4 +71,8 @@ public class ByteArrayInputStreamAug extends ByteArrayInputStream {
     public ByteArrayInputStream createUsingRemain() {
         return new ByteArrayInputStream(buf, pos, count - pos);
     }
+
+    public int remainLength() {
+        return count - pos;
+    }
 }

@@ -117,6 +117,27 @@ public class RedisService {
         return new RedisFutureProxy<Map<String, String>>(result, client);
     }
 
+    public static RedisFutureProxy<String> hgetAsync(String redisClusterName, String firstKey, String secondKey) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(firstKey) || StringAssist.isBlank(secondKey)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<String> result = client.getRedisAsyncConnection().hget(firstKey, secondKey);
+
+        return new RedisFutureProxy<String>(result, client);
+    }
+
     public static RedisFutureProxy<String> setAsync(String redisClusterName, String key, String value, long seconds) {
         if (StringAssist.isBlank(redisClusterName)) {
             throw new RuntimeException("redisClusterName is blank");

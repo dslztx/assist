@@ -1,12 +1,12 @@
 package me.dslztx.assist.util;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * @author dslztx
@@ -186,10 +186,10 @@ public class CharCodingAssist {
             }
 
             int value = NumberAssist.hexStrToDec(s, start + 1, end);
-            return (char) value;
+            return (char)value;
         } else {
             int value = NumberAssist.decStrToDec(s, start, end);
-            return (char) value;
+            return (char)value;
         }
     }
 
@@ -197,7 +197,7 @@ public class CharCodingAssist {
      * 扩展的，不局限于ASCII编码集
      */
     public static String charToHTMLEscapeSequence(char c) {
-        return "&#" + (int) c + ";";
+        return "&#" + (int)c + ";";
     }
 
     public static boolean isFileNotEncodedWith(File file, Charset charset) throws IOException {
@@ -245,10 +245,10 @@ public class CharCodingAssist {
     public static void main(String[] args) {
         String a = "�";
         String b =
-                CharCodingAssist.decode(CharCodingAssist.encode("�", Charset.forName("GBK")), Charset.forName("GBK"));
+            CharCodingAssist.decode(CharCodingAssist.encode("�", Charset.forName("GBK")), Charset.forName("GBK"));
         System.out.println(a.equals(b));
 
         char c = '好';
-        System.out.println((int) c);
+        System.out.println((int)c);
     }
 }

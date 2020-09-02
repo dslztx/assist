@@ -162,4 +162,55 @@ public class CharCodingAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void detectHTMLEncodingTest(){
+        try{
+
+            String content = "<meta charset=\"UTF-8\">\n" +
+                    "<!DOCTYPE html>\n" +
+                    "<html>\n" +
+                    "    <head>\n" +
+                    "        <title>Example</title>\n" +
+                    "    </head>\n" +
+                    "    <body>\n" +
+                    "        <p>This is an example of a simple HTML page with one paragraph.</p>\n" +
+                    "    </body>\n" +
+                    "</html>";
+
+            Assert.assertTrue(CharCodingAssist.detectHTMLEncoding(content.getBytes()).equals(Charset.forName("UTF-8")));
+
+            String content2 = "<meta charset=GBK>\n" +
+                    "<!DOCTYPE html>\n" +
+                    "<html>\n" +
+                    "    <head>\n" +
+                    "        <title>Example</title>\n" +
+                    "    </head>\n" +
+                    "    <body>\n" +
+                    "        <p>This is an example of a simple HTML page with one paragraph.</p>\n" +
+                    "        <p>你好，这是中文</p>\n" +
+                    "    </body>\n" +
+                    "</html>";
+
+            Assert.assertTrue(CharCodingAssist.detectHTMLEncoding(content2.getBytes()).equals(Charset.forName("GBK")));
+
+
+            String content3 = "<!DOCTYPE html>\n" +
+                    "<html>\n" +
+                    "    <head>\n" +
+                    "        <title>Example</title>\n" +
+                    "    </head>\n" +
+                    "    <body>\n" +
+                    "        <p>This is an example of a simple HTML page with one paragraph.</p>\n" +
+                    "        <p>你好，这是中文</p>\n" +
+                    "    </body>\n" +
+                    "</html>";
+
+            Assert.assertNull(CharCodingAssist.detectHTMLEncoding(content3.getBytes()));
+        }
+        catch (Exception e){
+            logger.error("",e);
+            fail();
+        }
+    }
 }

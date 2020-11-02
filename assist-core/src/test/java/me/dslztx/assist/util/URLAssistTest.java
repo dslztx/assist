@@ -1,0 +1,29 @@
+package me.dslztx.assist.util;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class URLAssistTest {
+    private static final Logger logger = LoggerFactory.getLogger(URLAssistTest.class);
+
+    @Test
+    public void removeUsernamePasswordTest() {
+        try {
+            String url0 = "http://www.baidu.com";
+            Assert.assertTrue("http://www.baidu.com".equals(URLAssist.removeUsernamePassword(url0)));
+
+            String url1 = "http://user:password@www.baidu.com";
+            Assert.assertTrue("http://www.baidu.com".equals(URLAssist.removeUsernamePassword(url1)));
+
+            String url2 = "user:password@www.baidu.com";
+            Assert.assertTrue("www.baidu.com".equals(URLAssist.removeUsernamePassword(url2)));
+
+            String url3 = "http://user:password@";
+            Assert.assertTrue("http://".equals(URLAssist.removeUsernamePassword(url3)));
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+    }
+}

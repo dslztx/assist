@@ -46,6 +46,33 @@ public class URLAssist {
         return domain != null && domainPattern.matcher(domain).matches() ? domain : null;
     }
 
+    public static String removeUsernamePassword(String url) {
+        if (StringAssist.isBlank(url)) {
+            return url;
+        }
+
+        int index = url.lastIndexOf("@");
+        if (index == -1) {
+            return url;
+        }
+
+        String tailPart = "";
+        if (index != url.length() - 1) {
+            tailPart = url.substring(index + 1);
+        }
+
+        if (index == 0) {
+            return tailPart;
+        }
+
+        int slashIndex = url.lastIndexOf("/", index - 1);
+        if (slashIndex == -1) {
+            return tailPart;
+        } else {
+            return url.substring(0, slashIndex + 1) + tailPart;
+        }
+    }
+
     public static String getDomain(String url) {
         if (url == null) {
             return null;

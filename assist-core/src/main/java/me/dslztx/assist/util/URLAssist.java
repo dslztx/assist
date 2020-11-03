@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 public class URLAssist {
 
+    protected static final Set<String> PROTOCOLS = new HashSet<>();
     public static Set<String> cnSubdomains = new HashSet<String>();
     private static Pattern ipPattern = Pattern.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?:\\:\\d+)?");
     private static Pattern domainPattern =
@@ -33,6 +34,18 @@ public class URLAssist {
         cnSubdomains.add("BIZ".toLowerCase());
         cnSubdomains.add("ASIA".toLowerCase());
         cnSubdomains.add("AERO".toLowerCase());
+
+        PROTOCOLS.add("http");
+        PROTOCOLS.add("https");
+        PROTOCOLS.add("ftp");
+        PROTOCOLS.add("gopher");
+        PROTOCOLS.add("mailto");
+        PROTOCOLS.add("news");
+        PROTOCOLS.add("nntp");
+        PROTOCOLS.add("telnet");
+        PROTOCOLS.add("wais");
+        PROTOCOLS.add("file");
+        PROTOCOLS.add("prospero");
     }
 
     public static String obtainURLDomain(String url) {
@@ -160,5 +173,111 @@ public class URLAssist {
             }
         }
         return start;
+    }
+}
+
+class URLPart {
+    String protocol;
+
+    String mainPart;
+
+    String urlPath;
+
+    private URLPart() {}
+
+    public static URLPart parseOf(String url) {
+        if (StringAssist.isBlank(url)) {
+            return null;
+        }
+
+        url = url.toLowerCase();
+
+        int index = url.indexOf(":");
+
+        int head;
+
+        URLPart urlPart = new URLPart();
+
+        if (index == -1 || !URLAssist.PROTOCOLS.contains(url.substring(0, index))) {
+            urlPart.protocol = null;
+            head = 0;
+        } else {
+            urlPart.protocol = url.substring(0, index);
+            head = index + 1;
+        }
+
+        int start = head;
+        while (start < url.length() && url.charAt(start) == '/') {
+            start++;
+        }
+
+        if (start == url.length()) {
+            return null;
+        }
+
+        int end = url.indexOf("/", start + 1);
+        if (end == -1) {
+            urlPart.mainPart = url.substring(start);
+            urlPart.urlPath = null;
+        } else {
+            urlPart.mainPart = url.substring(start, end);
+            urlPart.urlPath = url.substring(end + 1);
+        }
+
+        return urlPart;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public String getMainPart() {
+        return mainPart;
+    }
+
+    public String getUrlPath() {
+        return urlPath;
+    }
+
+    public String obtainURL() {
+        StringBuilder sb = new StringBuilder();
+
+        if (StringAssist.isNotBlank(protocol)) {
+            sb.append(protocol);
+            sb.append("://");
+        }
+
+        sb.append(mainPart);
+
+        if (StringAssist.isNotBlank(urlPath)) {
+            sb.append("/");
+            sb.append(urlPath);
+        }
+
+        return sb.toString();
+    }
+
+    public String obtainURLNoUserPassword() {
+        StringBuilder sb = new StringBuilder();
+
+        if (StringAssist.isNotBlank(protocol)) {
+            sb.append(protocol);
+            sb.append("://");
+        }
+
+        int index = mainPart.indexOf("@");
+
+        if (index == -1) {
+            sb.append(mainPart);
+        } else {
+            sb.append(mainPart.substring(index + 1));
+        }
+
+        if (StringAssist.isNotBlank(urlPath)) {
+            sb.append("/");
+            sb.append(urlPath);
+        }
+
+        return sb.toString();
     }
 }

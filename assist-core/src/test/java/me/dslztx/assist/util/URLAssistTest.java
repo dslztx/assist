@@ -22,6 +22,10 @@ public class URLAssistTest {
 
             String url3 = "http://user:password@";
             Assert.assertTrue("http://".equals(URLAssist.removeUsernamePassword(url3)));
+
+            String url4 = "https://8y5ny.csb.app/#test@baidu.com";
+            Assert.assertTrue("https://8y5ny.csb.app/#test@baidu.com".equals(URLAssist.removeUsernamePassword(url4)));
+
         } catch (Exception e) {
             logger.error("", e);
         }

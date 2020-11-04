@@ -1,23 +1,12 @@
 package me.dslztx.assist.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dslztx.assist.bean.filetype.FileType;
-import me.dslztx.assist.util.filetype.BMPMatcher;
-import me.dslztx.assist.util.filetype.FileTypeMatcher;
-import me.dslztx.assist.util.filetype.GIFMatcher;
-import me.dslztx.assist.util.filetype.JPEGMatcher;
-import me.dslztx.assist.util.filetype.PNGMatcher;
-import me.dslztx.assist.util.filetype.PSDMatcher;
-import me.dslztx.assist.util.filetype.TIFFMatcher;
+import me.dslztx.assist.util.filetype.*;
 
 public class FileTypeAssist {
 
@@ -162,4 +151,9 @@ public class FileTypeAssist {
 
         return false;
     }
+
+    public static boolean isMaskImage(String filename, byte[] data) {
+        return recognizeImage(filename) == FileType.NOT_IMAGE && recognizeImage(data) != FileType.NOT_IMAGE;
+    }
+
 }

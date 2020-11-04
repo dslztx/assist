@@ -59,4 +59,26 @@ public class FileTypeAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void isMaskImageTest() {
+        try {
+            byte[] dd = new byte[10];
+            dd[0] = -1;
+            dd[1] = -40;
+            dd[2] = -1;
+            dd[3] = -32;
+            dd[4] = 0;
+            dd[5] = 16;
+            dd[6] = 74;
+            dd[7] = 70;
+            dd[8] = -1;
+            dd[9] = (byte)0xd9;
+
+            Assert.assertTrue(FileTypeAssist.isMaskImage("1.xls", dd));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
 }

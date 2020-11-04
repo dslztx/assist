@@ -76,6 +76,12 @@ public class FileTypeAssistTest {
             dd[9] = (byte)0xd9;
 
             Assert.assertTrue(FileTypeAssist.isMaskImage("1.xls", dd));
+
+            Assert.assertFalse(FileTypeAssist.isMaskImage("1.png", dd));
+
+            dd[9] = 1;
+            Assert.assertFalse(FileTypeAssist.isMaskImage("1.png", dd));
+
         } catch (Exception e) {
             logger.error("", e);
             fail();

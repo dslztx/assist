@@ -9,7 +9,7 @@ public class URLAssistTest {
     private static final Logger logger = LoggerFactory.getLogger(URLAssistTest.class);
 
     @Test
-    public void removeUsernamePasswordTest() {
+    public void removeUserPasswordTest() {
         try {
             String url0 = "http://www.baidu.com";
             Assert.assertTrue("http://www.baidu.com".equals(URLAssist.removeUserPassword(url0)));
@@ -23,11 +23,11 @@ public class URLAssistTest {
             String url3 = "http://user:password@";
             Assert.assertTrue("http://".equals(URLAssist.removeUserPassword(url3)));
 
-            String url4 = "https://8y5ny.csb.app/#test@baidu.com";
-            Assert.assertTrue("https://8y5ny.csb.app/#test@baidu.com".equals(URLAssist.removeUserPassword(url4)));
+            String url4 = "httPS://8y5ny.csb.app/#test@baidu.com";
+            Assert.assertTrue("httPS://8y5ny.csb.app/#test@baidu.com".equals(URLAssist.removeUserPassword(url4)));
 
-            String url5 = "https://user:pass@8y5ny.csb.app/#test@baidu.com";
-            Assert.assertTrue("https://8y5ny.csb.app/#test@baidu.com".equals(URLAssist.removeUserPassword(url5)));
+            String url5 = "htTps://user:pass@8y5ny.csb.app/#test@baidu.com";
+            Assert.assertTrue("htTps://8y5ny.csb.app/#test@baidu.com".equals(URLAssist.removeUserPassword(url5)));
         } catch (Exception e) {
             logger.error("", e);
         }

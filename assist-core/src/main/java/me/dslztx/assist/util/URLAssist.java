@@ -174,15 +174,13 @@ class URLPart {
             return null;
         }
 
-        url = url.toLowerCase();
-
         int index = url.indexOf(":");
 
         int head;
 
         URLPart urlPart = new URLPart();
 
-        if (index == -1 || !URLAssist.PROTOCOLS.contains(url.substring(0, index))) {
+        if (index == -1 || !URLAssist.PROTOCOLS.contains(url.substring(0, index).toLowerCase())) {
             urlPart.protocol = null;
             head = 0;
         } else {

@@ -1,6 +1,8 @@
 package me.dslztx.assist.util;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,6 +10,7 @@ import java.util.regex.Pattern;
 public class URLAssist {
 
     protected static final Set<String> PROTOCOLS = new HashSet<>();
+    private static final Map<Character, Character> ILLEGAL_CHAR_MAP = new HashMap<Character, Character>();
     public static Set<String> cnSubdomains = new HashSet<String>();
     private static Pattern ipPattern = Pattern.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?:\\:\\d+)?");
     private static Pattern domainPattern =
@@ -46,6 +49,8 @@ public class URLAssist {
         PROTOCOLS.add("wais");
         PROTOCOLS.add("file");
         PROTOCOLS.add("prospero");
+
+        ILLEGAL_CHAR_MAP.put('。', '.');
     }
 
     public static String obtainURLDomain(String url) {
@@ -121,6 +126,26 @@ public class URLAssist {
         if (start > 0)
             return url.substring(start);
         return url;
+    }
+
+    public static String illegalCharacterTolerant(String url) {
+        if (StringAssist.isBlank(url)) {
+            return url;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        char c;
+        for (int index = 0; index < url.length(); index++) {
+            c = url.charAt(index);
+
+            if (!ILLEGAL_CHAR_MAP.keySet().contains(c)) {
+                sb.append(c);
+            } else {
+                sb.append(ILLEGAL_CHAR_MAP.get(c));
+            }
+        }
+
+        return sb.toString();
     }
 
     public static int removeHTTPStart(String url) {

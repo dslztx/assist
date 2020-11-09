@@ -30,6 +30,19 @@ public class URLAssistTest {
             Assert.assertTrue("htTps://8y5ny.csb.app/#test@baidu.com".equals(URLAssist.removeUserPassword(url5)));
         } catch (Exception e) {
             logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void illegalCharacterTolerantTest() {
+        try {
+            String url0 = "http://www。baidu.com";
+
+            Assert.assertTrue("http://www.baidu.com".equals(URLAssist.illegalCharacterTolerant(url0)));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
         }
     }
 }

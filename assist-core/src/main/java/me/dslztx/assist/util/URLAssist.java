@@ -272,7 +272,7 @@ class URLPart {
             sb.append("://");
         }
 
-        int index = mainPart.indexOf("@");
+        int index = mainPart.lastIndexOf("@");
 
         if (index == -1) {
             sb.append(mainPart);
@@ -287,4 +287,5 @@ class URLPart {
 
         return sb.toString();
     }
+
 }

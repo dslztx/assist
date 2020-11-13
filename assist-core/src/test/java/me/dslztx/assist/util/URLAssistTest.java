@@ -28,6 +28,9 @@ public class URLAssistTest {
 
             String url5 = "htTps://user:pass@8y5ny.csb.app/#test@baidu.com";
             Assert.assertTrue("htTps://8y5ny.csb.app/#test@baidu.com".equals(URLAssist.removeUserPassword(url5)));
+
+            String url6 = "http://-----@@evgenia.ru/0001/00126";
+            Assert.assertTrue("http://evgenia.ru/0001/00126".equals(URLAssist.removeUserPassword(url6)));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

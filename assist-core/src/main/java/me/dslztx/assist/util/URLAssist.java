@@ -190,6 +190,8 @@ class URLPart {
 
     String mainPart;
 
+    char separator;
+
     String urlPath;
 
     private URLPart() {}
@@ -222,13 +224,33 @@ class URLPart {
             return null;
         }
 
-        int end = url.indexOf("/", start + 1);
-        if (end == -1) {
+        int slash = url.indexOf("/", start + 1);
+        int questionMark = url.indexOf("?", start + 1);
+
+        if (slash == -1 && questionMark == -1) {
             urlPart.mainPart = url.substring(start);
+            urlPart.separator = (char)0;
             urlPart.urlPath = null;
+        } else if (slash != -1 && questionMark != -1) {
+            if (slash < questionMark) {
+                urlPart.mainPart = url.substring(start, slash);
+                urlPart.separator = '/';
+                urlPart.urlPath = url.substring(slash + 1);
+            } else {
+                urlPart.mainPart = url.substring(start, questionMark);
+                urlPart.separator = '?';
+                urlPart.urlPath = url.substring(questionMark + 1);
+            }
         } else {
-            urlPart.mainPart = url.substring(start, end);
-            urlPart.urlPath = url.substring(end + 1);
+            if (slash != -1) {
+                urlPart.mainPart = url.substring(start, slash);
+                urlPart.separator = '/';
+                urlPart.urlPath = url.substring(slash + 1);
+            } else {
+                urlPart.mainPart = url.substring(start, questionMark);
+                urlPart.separator = '?';
+                urlPart.urlPath = url.substring(questionMark + 1);
+            }
         }
 
         return urlPart;
@@ -256,9 +278,14 @@ class URLPart {
 
         sb.append(mainPart);
 
-        if (StringAssist.isNotBlank(urlPath)) {
-            sb.append("/");
-            sb.append(urlPath);
+        if (separator == (char)0) {
+            return sb.toString();
+        } else {
+            sb.append(separator);
+
+            if (StringAssist.isNotBlank(urlPath)) {
+                sb.append(urlPath);
+            }
         }
 
         return sb.toString();
@@ -280,12 +307,19 @@ class URLPart {
             sb.append(mainPart.substring(index + 1));
         }
 
-        if (StringAssist.isNotBlank(urlPath)) {
-            sb.append("/");
-            sb.append(urlPath);
+        if (separator == (char)0) {
+            return sb.toString();
+        } else {
+            sb.append(separator);
+            if (StringAssist.isNotBlank(urlPath)) {
+                sb.append(urlPath);
+            }
         }
 
         return sb.toString();
     }
 
+    public char getSeparator() {
+        return separator;
+    }
 }

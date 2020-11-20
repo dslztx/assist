@@ -11,11 +11,11 @@ public class URLAssistTest {
     @Test
     public void removeUserPasswordTest() {
         try {
-            String url0 = "http://www.baidu.com";
-            Assert.assertTrue("http://www.baidu.com".equals(URLAssist.removeUserPassword(url0)));
+            String url0 = "http://www.baidu.com/";
+            Assert.assertTrue("http://www.baidu.com/".equals(URLAssist.removeUserPassword(url0)));
 
-            String url1 = "http://user:password@www.baidu.com";
-            Assert.assertTrue("http://www.baidu.com".equals(URLAssist.removeUserPassword(url1)));
+            String url1 = "http://user:password@www.baidu.com?";
+            Assert.assertTrue("http://www.baidu.com?".equals(URLAssist.removeUserPassword(url1)));
 
             String url2 = "user:password@www.baidu.com";
             Assert.assertTrue("www.baidu.com".equals(URLAssist.removeUserPassword(url2)));
@@ -31,6 +31,13 @@ public class URLAssistTest {
 
             String url6 = "http://-----@@evgenia.ru/0001/00126";
             Assert.assertTrue("http://evgenia.ru/0001/00126".equals(URLAssist.removeUserPassword(url6)));
+
+            String url7 = "https://goldmine.squirly.info?tom=Mandy9988@163.com";
+            System.out.println(URLAssist.removeUserPassword(url7));
+
+            String url8 = "https://goldmine.squirly.info?tom=Mandy9988@163.com";
+            System.out.println(
+                "https://goldmine.squirly.info?tom=Mandy9988@163.com".equals(URLAssist.removeUserPassword(url8)));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

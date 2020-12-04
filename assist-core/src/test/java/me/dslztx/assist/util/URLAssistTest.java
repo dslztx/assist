@@ -35,6 +35,11 @@ public class URLAssistTest {
             String url7 = "https://goldmine.squirly.info?tom=Mandy9988@163.com";
             Assert.assertTrue(
                 "https://goldmine.squirly.info?tom=Mandy9988@163.com".equals(URLAssist.removeUserPassword(url7)));
+
+            String url8 = "https://@@buttercup-lily-degree.glitch.me#bohai66@126.com";
+            Assert.assertTrue(
+                "https://buttercup-lily-degree.glitch.me#bohai66@126.com".equals(URLAssist.removeUserPassword(url8)));
+
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

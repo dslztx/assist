@@ -226,31 +226,30 @@ class URLPart {
 
         int slash = url.indexOf("/", start + 1);
         int questionMark = url.indexOf("?", start + 1);
+        int numberSign = url.indexOf("#", start + 1);
 
-        if (slash == -1 && questionMark == -1) {
+        if (slash == -1 && questionMark == -1 && numberSign == -1) {
             urlPart.mainPart = url.substring(start);
             urlPart.separator = (char)0;
             urlPart.urlPath = null;
-        } else if (slash != -1 && questionMark != -1) {
-            if (slash < questionMark) {
-                urlPart.mainPart = url.substring(start, slash);
-                urlPart.separator = '/';
-                urlPart.urlPath = url.substring(slash + 1);
-            } else {
-                urlPart.mainPart = url.substring(start, questionMark);
-                urlPart.separator = '?';
-                urlPart.urlPath = url.substring(questionMark + 1);
-            }
         } else {
-            if (slash != -1) {
-                urlPart.mainPart = url.substring(start, slash);
-                urlPart.separator = '/';
-                urlPart.urlPath = url.substring(slash + 1);
-            } else {
-                urlPart.mainPart = url.substring(start, questionMark);
-                urlPart.separator = '?';
-                urlPart.urlPath = url.substring(questionMark + 1);
+            int legalSeparatorPos = Integer.MAX_VALUE;
+
+            if (slash != -1 && slash < legalSeparatorPos) {
+                legalSeparatorPos = slash;
             }
+
+            if (questionMark != -1 && questionMark < legalSeparatorPos) {
+                legalSeparatorPos = questionMark;
+            }
+
+            if (numberSign != -1 && numberSign < legalSeparatorPos) {
+                legalSeparatorPos = numberSign;
+            }
+
+            urlPart.mainPart = url.substring(start, legalSeparatorPos);
+            urlPart.separator = url.charAt(legalSeparatorPos);
+            urlPart.urlPath = url.substring(legalSeparatorPos + 1);
         }
 
         return urlPart;

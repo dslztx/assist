@@ -10,9 +10,13 @@ import java.util.regex.Pattern;
 public class URLAssist {
 
     protected static final Set<String> PROTOCOLS = new HashSet<>();
+
     private static final Map<Character, Character> ILLEGAL_CHAR_MAP = new HashMap<Character, Character>();
+
     public static Set<String> cnSubdomains = new HashSet<String>();
+
     private static Pattern ipPattern = Pattern.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?:\\:\\d+)?");
+
     private static Pattern domainPattern =
         Pattern.compile("\\w{1,50}(?:-\\w{1,50})*(?:\\.\\w{1,50}(?:-\\w{1,50})*){1,}");
 

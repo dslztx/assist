@@ -9,6 +9,22 @@ public class URLAssistTest {
     private static final Logger logger = LoggerFactory.getLogger(URLAssistTest.class);
 
     @Test
+    public void extractLegalURLTest() {
+        try {
+
+            String url0 = "https://www.baidu.com/,.@?=%";
+            Assert.assertTrue("https://www.baidu.com/,.@?=%".equals(URLAssist.extractLegalURL(url0)));
+
+            String url1 = "mmmmhttps://www.baidu.com/cc[]]";
+            Assert.assertTrue("https://www.baidu.com/cc".equals(URLAssist.extractLegalURL(url1)));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
     public void removeUserPasswordTest() {
         try {
             String url0 = "http://www.baidu.com/";

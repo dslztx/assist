@@ -20,6 +20,9 @@ public class URLAssist {
     private static Pattern domainPattern =
         Pattern.compile("\\w{1,50}(?:-\\w{1,50})*(?:\\.\\w{1,50}(?:-\\w{1,50})*){1,}");
 
+    private static Pattern urlPattern =
+        Pattern.compile("(((ht|f)tps?):\\/\\/)?[\\w-]+(\\.[\\w-]+)+([\\w.," + "@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
+
     static {
         cnSubdomains.add("ac");
         cnSubdomains.add("com");
@@ -55,6 +58,19 @@ public class URLAssist {
         PROTOCOLS.add("prospero");
 
         ILLEGAL_CHAR_MAP.put('。', '.');
+    }
+
+    public static String extractLegalURL(String url) {
+        if (StringAssist.isBlank(url)) {
+            return null;
+        }
+
+        Matcher matcher = urlPattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(0);
+        }
+
+        return null;
     }
 
     public static String obtainURLDomain(String url) {

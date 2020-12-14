@@ -43,7 +43,7 @@ public class MortgageCalculator {
         BigDecimal monthRepayment = loan.multiply(ratio).multiply(factor).divide(factor.subtract(BigDecimal.valueOf(1)),
             3, RoundingMode.HALF_UP);
 
-        BigDecimal leftRepayment = loan.multiply(factor);
+        BigDecimal leftRepayment = loan.multiply(BigDecimal.valueOf(Math.pow(ratio.doubleValue() + 1, actualMonth)));
 
         BigDecimal sum0 = BigDecimal.valueOf(1);
         for (int i = 1; i <= actualMonth - 1; i++) {
@@ -59,4 +59,5 @@ public class MortgageCalculator {
         return leftRepayment.add(monthRepayment.multiply(BigDecimal.valueOf(actualMonth))).setScale(2,
             RoundingMode.HALF_UP);
     }
+
 }

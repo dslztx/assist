@@ -11,14 +11,13 @@ public class MortgageCalculatorTest {
     private static final Logger logger = LoggerFactory.getLogger(MortgageCalculatorTest.class);
 
     @Test
-    public void benjin() {
+    public void benjinTest() {
         try {
-
             double doubleMonthRatio = 0.0538 / 12;
 
             BigDecimal r = MortgageCalculator.benjin(2120000, doubleMonthRatio, 240, 240);
-            Assert.assertTrue(r.compareTo(BigDecimal.valueOf(3265312.38)) == 0);
 
+            Assert.assertTrue(r.compareTo(BigDecimal.valueOf(3265312.38)) == 0);
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
@@ -26,14 +25,13 @@ public class MortgageCalculatorTest {
     }
 
     @Test
-    public void benxi() {
+    public void benxiTest() {
         try {
-
             double doubleMonthRatio = 0.0538 / 12;
 
             BigDecimal r = MortgageCalculator.benxi(2120000, doubleMonthRatio, 240, 240);
-            Assert.assertTrue(r.compareTo(BigDecimal.valueOf(3465576.14)) == 0);
 
+            Assert.assertTrue(r.compareTo(BigDecimal.valueOf(3465576.14)) == 0);
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

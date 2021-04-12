@@ -52,6 +52,8 @@ public class TextAssistTest {
                 + "το όνομα και του χαρακτήρα του， Qin Shuyi 这是希腊语";
             Assert.assertTrue(TextAssist.guessLanguage(text10) == TextAssist.Language.GREEK);
 
+            String text11 = "階段などの一きざみ。転じて、事件の一くぎり、地位・技能の一段階など";
+            Assert.assertTrue(TextAssist.guessLanguage(text11) == TextAssist.Language.JAPAN);
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

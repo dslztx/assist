@@ -1,6 +1,8 @@
 package me.dslztx.assist.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,20 +10,19 @@ import java.util.Map;
  */
 public class TextAssist {
 
-    private static final Character.UnicodeScript[] cus = new Character.UnicodeScript[] {Character.UnicodeScript.HAN,
-        Character.UnicodeScript.HANGUL, Character.UnicodeScript.HIRAGANA, Character.UnicodeScript.GREEK,
-        Character.UnicodeScript.LATIN, Character.UnicodeScript.ARABIC, Character.UnicodeScript.CYRILLIC};
+    private static final Language[] lls = new Language[] {Language.CHINESE, Language.KOREA, Language.JAPAN,
+        Language.GREEK, Language.LATIN, Language.ARABIC, Language.CYRILLIC};
 
-    private static final Map<Character.UnicodeScript, Language> map = new HashMap<>();
+    private static final Map<Character.UnicodeScript, List<Language>> map = new HashMap<>();
 
     static {
-        map.put(Character.UnicodeScript.HAN, Language.CHINESE);
-        map.put(Character.UnicodeScript.HANGUL, Language.KOREA);
-        map.put(Character.UnicodeScript.HIRAGANA, Language.JAPAN);
-        map.put(Character.UnicodeScript.GREEK, Language.GREEK);
-        map.put(Character.UnicodeScript.LATIN, Language.LATIN);
-        map.put(Character.UnicodeScript.ARABIC, Language.ARABIC);
-        map.put(Character.UnicodeScript.CYRILLIC, Language.CYRILLIC);
+        map.put(Character.UnicodeScript.HAN, Arrays.asList(Language.CHINESE, Language.JAPAN));
+        map.put(Character.UnicodeScript.HANGUL, Arrays.asList(Language.KOREA));
+        map.put(Character.UnicodeScript.HIRAGANA, Arrays.asList(Language.JAPAN));
+        map.put(Character.UnicodeScript.GREEK, Arrays.asList(Language.GREEK));
+        map.put(Character.UnicodeScript.LATIN, Arrays.asList(Language.LATIN));
+        map.put(Character.UnicodeScript.ARABIC, Arrays.asList(Language.ARABIC));
+        map.put(Character.UnicodeScript.CYRILLIC, Arrays.asList(Language.CYRILLIC));
     }
 
     public static Language guessLanguage(String text) {
@@ -29,9 +30,10 @@ public class TextAssist {
             return Language.UNKNOWN;
         }
 
-        Map<Character.UnicodeScript, Integer> cnt = new HashMap<>();
+        Map<Language, Integer> cnt = new HashMap<>();
         char c;
         Character.UnicodeScript cu;
+        List<Language> languages;
 
         for (int index = 0; index < text.length(); index++) {
             c = text.charAt(index);
@@ -39,21 +41,28 @@ public class TextAssist {
             cu = Character.UnicodeScript.of((int)c);
 
             if (ObjectAssist.isNotNull(cu)) {
-                if (ObjectAssist.isNull(cnt.get(cu))) {
-                    cnt.put(cu, 0);
+                languages = map.get(cu);
+
+                if (CollectionAssist.isNotEmpty(languages)) {
+                    for (Language language : languages) {
+                        if (ObjectAssist.isNull(cnt.get(language))) {
+                            cnt.put(language, 0);
+                        }
+
+                        cnt.put(language, cnt.get(language) + 1);
+                    }
                 }
 
-                cnt.put(cu, cnt.get(cu) + 1);
             }
         }
 
         int maxv = -1;
-        Character.UnicodeScript selected = null;
+        Language selected = null;
 
-        for (Character.UnicodeScript cu2 : cus) {
-            if (ObjectAssist.isNotNull(cnt.get(cu2)) && cnt.get(cu2) > maxv) {
-                maxv = cnt.get(cu2);
-                selected = cu2;
+        for (Language language : lls) {
+            if (ObjectAssist.isNotNull(cnt.get(language)) && cnt.get(language) > maxv) {
+                maxv = cnt.get(language);
+                selected = language;
             }
         }
 
@@ -61,7 +70,7 @@ public class TextAssist {
             return Language.UNKNOWN;
         } else {
             if (maxv * 10 > text.length() * 3) {
-                return map.get(selected);
+                return selected;
             } else {
                 return Language.UNKNOWN;
             }

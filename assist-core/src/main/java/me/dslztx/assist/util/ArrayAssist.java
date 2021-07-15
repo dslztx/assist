@@ -67,6 +67,19 @@ public class ArrayAssist {
         return result;
     }
 
+    public static List<Byte> toList(byte[] array){
+        List<Byte> result = new ArrayList<Byte>();
+        if (isEmpty(array)) {
+            return result;
+        }
+
+        for (byte element : array) {
+            result.add(element);
+        }
+
+        return result;
+    }
+
     public static List<Integer> toList(Integer[] array) {
         List<Integer> result = new ArrayList<Integer>();
         if (isEmpty(array)) {

@@ -24,7 +24,7 @@ public class URLAssist {
         Pattern.compile("\\w{1,50}(?:-\\w{1,50})*(?:\\.\\w{1,50}(?:-\\w{1,50})*){1,}");
 
     private static Pattern urlPattern =
-        Pattern.compile("(((ht|f)tps?):\\/\\/)?[\\w-]+(\\.[\\w-]+)+([\\w.," + "@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
+        Pattern.compile("(((ht|f)tps?):\\/\\/)?[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&:/~+#!-]*[\\w@?^=%&/~+#!-])?");
 
     private static Pattern urlProtocols = Pattern.compile("(((ht|f)tps?):\\/\\/)");
 
@@ -63,6 +63,14 @@ public class URLAssist {
         PROTOCOLS.add("prospero");
 
         ILLEGAL_CHAR_MAP.put('。', '.');
+    }
+
+    public static boolean isLegalURL(String url) {
+        if (StringAssist.isBlank(url)) {
+            return false;
+        }
+
+        return urlPattern.matcher(url).matches();
     }
 
     public static String extractLegalURL(String url) {

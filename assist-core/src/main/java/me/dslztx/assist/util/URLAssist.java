@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * URI RFC：https://datatracker.ietf.org/doc/html/rfc3986#section-1.1.3
+ */
 public class URLAssist {
 
     protected static final Set<String> PROTOCOLS = new HashSet<>();
@@ -22,6 +25,8 @@ public class URLAssist {
 
     private static Pattern urlPattern =
         Pattern.compile("(((ht|f)tps?):\\/\\/)?[\\w-]+(\\.[\\w-]+)+([\\w.," + "@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
+
+    private static Pattern urlProtocols = Pattern.compile("(((ht|f)tps?):\\/\\/)");
 
     static {
         cnSubdomains.add("ac");
@@ -71,6 +76,41 @@ public class URLAssist {
         }
 
         return null;
+    }
+
+    /**
+     * 提取出明文的疑似跳转URL
+     * 
+     * @param s 要么是空白，要么是合法的URL
+     * @return
+     */
+    public static Set<String> extractSuspectRedirectURLs(String s) {
+        Set<String> urls = new HashSet<>();
+
+        if (StringAssist.isBlank(s)) {
+            return urls;
+        }
+
+        Matcher matcher = urlProtocols.matcher(s);
+
+        int start = 0;
+
+        int end = -1;
+        while (matcher.find()) {
+            end = matcher.start();
+
+            if (start == end) {
+                continue;
+            }
+
+            urls.add(s.substring(start, end));
+
+            start = end;
+        }
+
+        urls.add(s.substring(start));
+
+        return urls;
     }
 
     public static String obtainURLDomain(String url) {

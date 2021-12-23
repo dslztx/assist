@@ -38,7 +38,7 @@
         <!--        以me.dslztx开头，避免变量名冲突，导致加载奇怪的依赖，比如在-->
         <!--        "org.springframework.boot:spring-boot-dependencies"JAR包中定义了"log4j2.version"变量-->
 
-        <me.dslztx.slf4j.version>1.7.12</me.dslztx.slf4j.version>
+        <me.dslztx.slf4j.version>1.7.30</me.dslztx.slf4j.version>
         <me.dslztx.log4j2.version>2.17.0</me.dslztx.log4j2.version>
         <me.dslztx.junit.version>4.13.1</me.dslztx.junit.version>
         <me.dslztx.h2.version>1.4.190</me.dslztx.h2.version>

@@ -48,7 +48,7 @@
         <me.dslztx.commons-compress.version>1.19</me.dslztx.commons-compress.version>
         <me.dslztx.commons-configuration.version>2.0</me.dslztx.commons-configuration.version>
         <me.dslztx.commons-beanutils.version>1.9.4</me.dslztx.commons-beanutils.version>
-        <me.dslztx.commons-io.version>2.5</me.dslztx.commons-io.version>
+        <me.dslztx.commons-io.version>2.7</me.dslztx.commons-io.version>
         <me.dslztx.jedis.version>2.1.0</me.dslztx.jedis.version>
         <me.dslztx.lettuce.version>3.5.0.Final</me.dslztx.lettuce.version>
         <me.dslztx.alibaba.druid.version>1.1.9</me.dslztx.alibaba.druid.version>

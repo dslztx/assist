@@ -45,7 +45,7 @@
         <me.dslztx.mockito.version>2.20.0</me.dslztx.mockito.version>
         <me.dslztx.quartz.version>2.3.2</me.dslztx.quartz.version>
         <me.dslztx.commons-codec.version>1.10</me.dslztx.commons-codec.version>
-        <me.dslztx.commons-compress.version>1.19</me.dslztx.commons-compress.version>
+        <me.dslztx.commons-compress.version>1.21</me.dslztx.commons-compress.version>
         <me.dslztx.commons-configuration.version>2.0</me.dslztx.commons-configuration.version>
         <me.dslztx.commons-beanutils.version>1.9.4</me.dslztx.commons-beanutils.version>
         <me.dslztx.commons-io.version>2.5</me.dslztx.commons-io.version>

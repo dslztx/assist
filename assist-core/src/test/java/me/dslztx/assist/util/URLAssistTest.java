@@ -159,6 +159,9 @@ public class URLAssistTest {
 
             Assert.assertTrue("".equals(URLAssist.removeProtocol("http:////")));
 
+            Assert.assertTrue("www.baidu.com".equals(URLAssist.removeProtocol("https://////www.baidu.com")));
+            Assert.assertTrue("www.baidu.com".equals(URLAssist.removeProtocol("ftp://////www.baidu.com")));
+
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

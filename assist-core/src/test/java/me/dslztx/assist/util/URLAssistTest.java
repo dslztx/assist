@@ -42,6 +42,9 @@ public class URLAssistTest {
 
             String url4 = "helloworld";
             Assert.assertFalse(URLAssist.isLegalURL(url4));
+
+            String url5 = "163.com";
+            Assert.assertTrue(URLAssist.isLegalURL(url5));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
@@ -137,6 +140,25 @@ public class URLAssistTest {
             String url0 = "http://www。baidu.com";
 
             Assert.assertTrue("http://www.baidu.com".equals(URLAssist.illegalCharacterTolerant(url0)));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void removeProtocolTest() {
+        try {
+            Assert.assertTrue("www.baidu.com".equals(URLAssist.removeProtocol("http://www.baidu.com")));
+
+            Assert.assertTrue("www.baidu.com".equals(URLAssist.removeProtocol("http://////www.baidu.com")));
+
+            Assert.assertTrue("httpx://www.baidu.com".equals(URLAssist.removeProtocol("httpx://www.baidu.com")));
+
+            Assert.assertTrue("://www.baidu.com".equals(URLAssist.removeProtocol("://www.baidu.com")));
+
+            Assert.assertTrue("".equals(URLAssist.removeProtocol("http:////")));
+
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

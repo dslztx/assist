@@ -73,6 +73,33 @@ public class URLAssist {
         return urlPattern.matcher(url).matches();
     }
 
+    public static String removeProtocol(String url) {
+        if (StringAssist.isBlank(url)) {
+            return url;
+        }
+
+        int index = url.indexOf(":");
+        if (index == -1 || index == 0) {
+            return url;
+        }
+
+        if (!PROTOCOLS.contains(url.substring(0, index).toLowerCase())) {
+            return url;
+        }
+
+        int start = index + 1;
+
+        while (start < url.length() && url.charAt(start) == '/') {
+            start++;
+        }
+
+        if (start >= url.length()) {
+            return "";
+        } else {
+            return url.substring(start);
+        }
+    }
+
     public static String extractLegalURL(String url) {
         if (StringAssist.isBlank(url)) {
             return null;

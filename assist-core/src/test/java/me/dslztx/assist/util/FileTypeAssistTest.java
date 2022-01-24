@@ -87,4 +87,32 @@ public class FileTypeAssistTest {
             fail();
         }
     }
+
+    @Test
+    public void containsTest() {
+        try {
+            Assert.assertTrue(FileType.contains("JPEG"));
+            Assert.assertTrue(FileType.contains("PSD"));
+            Assert.assertTrue(FileType.contains("XLS"));
+            Assert.assertTrue(FileType.contains("DOC"));
+            Assert.assertFalse(FileType.contains("NOT_EXIST"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void containsTest1() {
+        try {
+            Assert.assertTrue(FileType.contains(FileType.BMP));
+            Assert.assertTrue(FileType.contains(FileType.JPEG));
+
+            FileType fileType = null;
+            Assert.assertFalse(FileType.contains(fileType));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

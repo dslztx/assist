@@ -1,15 +1,14 @@
 package me.dslztx.assist.util;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import junit.framework.Assert;
 
 /**
  * @author dslztx
@@ -216,6 +215,39 @@ public class StringAssistTest {
             Assert.assertTrue(result.get(1).equals("baidu.com.cn"));
             Assert.assertTrue(result.get(2).equals("sina.baidu.com.cn"));
 
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void removeControlCharsTest() {
+        try {
+            String s =
+                "ab" + "\u200bcd" + "\u200cef" + "\u200dgh" + "\u200fij" + "\u2029k\u202al\u202bm\u202cn\u202do\u202ep"
+                    + "\u2061qr\u2062s\u2063t\u2064uv\u206aw\u206bx\u206cy\u206dz\u206f";
+            Assert.assertTrue("abcdefghijklmnopqrstuvwxyz".equals(StringAssist.removeControlChars(s)));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void processTextOrderCharsTest() {
+        try {
+            String s = "\u202e你\u202d好人生";
+            Assert.assertTrue("好人生你".equals(StringAssist.processTextOrderChars(s)));
+
+            String s1 = "\u202e\u202d";
+            Assert.assertTrue("".equals(StringAssist.processTextOrderChars(s1)));
+
+            String s2 = "你\u202e好人生";
+            Assert.assertTrue("你生人好".equals(StringAssist.processTextOrderChars(s2)));
+
+            String s3 = "\u202e你\u202d好\u202e人生\u202eabcd\u202eefghi\u202ejk202dl\u202dfff\u202em\u202dn";
+            Assert.assertTrue("好fffnmld202kjihgfedcba生人你".equals(StringAssist.processTextOrderChars(s3)));
         } catch (Exception e) {
             logger.error("", e);
             fail();

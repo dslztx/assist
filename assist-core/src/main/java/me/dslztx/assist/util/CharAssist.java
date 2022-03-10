@@ -34,6 +34,14 @@ public class CharAssist {
         }
     }
 
+    public static boolean isRLOControlChar(char c) {
+        return c == '\u202e';
+    }
+
+    public static boolean isLROControlChar(char c) {
+        return c == '\u202d';
+    }
+
     public static boolean isEnglishChar(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }

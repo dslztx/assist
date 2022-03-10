@@ -410,4 +410,76 @@ public class StringAssist {
 
         return result;
     }
+
+    public static String removeControlChars(String s) {
+        if (StringAssist.isBlank(s)) {
+            return s;
+        }
+
+        return s.replaceAll("[\u200b-\u200f\u2029-\u202e\u2061-\u2064\u206a-\u206f]", "");
+    }
+
+    /**
+     * 处理\u202e和\u202d这两个文本顺序控制字符
+     * 
+     * @param s
+     * @return
+     */
+    public static String processTextOrderChars(String s) {
+        if (StringAssist.isBlank(s)) {
+            return s;
+        }
+
+        Deque<Character> stack = new ArrayDeque<>(s.length());
+
+        for (int index = 0; index < s.length(); index++) {
+            stack.push(s.charAt(index));
+        }
+
+        Object[] aa = new Object[s.length()];
+        int size = 0;
+
+        char c;
+        StringBuilder tmp = new StringBuilder();
+
+        while (!stack.isEmpty()) {
+            c = stack.pop();
+
+            if (CharAssist.isRLOControlChar(c) || CharAssist.isLROControlChar(c)) {
+                if (size == 0) {
+                    continue;
+                }
+
+                if (CharAssist.isRLOControlChar(c)) {
+                    tmp.setLength(0);
+                    for (int index = 0; index < size; index++) {
+                        tmp.append(aa[index]);
+                    }
+                    size = 0;
+                    aa[size++] = tmp.toString();
+                } else {
+                    tmp.setLength(0);
+                    for (int index = size - 1; index >= 0; index--) {
+                        tmp.append(aa[index]);
+                    }
+                    size = 0;
+                    aa[size++] = tmp.toString();
+                }
+            } else {
+                aa[size++] = c;
+            }
+        }
+
+        if (size == 0) {
+            return "";
+        } else if (size == 1) {
+            return aa[0].toString();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int index = size - 1; index >= 0; index--) {
+                sb.append(aa[index]);
+            }
+            return sb.toString();
+        }
+    }
 }

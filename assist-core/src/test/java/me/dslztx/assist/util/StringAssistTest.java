@@ -228,6 +228,9 @@ public class StringAssistTest {
                 "ab" + "\u200bcd" + "\u200cef" + "\u200dgh" + "\u200fij" + "\u2029k\u202al\u202bm\u202cn\u202do\u202ep"
                     + "\u2061qr\u2062s\u2063t\u2064uv\u206aw\u206bx\u206cy\u206dz\u206f";
             Assert.assertTrue("abcdefghijklmnopqrstuvwxyz".equals(StringAssist.removeControlChars(s)));
+
+            String s3 = "\u202e你\u202d好\u202e人生\u202eabcd\u202eefghi\u202ejk202dl\u202dfff\u202em\u202dn";
+            Assert.assertTrue("你好人生abcdefghijk202dlfffmn".equals(StringAssist.removeControlChars(s3)));
         } catch (Exception e) {
             logger.error("", e);
             fail();
@@ -248,6 +251,10 @@ public class StringAssistTest {
 
             String s3 = "\u202e你\u202d好\u202e人生\u202eabcd\u202eefghi\u202ejk202dl\u202dfff\u202em\u202dn";
             Assert.assertTrue("好fffnmld202kjihgfedcba生人你".equals(StringAssist.processTextOrderChars(s3)));
+
+            String s4 = "PO358\u202evaw.htm]";
+            // 实际上打印出来的是"PO358[mth.wav"，暂时不考虑
+            Assert.assertTrue("PO358]mth.wav".equals(StringAssist.processTextOrderChars(s4)));
         } catch (Exception e) {
             logger.error("", e);
             fail();

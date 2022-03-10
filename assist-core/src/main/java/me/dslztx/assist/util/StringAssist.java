@@ -416,11 +416,15 @@ public class StringAssist {
             return s;
         }
 
+        // https://stb11816.gitbook.io/python_note/crawler/kong-zhi-zi-7b2628-control-character
         return s.replaceAll("[\u200b-\u200f\u2029-\u202e\u2061-\u2064\u206a-\u206f]", "");
     }
 
     /**
-     * 处理\u202e和\u202d这两个文本顺序控制字符
+     * 处理\u202e和\u202d这两个文本顺序控制字符(https://redcanary.com/blog/right-to-left-override/)
+     *
+     * 需要注意的是，未考虑"两个char作为一个整体表示一个字符"的情形(https://docs.oracle.com/javase/7/docs/api/java/lang/Character.html#unicode)
+     *
      * 
      * @param s
      * @return

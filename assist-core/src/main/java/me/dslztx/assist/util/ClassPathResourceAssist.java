@@ -143,6 +143,10 @@ public class ClassPathResourceAssist {
         return inputStreams;
     }
 
+    /**
+     * 经常出现的一种错误情形：开发时不在JAR中的资源，开发完成打包后在JAR中，然后报错，除非把资源提取出来
+     */
+    @Deprecated
     public static List<File> locateFilesNotInJar(String name) {
         List<File> files = new ArrayList<File>();
 
@@ -206,6 +210,10 @@ public class ClassPathResourceAssist {
         return files;
     }
 
+    /**
+     * 经常出现的一种错误情形：开发时不在JAR中的资源，开发完成打包后在JAR中，然后报错，除非把资源提取出来
+     */
+    @Deprecated
     public static File locateFileNotInJar(String name) {
         File file = null;
 

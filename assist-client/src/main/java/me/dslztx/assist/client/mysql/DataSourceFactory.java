@@ -33,6 +33,13 @@ public class DataSourceFactory {
         return groupedDataSource.get(group);
     }
 
+    public static Map<String, DruidDataSource> obtainAllDataSources() {
+        if (!init) {
+            init();
+        }
+        return groupedDataSource;
+    }
+
     public static DataSource obtainDataSource() {
         if (!init) {
             init();
@@ -101,4 +108,5 @@ public class DataSourceFactory {
             return dataSource;
         }
     }
+
 }

@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author dslztx
  */
-public class SevenZCompressAssist {
+public class Compress7ZAssist {
 
-    private static final Logger logger = LoggerFactory.getLogger(SevenZCompressAssist.class);
+    private static final Logger logger = LoggerFactory.getLogger(Compress7ZAssist.class);
 
     public static void compress(File input, File output) {
         SevenZOutputFile sevenZOutput = null;

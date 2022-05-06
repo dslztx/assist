@@ -5,7 +5,7 @@
 
     <groupId>me.dslztx</groupId>
     <artifactId>assist-parent</artifactId>
-    <version>3.0.20</version>
+    <version>3.0.21</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -49,7 +49,7 @@
         <me.dslztx.commons-configuration.version>2.0</me.dslztx.commons-configuration.version>
         <me.dslztx.commons-beanutils.version>1.9.4</me.dslztx.commons-beanutils.version>
         <me.dslztx.commons-io.version>2.7</me.dslztx.commons-io.version>
-        <me.dslztx.jedis.version>2.1.0</me.dslztx.jedis.version>
+        <me.dslztx.jedis.version>4.2.0</me.dslztx.jedis.version>
         <me.dslztx.lettuce.version>4.5.0.Final</me.dslztx.lettuce.version>
         <me.dslztx.alibaba.druid.version>1.1.9</me.dslztx.alibaba.druid.version>
         <me.dslztx.alibaba.fastjson.version>1.2.56</me.dslztx.alibaba.fastjson.version>

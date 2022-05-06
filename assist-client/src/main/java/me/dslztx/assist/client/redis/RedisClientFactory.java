@@ -1,5 +1,6 @@
 package me.dslztx.assist.client.redis;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,9 +127,9 @@ public class RedisClientFactory {
         String[] serverArray = servers.split(",");
 
         JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxActive(MAX_TOTAL);
+        config.setMaxTotal(MAX_TOTAL);
         config.setMaxIdle(MAX_IDLE);
-        config.setMaxWait(MAX_WAIT_MILLIS);
+        config.setMaxWait(Duration.ofMillis(MAX_WAIT_MILLIS));
         config.setTestOnBorrow(TEST_ON_BORROW);
         config.setTestWhileIdle(TEST_WHILE_IDLE);
 

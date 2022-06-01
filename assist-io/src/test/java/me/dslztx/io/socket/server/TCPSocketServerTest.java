@@ -1,16 +1,17 @@
-package me.dslztx.assist.server;
+package me.dslztx.io.socket.server;
 
-import me.dslztx.assist.client.socket.TCPSocketClient;
-import me.dslztx.assist.util.CloseableAssist;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
+import me.dslztx.assist.util.CloseableAssist;
+import me.dslztx.io.socket.client.TCPSocketClient;
 
 @Ignore
 public class TCPSocketServerTest {

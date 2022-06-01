@@ -1,4 +1,4 @@
-package me.dslztx.assist.client.socket;
+package me.dslztx.io.socket.client;
 
 import java.io.IOException;
 import java.io.OutputStream;

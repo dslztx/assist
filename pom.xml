@@ -15,7 +15,6 @@
         <module>assist-domain</module>
         <module>assist-pattern-template</module>
         <module>assist-pattern-strategy</module>
-        <module>assist-server</module>
         <module>assist-solution</module>
         <module>assist-log</module>
         <module>assist-text</module>

@@ -1,4 +1,4 @@
-package me.dslztx.assist.server;
+package me.dslztx.io.socket.server;
 
 import java.net.Socket;
 

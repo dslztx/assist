@@ -18,6 +18,18 @@ public class StringCompressAssistTest {
             String compressedStr = StringCompressAssist.compressUsingGZIP(s);
 
             Assert.assertTrue(StringCompressAssist.uncompressUsingGZIP(compressedStr).equals(s));
+
+            String m = "[]";
+
+            Assert.assertTrue(
+                StringCompressAssist.uncompressUsingGZIP(StringCompressAssist.compressUsingGZIP(m)).equals(m));
+
+            String n = "";
+            Assert.assertTrue(
+                StringCompressAssist.uncompressUsingGZIP(StringCompressAssist.compressUsingGZIP(n)).equals(n));
+
+            String p = null;
+            Assert.assertNull(StringCompressAssist.uncompressUsingGZIP(StringCompressAssist.compressUsingGZIP(p)));
         } catch (Exception e) {
             log.error("", e);
             Assert.fail();

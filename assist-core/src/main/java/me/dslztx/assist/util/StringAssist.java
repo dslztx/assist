@@ -486,4 +486,12 @@ public class StringAssist {
             return sb.toString();
         }
     }
+
+    public static int obtainLengthDefaultZero(String s) {
+        if (s == null) {
+            return 0;
+        }
+
+        return s.length();
+    }
 }

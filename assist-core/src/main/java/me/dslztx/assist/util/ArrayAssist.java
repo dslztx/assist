@@ -9,6 +9,30 @@ import java.util.List;
  */
 public class ArrayAssist {
 
+    public static int obtainSizeDefaultZero(Object[] array) {
+        if (isEmpty(array)) {
+            return 0;
+        }
+
+        return array.length;
+    }
+
+    public static int obtainSizeDefaultZero(byte[] array) {
+        if (isEmpty(array)) {
+            return 0;
+        }
+
+        return array.length;
+    }
+
+    public static int obtainSizeDefaultZero(int[] array) {
+        if (isEmpty(array)) {
+            return 0;
+        }
+
+        return array.length;
+    }
+
     public static boolean isEmpty(Object[] array) {
         if (array == null || array.length == 0) {
             return true;
@@ -67,7 +91,7 @@ public class ArrayAssist {
         return result;
     }
 
-    public static List<Byte> toList(byte[] array){
+    public static List<Byte> toList(byte[] array) {
         List<Byte> result = new ArrayList<Byte>();
         if (isEmpty(array)) {
             return result;

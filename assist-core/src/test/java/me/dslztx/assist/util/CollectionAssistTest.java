@@ -8,15 +8,13 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import lombok.extern.slf4j.Slf4j;
 import me.dslztx.assist.pattern.strategy.ExcludeFilter;
 import me.dslztx.assist.pattern.strategy.IncludeFilter;
 
+@Slf4j
 public class CollectionAssistTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(CollectionAssistTest.class);
 
     @Test
     public void isEmptyTest() throws Exception {
@@ -139,9 +137,20 @@ public class CollectionAssistTest {
             ArrayList<String> pp = null;
             Assert.assertNull(CollectionAssist.toArray(pp, String.class));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
 
+    @Test
+    public void obtainSizeDefaultZeroTest() {
+        try {
+            Assert.assertTrue(CollectionAssist.obtainSizeDefaultZero(null) == 0);
+            Assert.assertTrue(CollectionAssist.obtainSizeDefaultZero(new ArrayList()) == 0);
+            Assert.assertTrue(CollectionAssist.obtainSizeDefaultZero(Arrays.asList(1)) == 1);
+        } catch (Exception e) {
+            log.error("", e);
+            fail();
+        }
+    }
 }

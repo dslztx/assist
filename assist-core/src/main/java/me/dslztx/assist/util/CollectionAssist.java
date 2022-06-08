@@ -12,6 +12,14 @@ import me.dslztx.assist.pattern.strategy.IncludeFilter;
  */
 public class CollectionAssist {
 
+    public static int obtainSizeDefaultZero(Collection collection) {
+        if (collection == null || collection.isEmpty()) {
+            return 0;
+        }
+
+        return collection.size();
+    }
+
     public static boolean isEmpty(Collection collection) {
         return collection == null || collection.isEmpty();
     }

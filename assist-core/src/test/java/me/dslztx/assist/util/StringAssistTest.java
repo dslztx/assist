@@ -7,16 +7,15 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author dslztx
  * @date 2015年08月18日
  */
+@Slf4j
 public class StringAssistTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(StringAssistTest.class);
 
     @Test
     public void testIsHexStr() throws Exception {
@@ -24,7 +23,7 @@ public class StringAssistTest {
             assertTrue(StringAssist.isHexStr("aaFf"));
             assertFalse(StringAssist.isHexStr("zu"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -35,7 +34,7 @@ public class StringAssistTest {
             assertTrue(StringAssist.isOctStr("07770"));
             assertFalse(StringAssist.isOctStr("0768"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -46,7 +45,7 @@ public class StringAssistTest {
             assertTrue(StringAssist.isDecimalStr("3128390217"));
             assertFalse(StringAssist.isDecimalStr("983219z"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -59,7 +58,7 @@ public class StringAssistTest {
             assertTrue(StringAssist.isBlank("   "));
             assertFalse(StringAssist.isBlank("  fdsfd "));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -70,7 +69,7 @@ public class StringAssistTest {
             assertNull(StringAssist.toLowerCase(null));
             assertTrue(StringAssist.toLowerCase("hEllo").equals("hello"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -81,7 +80,7 @@ public class StringAssistTest {
             assertNull(StringAssist.toUpperCase(null));
             assertTrue(StringAssist.toUpperCase("hEllo").equals("HELLO"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -103,7 +102,7 @@ public class StringAssistTest {
             String sss = "100,,53,";
             Assert.assertTrue(StringAssist.split(sss, ',', false).length == 4);
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -114,7 +113,7 @@ public class StringAssistTest {
             String s = "abcd\r\n f gh\r\nfdss";
             Assert.assertTrue(StringAssist.removeChar(s, ' ', '\r', '\n').equals("abcdfghfdss"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -129,7 +128,7 @@ public class StringAssistTest {
 
             Assert.assertTrue(StringAssist.format("hello {} world {}", "a").equals("hello a world {}"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -145,7 +144,7 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.joinUseSeparator('#', "hello", "world").equals("hello#world"));
             Assert.assertTrue(StringAssist.joinUseSeparator('#', 1, 2, 3, null, "hel").equals("1#2#3#NULL#hel"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -157,7 +156,7 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.splitFirstPart("hello", '_').equals("hello"));
             Assert.assertTrue(StringAssist.splitFirstPart("", '_').equals(""));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -169,7 +168,7 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.splitLastPart("hello", '_').equals("hello"));
             Assert.assertTrue(StringAssist.splitLastPart("", '_').equals(""));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -181,7 +180,7 @@ public class StringAssistTest {
             Assert.assertTrue(StringAssist.truncateWhitespace(" he \r\n\t llo  ").equals("hello"));
             Assert.assertTrue(StringAssist.truncateWhitespace("hello world").equals("helloworld"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -195,7 +194,7 @@ public class StringAssistTest {
 
             Assert.assertTrue(StringAssist.concat(s).equals("helloworld"));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -216,7 +215,7 @@ public class StringAssistTest {
             Assert.assertTrue(result.get(2).equals("sina.baidu.com.cn"));
 
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -232,7 +231,7 @@ public class StringAssistTest {
             String s3 = "\u202e你\u202d好\u202e人生\u202eabcd\u202eefghi\u202ejk202dl\u202dfff\u202em\u202dn";
             Assert.assertTrue("你好人生abcdefghijk202dlfffmn".equals(StringAssist.removeControlChars(s3)));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
             fail();
         }
     }
@@ -256,7 +255,19 @@ public class StringAssistTest {
             // 实际上打印出来的是"PO358[mth.wav"，暂时不考虑
             Assert.assertTrue("PO358]mth.wav".equals(StringAssist.processTextOrderChars(s4)));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void obtainLengthDefaultZeroTest() {
+        try {
+            Assert.assertTrue(StringAssist.obtainLengthDefaultZero(null) == 0);
+            Assert.assertTrue(StringAssist.obtainLengthDefaultZero("") == 0);
+            Assert.assertTrue(StringAssist.obtainLengthDefaultZero("hello") == 5);
+        } catch (Exception e) {
+            log.error("", e);
             fail();
         }
     }

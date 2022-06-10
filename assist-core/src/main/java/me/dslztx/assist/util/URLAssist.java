@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.configuration2.Configuration;
+
 /**
  * URI RFC：https://datatracker.ietf.org/doc/html/rfc3986#section-1.1.3
  */
@@ -18,17 +20,14 @@ public class URLAssist {
 
     public static Set<String> cnSubdomains = new HashSet<String>();
 
-    private static Pattern ipPattern = Pattern.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?:\\:\\d+)?");
-
-    private static Pattern domainPattern =
-        Pattern.compile("\\w{1,50}(?:-\\w{1,50})*(?:\\.\\w{1,50}(?:-\\w{1,50})*){1,}");
-
-    private static Pattern urlPattern =
-        Pattern.compile("(((ht|f)tps?):\\/\\/)?[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&:/~+#!-]*[\\w@?^=%&/~+#!-])?");
-
-    private static Pattern urlProtocols = Pattern.compile("(((ht|f)tps?):\\/\\/)");
+    private static Pattern ipPattern = null;
+    private static Pattern domainPattern = null;
+    private static Pattern urlPattern = null;
+    private static Pattern urlProtocols = null;
 
     static {
+        loadPatternRegexFromFile();
+
         cnSubdomains.add("ac");
         cnSubdomains.add("com");
         cnSubdomains.add("edu");
@@ -63,6 +62,58 @@ public class URLAssist {
         PROTOCOLS.add("prospero");
 
         ILLEGAL_CHAR_MAP.put('。', '.');
+    }
+
+    public static Pattern getIpPattern() {
+        return ipPattern;
+    }
+
+    public static Pattern getDomainPattern() {
+        return domainPattern;
+    }
+
+    public static Pattern getUrlPattern() {
+        return urlPattern;
+    }
+
+    public static Pattern getUrlProtocols() {
+        return urlProtocols;
+    }
+
+    private static void loadPatternRegexFromFile() {
+        Configuration configuration = ConfigLoadAssist.propConfig("regex.list");
+
+        if (ObjectAssist.isNull(configuration)) {
+            throw new RuntimeException("no regex.list file in classpath");
+        }
+
+        String ipRegex = configuration.getString("ip");
+        if (StringAssist.isBlank(ipRegex)) {
+            throw new RuntimeException("no ip regex");
+        }
+        ipPattern = Pattern.compile(ipRegex, Pattern.CASE_INSENSITIVE);
+
+        String domainRegex = configuration.getString("domain");
+        if (StringAssist.isBlank(domainRegex)) {
+            throw new RuntimeException("no domain regex");
+        }
+        domainPattern = Pattern.compile(domainRegex, Pattern.CASE_INSENSITIVE);
+
+        String urlRegex = configuration.getString("url");
+        if (StringAssist.isBlank(urlRegex)) {
+            throw new RuntimeException("no url regex");
+        }
+        urlPattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
+
+        String urlProtocolRegex = configuration.getString("urlProtocol");
+        if (StringAssist.isBlank(urlProtocolRegex)) {
+            throw new RuntimeException("no urlProtocol regex");
+        }
+        urlProtocols = Pattern.compile(urlProtocolRegex, Pattern.CASE_INSENSITIVE);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("hello");
     }
 
     public static boolean isLegalURL(String url) {

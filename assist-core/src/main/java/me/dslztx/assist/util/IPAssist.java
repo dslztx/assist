@@ -2,10 +2,29 @@ package me.dslztx.assist.util;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.configuration2.Configuration;
+
 public class IPAssist {
 
-    private static final Pattern IPV4_PATTERN =
-        Pattern.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+    private static Pattern IPV4_PATTERN = null;
+
+    static {
+        loadPatternRegexFromFile();
+    }
+
+    private static void loadPatternRegexFromFile() {
+        Configuration configuration = ConfigLoadAssist.propConfig("regex.list");
+
+        if (ObjectAssist.isNull(configuration)) {
+            throw new RuntimeException("no regex.list file in classpath");
+        }
+
+        String ipV4Regex = configuration.getString("ipv4");
+        if (StringAssist.isBlank(ipV4Regex)) {
+            throw new RuntimeException("no ipv4 regex");
+        }
+        IPV4_PATTERN = Pattern.compile(ipV4Regex, Pattern.CASE_INSENSITIVE);
+    }
 
     /**
      * 是否是合法的IPv4地址

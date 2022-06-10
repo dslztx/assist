@@ -2,6 +2,7 @@ package me.dslztx.assist.util;
 
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -161,6 +162,27 @@ public class URLAssistTest {
 
             Assert.assertTrue("www.baidu.com".equals(URLAssist.removeProtocol("https://////www.baidu.com")));
             Assert.assertTrue("www.baidu.com".equals(URLAssist.removeProtocol("ftp://////www.baidu.com")));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void bigContentExtractURLTimeCostTest() {
+        try {
+
+            String content =
+                IOUtils.toString(ClassPathResourceAssist.locateInputStream("big_content_for_url.text"), "UTF-8");
+
+            long start = System.currentTimeMillis();
+
+            URLAssist.getUrlPattern().matcher(content).find();
+
+            long end = System.currentTimeMillis();
+
+            Assert.assertTrue((end - start) < 1000);
 
         } catch (Exception e) {
             logger.error("", e);

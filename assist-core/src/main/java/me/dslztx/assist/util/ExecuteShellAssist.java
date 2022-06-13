@@ -52,7 +52,8 @@ public class ExecuteShellAssist {
         }
     }
 
-    public static List<String> executeShellSyncForResult(String command, String... arguments) {
+    public static List<String> executeShellSyncForResult(String command, List<String> arguments, long timeout,
+        TimeUnit timeUnit) {
         if (StringAssist.isBlank(command)) {
             throw new RuntimeException("no command");
         }
@@ -60,14 +61,14 @@ public class ExecuteShellAssist {
         try {
             List<String> commandWithArguments = new ArrayList<String>();
             commandWithArguments.add(command);
-            commandWithArguments.addAll(Arrays.asList(arguments));
+            commandWithArguments.addAll(arguments);
 
             Process process = new ProcessBuilder(commandWithArguments).start();
 
             Future<List<String>> resultFuture = executor.submit(new SubprocessReadAsync(process));
 
             try {
-                return resultFuture.get(1, TimeUnit.MINUTES);
+                return resultFuture.get(timeout, timeUnit);
             } catch (Exception e) {
                 log.error("execute shell exception", e);
 
@@ -82,7 +83,9 @@ public class ExecuteShellAssist {
     }
 
     public static void main(String[] rags) throws IOException, InterruptedException {
-        List<String> results = executeShellSyncForResult("/bin/bash", "/home/dslztx/Desktop/n.out");
+        List<String> results =
+            executeShellSyncForResult("/bin/bash", Arrays.asList("/home/dslztx/Desktop/n.out"), 1, TimeUnit.MINUTES);
+
         System.out.println(results);
     }
 }

@@ -2,16 +2,13 @@ package me.dslztx.assist.util;
 
 import java.io.*;
 import java.nio.charset.Charset;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author dslztx
  */
+@SuppressWarnings("unused")
 public class IOAssist {
-
-    private static final Logger logger = LoggerFactory.getLogger(IOAssist.class);
 
     public static BufferedReader bufferedReader(File file, Charset charset) {
         if (file == null) {
@@ -44,7 +41,7 @@ public class IOAssist {
             throw new RuntimeException("file is null");
         }
 
-        return bufferedReader(file, Charset.forName("UTF-8"));
+        return bufferedReader(file, StandardCharsets.UTF_8);
     }
 
     public static BufferedReader bufferedReader(InputStream in) {
@@ -52,7 +49,7 @@ public class IOAssist {
             throw new RuntimeException("in is null");
         }
 
-        return bufferedReader(in, Charset.forName("UTF-8"));
+        return bufferedReader(in, StandardCharsets.UTF_8);
     }
 
     public static BufferedWriter bufferedWriter(File file, Charset charset) {
@@ -62,6 +59,18 @@ public class IOAssist {
 
         try {
             return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), charset));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static BufferedWriter bufferedWriter(File file, Charset charset, boolean append) {
+        if (charset == null) {
+            throw new RuntimeException("charset is null");
+        }
+
+        try {
+            return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append), charset));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +88,11 @@ public class IOAssist {
     }
 
     public static BufferedWriter bufferedWriter(File file) {
-        return bufferedWriter(file, Charset.forName("UTF-8"));
+        return bufferedWriter(file, StandardCharsets.UTF_8);
+    }
+
+    public static BufferedWriter bufferedWriter(File file, boolean append) {
+        return bufferedWriter(file, StandardCharsets.UTF_8, append);
     }
 
     public static BufferedWriter bufferedWriter(OutputStream out) {
@@ -87,7 +100,7 @@ public class IOAssist {
             throw new RuntimeException("out is null");
         }
 
-        return bufferedWriter(out, Charset.forName("UTF-8"));
+        return bufferedWriter(out, StandardCharsets.UTF_8);
     }
 
     public static BufferedInputStream bufferedInputStream(File file) {

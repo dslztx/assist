@@ -62,6 +62,7 @@
         <me.dslztx.influxdb.client.version>1.5</me.dslztx.influxdb.client.version>
         <me.dslztx.ac.algorithm.version>1.2.1</me.dslztx.ac.algorithm.version>
         <me.dslztx.lombok.version>1.16.18</me.dslztx.lombok.version>
+        <me.dslztx.guava.version>31.1-jre</me.dslztx.guava.version>
 
         <plugin-compiler.version>3.0</plugin-compiler.version>
         <plugin-compiler.compile.encoding>UTF-8</plugin-compiler.compile.encoding>
@@ -70,6 +71,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${me.dslztx.guava.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

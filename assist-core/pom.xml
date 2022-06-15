@@ -14,6 +14,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>me.dslztx</groupId>
             <artifactId>assist-log</artifactId>
             <version>${project.version}</version>

@@ -66,12 +66,17 @@ public class FileLockAssist {
     private static boolean lock0(File file) {
         String path = file.getAbsolutePath();
 
-        if (ObjectAssist.isNull(map.get(path))) {
+        FileLocker fileLocker = map.get(path);
+
+        if (ObjectAssist.isNull(fileLocker)) {
             map.put(path, new FileLocker(Thread.currentThread(), 1));
             return true;
         }
 
-        FileLocker fileLocker = map.get(path);
+        if (fileLocker.notLocked()) {
+            fileLocker.setThread(Thread.currentThread());
+            fileLocker.setCnt(1);
+        }
 
         if (fileLocker.getThread() == Thread.currentThread()) {
             fileLocker.incr();

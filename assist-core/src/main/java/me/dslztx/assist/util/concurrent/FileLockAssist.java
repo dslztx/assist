@@ -76,6 +76,8 @@ public class FileLockAssist {
         if (fileLocker.notLocked()) {
             fileLocker.setThread(Thread.currentThread());
             fileLocker.setCnt(1);
+
+            return true;
         }
 
         if (fileLocker.getThread() == Thread.currentThread()) {

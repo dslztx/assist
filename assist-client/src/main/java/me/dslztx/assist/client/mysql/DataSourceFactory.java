@@ -97,6 +97,7 @@ public class DataSourceFactory {
         try {
             dataSource = new DruidDataSource();
 
+            // 根据DruidAbstractDataSource.java类中"protected volatile int maxActive = 8"，可知默认最大连接数为8
             dataSource.setUrl(url);
             dataSource.setUsername(username);
             dataSource.setPassword(password);

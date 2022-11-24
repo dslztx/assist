@@ -1,7 +1,7 @@
 package me.dslztx.assist.util;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -408,6 +408,41 @@ public class DateTimeAssistTest {
             String timeZone4 =
                 DateTimeAssist.obtainTimeZoneFromDateTimeStr("Wed, 29 Aug 2018 16:03:15", "EEE, d MMM yyyy HH:mm:ss");
             Assert.assertTrue(timeZone4.equals("GMT+08:00"));
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void opInHourTest() {
+        try {
+            Date date1 = DateTimeAssist.generate(2018, 7, 20, 23, 59, 59, 999);
+
+            assertTrue(DateTimeAssist.format(DateTimeAssist.minusInHour(date1, 1), DateTimeAssist.YMD_HMS_MS).equals("2018-07-20 " +
+                    "22:59:59.999"));
+
+            assertTrue(DateTimeAssist.format(DateTimeAssist.addInHour(date1, 1), DateTimeAssist.YMD_HMS_MS)
+                .equals("2018" + "-07-21 " + "00:59:59.999"));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    public void setZeroTest() {
+        try {
+            Date date1 = DateTimeAssist.generate(2018, 7, 20, 23, 59, 59, 999);
+
+            assertTrue(DateTimeAssist.format(DateTimeAssist.setZeroUntilDayCurrentTimeZone(date1), DateTimeAssist.YMD_HMS_MS).equals("2018-07" +
+                    "-20 " +
+                    "00:00:00.000"));
+
+            assertTrue(DateTimeAssist.format(DateTimeAssist.setZeroUntilHourCurrentTimeZone(date1), DateTimeAssist.YMD_HMS_MS)
+                .equals("2018" + "-07-20 " + "23:00:00.000"));
+
         } catch (Exception e) {
             logger.error("", e);
             fail();

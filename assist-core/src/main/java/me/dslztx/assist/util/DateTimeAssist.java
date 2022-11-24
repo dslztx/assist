@@ -2,15 +2,9 @@ package me.dslztx.assist.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +23,8 @@ public class DateTimeAssist {
 
     public static final String YMD = "yyyy-MM-dd";
     public static final String YMD_Z = "yyyy-MM-dd Z";
+
+    public static final String YMD_H = "yyyy-MM-dd HH";
 
     public static final String YMD_HMS = "yyyy-MM-dd HH:mm:ss";
     public static final String YMD_HMS_Z = "yyyy-MM-dd HH:mm:ss Z";
@@ -242,6 +238,35 @@ public class DateTimeAssist {
             throw new RuntimeException("addDay is negative");
         }
         return new Date(a.getTime() + ((long)addDay) * 24 * 3600 * 1000);
+    }
+
+    public static Date minusInHour(Date a, int minusHour) {
+        if (minusHour < 0) {
+            throw new RuntimeException("minusHour is negative");
+        }
+        return new Date(a.getTime() - ((long)minusHour) * 3600 * 1000);
+    }
+
+    public static Date addInHour(Date a, int addHour) {
+        if (addHour < 0) {
+            throw new RuntimeException("addHour is negative");
+        }
+        return new Date(a.getTime() + ((long)addHour) * 3600 * 1000);
+    }
+
+    public static Date setZeroUntilHourCurrentTimeZone(Date a) throws ParseException {
+        // 默认是当前时区，这是所预期的
+        SimpleDateFormat formatter = new SimpleDateFormat(YMD_H);
+
+        return formatter.parse(formatter.format(a));
+    }
+
+    public static Date setZeroUntilDayCurrentTimeZone(Date a) throws ParseException {
+        // 默认是当前时区，这是所预期的
+
+        SimpleDateFormat formatter = new SimpleDateFormat(YMD);
+
+        return formatter.parse(formatter.format(a));
     }
 
     public static DayOfWeek obtainDayOfWeek(Date date) {

@@ -5,7 +5,7 @@
 
     <groupId>me.dslztx</groupId>
     <artifactId>assist-parent</artifactId>
-    <version>3.0.32</version>
+    <version>3.0.33</version>
     <packaging>pom</packaging>
 
     <modules>

@@ -47,8 +47,6 @@ public class Base64AssistTest {
             Assert.assertTrue(Base64Assist.isLegalBase64Char(""));
             Assert.assertTrue(Base64Assist.isLegalBase64Char(null));
 
-            Assert.assertFalse(Base64Assist.isLegalBase64Char("asb"));
-
             Assert.assertTrue(Base64Assist.isLegalBase64Char("asbb"));
 
             Assert.assertFalse(Base64Assist.isLegalBase64Char("asbI@@@@"));

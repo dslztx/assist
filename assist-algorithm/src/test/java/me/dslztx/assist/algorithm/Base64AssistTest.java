@@ -40,4 +40,41 @@ public class Base64AssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void judLegalTest() {
+        try {
+            Assert.assertTrue(Base64Assist.isLegalBase64Char(""));
+            Assert.assertTrue(Base64Assist.isLegalBase64Char(null));
+
+            Assert.assertFalse(Base64Assist.isLegalBase64Char("asb"));
+
+            Assert.assertTrue(Base64Assist.isLegalBase64Char("asbb"));
+
+            Assert.assertFalse(Base64Assist.isLegalBase64Char("asbI@@@@"));
+
+            Assert.assertFalse(Base64Assist
+                .isLegalBase64Char("IA==109947725a4053f2f0c572547de13b0cDX@109947725a4053f2f0c572547de 13b0cDX@DXDX@"));
+        } catch (Exception e) {
+            log.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void judgeLegalLenTest() {
+        try {
+            Assert.assertTrue(Base64Assist.isLegalBase64Len(""));
+            Assert.assertTrue(Base64Assist.isLegalBase64Len(null));
+
+            Assert.assertFalse(Base64Assist.isLegalBase64Len(" "));
+            Assert.assertTrue(Base64Assist.isLegalBase64Len("asdb"));
+
+            Assert.assertFalse(Base64Assist.isLegalBase64Len("asdbb"));
+
+        } catch (Exception e) {
+            log.error("", e);
+            Assert.fail();
+        }
+    }
 }

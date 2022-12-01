@@ -72,6 +72,9 @@ public class FileTypeAssist {
         generalFileExts.add("bak");
 
         generalFileExts.add("dot");
+
+        generalFileExts.add("m4a");
+        generalFileExts.add("dwg");
     }
 
     private static void initImageMatchChains() {

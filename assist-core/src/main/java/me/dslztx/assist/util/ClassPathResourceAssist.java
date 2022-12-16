@@ -144,9 +144,9 @@ public class ClassPathResourceAssist {
     }
 
     /**
-     * 经常出现的一种错误情形：开发时不在JAR中的资源，开发完成打包后在JAR中，然后报错，除非把资源提取出来
+     * 特别需要注意的一种情形是：资源A，其名称为a，在JAR包B内存在a的候选资源，在非JAR包目录C内也存在a的候选资源，且在类路径定义时B在C之前，此时应该跳过B内的候选资源，以C内的候选资源为标的资源；而不能是获取到B
+     * 内候选资源时发现在JAR包内，而直接返回NULL
      */
-    @Deprecated
     public static List<File> locateFilesNotInJar(String name) {
         List<File> files = new ArrayList<File>();
 
@@ -211,9 +211,9 @@ public class ClassPathResourceAssist {
     }
 
     /**
-     * 经常出现的一种错误情形：开发时不在JAR中的资源，开发完成打包后在JAR中，然后报错，除非把资源提取出来
+     * 特别需要注意的一种情形是：资源A，其名称为a，在JAR包B内存在a的候选资源，在非JAR包目录C内也存在a的候选资源，且在类路径定义时B在C之前，此时应该跳过B内的候选资源，以C内的候选资源为标的资源；而不能是获取到B
+     * 内候选资源时发现在JAR包内，而直接返回NULL
      */
-    @Deprecated
     public static File locateFileNotInJar(String name) {
         File file = null;
 
@@ -247,19 +247,25 @@ public class ClassPathResourceAssist {
         return file;
     }
 
-    private static File locateFileNotInJar(ClassLoader cl, String name) {
+    private static File locateFileNotInJar(ClassLoader cl, String name) throws IOException {
         if (ObjectAssist.isNull(cl))
             return null;
 
-        URL url = cl.getResource(name);
-        if (ObjectAssist.isNotNull(url)) {
-            File file = new File(url.getFile());
-            if (file.getPath().contains("jar!")) {
-                // 认为该资源属于JAR包
-                return null;
-            }
+        Enumeration<URL> urls = cl.getResources(name);
 
-            return file;
+        if (ObjectAssist.isNotNull(urls)) {
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+
+                File file = new File(url.getFile());
+                if (file.getPath().contains("jar!")) {
+                    // 认为该资源属于JAR包
+                    continue;
+                } else {
+                    return file;
+                }
+
+            }
         }
 
         return null;

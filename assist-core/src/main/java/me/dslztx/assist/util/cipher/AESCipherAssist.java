@@ -35,7 +35,8 @@ import lombok.extern.slf4j.Slf4j;
  * -be-a-secret<br/>
  * [5]https://crypto.stackexchange.com/questions/26790/how-bad-it-is-using-the-same-iv-twice-with-aes-gcm<br/>
  * [6]https://thiscute.world/posts/practical-cryptography-basics-6-symmetric-key-ciphers/#%E4%B8%89%E5%88%86%E7%BB%84
- * %E5%AF%86%E7%A0%81%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F
+ * %E5%AF%86%E7%A0%81%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F<br/>
+ * [7]https://www.elttam.com/blog/key-recovery-attacks-on-gcm/
  */
 @Slf4j
 public class AESCipherAssist {

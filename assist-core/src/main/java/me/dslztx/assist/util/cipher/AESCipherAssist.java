@@ -1,5 +1,6 @@
 package me.dslztx.assist.util.cipher;
 
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -9,9 +10,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import me.dslztx.assist.util.ClassPathResourceAssist;
 
 /**
  * 1. 对称加密算法 vs 非对称加密算法：安全性，前者劣于后者；计算速度，前者优于后者<br/>
@@ -52,11 +54,6 @@ public class AESCipherAssist {
      */
     private static final String DEFAULT_CIPHER_ALGORITHM = "AES/GCM/NOPADDING";
 
-    /**
-     * 随机生成16字节，并进行Hex编码
-     */
-    private static final String key = "360f5c33457a11321c40707d115d6200";
-
     private static final SecretKey KEY = generateSecretKey();
 
     /**
@@ -67,18 +64,42 @@ public class AESCipherAssist {
     private static final SecureRandom secureRandom = new SecureRandom();
 
     private static SecretKey generateSecretKey() {
-        try {
-            byte[] bb = Hex.decodeHex(key.toCharArray());
+        InputStream in = null;
 
-            if (bb.length != 16) {
-                throw new RuntimeException("the key length is illegal");
+        try {
+            in = ClassPathResourceAssist.locateInputStream("aes.cipher");
+
+            if (in == null) {
+                throw new RuntimeException("no aes key specified");
+            }
+
+            byte[] bb = IOUtils.toByteArray(in);
+
+            if (bb == null || bb.length < 16) {
+                throw new RuntimeException("the aes key is less than 16 bytes");
+            }
+
+            if (bb.length > 16) {
+                log.warn("the aes key is greater than 16 bytes, truncate");
+
+                bb = Arrays.copyOfRange(bb, 0, 16);
             }
 
             return new SecretKeySpec(bb, DEFAULT_ALGORITHM);
         } catch (Exception e) {
             log.error("", e);
+
             throw new RuntimeException(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception ignore) {
+
+                }
+            }
         }
+
     }
 
     public static byte[] encrypt(byte[] plainData) {

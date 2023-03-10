@@ -1,11 +1,7 @@
 package me.dslztx.assist.util;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +15,17 @@ public class ObjectAssist {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectAssist.class);
 
+    @Deprecated
     public static boolean isNull(Object obj) {
         return obj == null;
     }
 
+    @Deprecated
     public static boolean isNotNull(Object obj) {
         return obj != null;
     }
 
+    @Deprecated
     public static boolean equals(Object a, Object b) {
         if (a == null && b == null) {
             return true;

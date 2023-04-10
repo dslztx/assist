@@ -2,57 +2,57 @@ package me.dslztx.assist.util.metric;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class RTCounter {
+public class AvgMaxMinCounter {
 
     final Object lock = new Object();
 
     AtomicLong cnt = new AtomicLong(0);
 
-    AtomicLong timeCost = new AtomicLong(0);
+    AtomicLong total = new AtomicLong(0);
 
-    long maxRT = Long.MIN_VALUE;
+    long maxValue = Long.MIN_VALUE;
 
-    long minRT = Long.MAX_VALUE;
+    long minValue = Long.MAX_VALUE;
 
     public AtomicLong getCnt() {
         return cnt;
     }
 
-    public AtomicLong getTimeCost() {
-        return timeCost;
+    public AtomicLong getTotal() {
+        return total;
     }
 
     /**
      * 这里不需要考虑打印时，只执行了部分统计语句，因为在打印时，需要获取“写”锁，方法执行时持有“读”锁，故必然会等待所有语句执行完成的，最终能够获得“最终统计准确性”
      */
-    public void incr(long timeCost) {
+    public void incr(long value) {
         this.cnt.incrementAndGet();
-        this.timeCost.addAndGet(timeCost);
+        this.total.addAndGet(value);
 
         synchronized (lock) {
-            if (timeCost > maxRT) {
-                maxRT = timeCost;
+            if (value > maxValue) {
+                maxValue = value;
             }
 
-            if (timeCost < minRT) {
-                minRT = timeCost;
+            if (value < minValue) {
+                minValue = value;
             }
         }
     }
 
-    public long avgRT() {
+    public long avgValue() {
         if (cnt.get() == 0L) {
             return 0L;
         } else {
-            return timeCost.get() / cnt.get();
+            return total.get() / cnt.get();
         }
     }
 
-    public long maxRT() {
-        return maxRT;
+    public long maxValue() {
+        return maxValue;
     }
 
-    public long minRT() {
-        return minRT;
+    public long minValue() {
+        return minValue;
     }
 }

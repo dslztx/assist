@@ -67,7 +67,7 @@ public class AESCipherAssist {
         InputStream in = null;
 
         try {
-            in = ClassPathResourceAssist.locateInputStream("aes.cipher");
+            in = ClassPathResourceAssist.locateInputStream("aes.key");
 
             if (in == null) {
                 throw new RuntimeException("no aes key specified");

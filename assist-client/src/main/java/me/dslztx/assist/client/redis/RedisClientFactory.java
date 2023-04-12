@@ -28,7 +28,7 @@ public class RedisClientFactory {
     private static final boolean TEST_WHILE_IDLE = false;
     private static final int TIMEOUT = 5000;
 
-    private static final String CONFIG_FILE = "redis.properties";
+    private static final String CONFIG_FILE = "redis_client.properties";
 
     private static volatile boolean init = false;
 

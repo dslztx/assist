@@ -21,7 +21,7 @@ public class LettuceAsyncClientFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(LettuceAsyncClientFactory.class);
 
-    private static final String CONFIG_FILE = "redis.properties";
+    private static final String CONFIG_FILE = "redis_client.properties";
 
     private static volatile boolean init = false;
 

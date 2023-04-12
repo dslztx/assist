@@ -9,9 +9,8 @@ import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lambdaworks.redis.RedisAsyncConnection;
-import com.lambdaworks.redis.RedisClusterAsyncConnection;
 import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.cluster.api.async.RedisClusterAsyncCommands;
 
 import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.StringAssist;
@@ -103,7 +102,8 @@ public class LettuceAsyncClientFactory {
             try {
                 com.lambdaworks.redis.cluster.RedisClusterClient client =
                     com.lambdaworks.redis.cluster.RedisClusterClient.create(RedisURI.create("redis://" + server));
-                RedisClusterAsyncConnection<String, String> connection = client.connectClusterAsync();
+
+                RedisClusterAsyncCommands<String, String> connection = client.connect().async();
 
                 clientPools.add(new LettuceAsyncClientProxy(connection, server));
             } catch (Exception e) {
@@ -119,7 +119,7 @@ public class LettuceAsyncClientFactory {
             try {
                 com.lambdaworks.redis.RedisClient client =
                     com.lambdaworks.redis.RedisClient.create(RedisURI.create("redis://" + server));
-                RedisAsyncConnection<String, String> connection = client.connectAsync();
+                RedisClusterAsyncCommands<String, String> connection = client.connect().async();
 
                 clientPools.add(new LettuceAsyncClientProxy(connection, server));
             } catch (Exception e) {

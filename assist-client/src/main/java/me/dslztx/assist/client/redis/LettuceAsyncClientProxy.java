@@ -2,24 +2,24 @@ package me.dslztx.assist.client.redis;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.lambdaworks.redis.RedisClusterAsyncConnection;
+import com.lambdaworks.redis.cluster.api.async.RedisClusterAsyncCommands;
 
 import me.dslztx.assist.algorithm.loadbalance.ServiceProvider;
 
 public class LettuceAsyncClientProxy implements ServiceProvider {
 
-    private RedisClusterAsyncConnection<String, String> lettuceAsyncConnection;
+    private RedisClusterAsyncCommands<String, String> lettuceAsyncConnection;
 
     private String server;
 
     private AtomicInteger activeCnt = new AtomicInteger(0);
 
-    public LettuceAsyncClientProxy(RedisClusterAsyncConnection<String, String> redisAsyncConnection, String server) {
+    public LettuceAsyncClientProxy(RedisClusterAsyncCommands<String, String> redisAsyncConnection, String server) {
         this.lettuceAsyncConnection = redisAsyncConnection;
         this.server = server;
     }
 
-    RedisClusterAsyncConnection<String, String> getRedisAsyncConnection() {
+    RedisClusterAsyncCommands<String, String> getRedisAsyncConnection() {
         return lettuceAsyncConnection;
     }
 

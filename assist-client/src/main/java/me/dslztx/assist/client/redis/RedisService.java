@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lambdaworks.redis.RedisFuture;
+import com.lambdaworks.redis.cluster.api.async.RedisClusterAsyncCommands;
 
 import me.dslztx.assist.algorithm.loadbalance.AbstractLoadBalancer;
 import me.dslztx.assist.algorithm.loadbalance.LeastActiveLoadBalancer;
@@ -52,6 +53,21 @@ public class RedisService {
 
             logger.info("used load balancer is {}", loadBalancer.getClass().getSimpleName());
         }
+    }
+
+    public static RedisClusterAsyncCommands<String, String> obtainAsyncCommands(String redisClusterName) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        return client.getRedisAsyncConnection();
     }
 
     public static RedisFutureProxy<List<String>> mgetAsync(String redisClusterName, String... keys) {

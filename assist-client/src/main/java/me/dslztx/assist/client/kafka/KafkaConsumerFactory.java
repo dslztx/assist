@@ -65,6 +65,10 @@ public class KafkaConsumerFactory {
 
             props.put("bootstrap.servers", servers);
             props.put("group.id", groupId);
+            props.put("max.partition.fetch.bytes", 20971520);
+            // 这个参数十分重要，影响消费行为：https://blog.csdn.net/lishuangzhe7047/article/details/74530417
+            props.put("auto.offset.reset", "earliest");
+            props.put("max.poll.records", "3000");
             props.put("enable.auto.commit", "true");
             props.put("auto.commit.interval.ms", "1000");
             props.put("session.timeout.ms", "30000");

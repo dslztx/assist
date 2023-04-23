@@ -55,6 +55,7 @@ public class KafkaProducerFactory {
                         props.put(ProducerConfig.LINGER_MS_CONFIG, 0);
                         props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 100 * 1024 * 1024);
                         props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 100 * 1024 * 1024);
+                        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
 
                         kafKaProducer =
                             new KafkaProducer<String, byte[]>(props, new StringSerializer(), new ByteArraySerializer());

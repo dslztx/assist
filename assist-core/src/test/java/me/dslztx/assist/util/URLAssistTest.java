@@ -189,4 +189,21 @@ public class URLAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void obtainURLPathPartTest() {
+        try {
+            Assert.assertTrue(URLAssist.obtainURLPathPart("http://www.baidu.com/").equals(""));
+            Assert.assertTrue(URLAssist.obtainURLPathPart("http://////www.baidu.com/2").equals("2"));
+            Assert.assertTrue(URLAssist.obtainURLPathPart("http:\\\\\\www.baidu.com/h").equals("h"));
+            Assert.assertTrue(URLAssist.obtainURLPathPart("http:\\\\\\www.baidu.com/h\\world").equals("h\\world"));
+
+            Assert.assertTrue(
+                URLAssist.obtainURLPathPart("http://cpc4ksa.com/ctwsiayhm/?dremis=sarah@henfenpaper" + ".com ")
+                    .equals("ctwsiayhm/?dremis=sarah@henfenpaper.com "));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

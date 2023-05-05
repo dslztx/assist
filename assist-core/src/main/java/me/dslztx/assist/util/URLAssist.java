@@ -221,6 +221,28 @@ public class URLAssist {
         return urlPart.obtainURLNoUserPassword();
     }
 
+    public static String obtainURLPathPart(String url) {
+        if (StringAssist.isBlank(url)) {
+            return null;
+        }
+
+        url = removeHTTP(url);
+
+        int idx0 = url.indexOf("/");
+        int idx1 = url.indexOf("\\");
+
+        if (idx0 == -1 && idx1 == -1) {
+            return null;
+        } else if (idx0 != -1 && idx1 != -1) {
+            int idx2 = Math.min(idx0, idx1);
+            return url.substring(idx2 + 1);
+        } else if (idx0 != -1) {
+            return url.substring(idx0 + 1);
+        } else {
+            return url.substring(idx1 + 1);
+        }
+    }
+
     public static String getDomain(String url) {
         if (url == null) {
             return null;

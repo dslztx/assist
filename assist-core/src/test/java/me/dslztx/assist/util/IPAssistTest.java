@@ -91,6 +91,9 @@ public class IPAssistTest {
 
             Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressIPv4("127.0.0.255", 25),
                 new byte[] {127, 0, 0, -128}));
+
+            Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressIPv4("7.33.204.128", 26),
+                new byte[] {7, 33, -52, -128}));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

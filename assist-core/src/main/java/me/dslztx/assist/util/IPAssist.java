@@ -143,8 +143,11 @@ public class IPAssist {
         return ip0 == 10 || (ip0 == 172 && (ip1 >= 16 && ip1 <= 31)) || (ip0 == 192 && ip1 == 168);
     }
 
+    /**
+     * mask应该大于0且小于32
+     */
     protected static byte[] obtainNetAddressByteArrayIPv4(String ip, int mask) {
-        if (mask < 0 || mask > 32) {
+        if (!(mask > 0 && mask < 32)) {
             return null;
         }
 

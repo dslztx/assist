@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.configuration2.Configuration;
 
+import sun.net.util.IPAddressUtil;
+
 public class IPAssist {
 
     private static Pattern IPV4_PATTERN = null;
@@ -139,5 +141,54 @@ public class IPAssist {
         int ip1 = Integer.valueOf(ss[1]);
 
         return ip0 == 10 || (ip0 == 172 && (ip1 >= 16 && ip1 <= 31)) || (ip0 == 192 && ip1 == 168);
+    }
+
+    public static byte[] obtainNetAddressIPv4(String ip, int mask) {
+        if (mask < 0 || mask > 32) {
+            return null;
+        }
+
+        if (!isIPv4(ip)) {
+            return null;
+        }
+
+        byte[] bb = IPAddressUtil.textToNumericFormatV4(ip);
+
+        byte c = 0;
+        for (int pos = 0; pos < 4; pos++, mask -= 8) {
+            if (mask >= 8) {
+                c = (byte)0xff;
+            } else if (mask <= 0) {
+                c = (byte)0x00;
+            } else {
+                switch (mask) {
+                    case 1:
+                        c = (byte)0x80;
+                        break;
+                    case 2:
+                        c = (byte)0xc0;
+                        break;
+                    case 3:
+                        c = (byte)0xe0;
+                        break;
+                    case 4:
+                        c = (byte)0xf0;
+                        break;
+                    case 5:
+                        c = (byte)0xf8;
+                        break;
+                    case 6:
+                        c = (byte)0xfc;
+                        break;
+                    case 7:
+                        c = (byte)0xfe;
+                        break;
+                }
+            }
+
+            bb[pos] = (byte)(bb[pos] & c);
+        }
+
+        return bb;
     }
 }

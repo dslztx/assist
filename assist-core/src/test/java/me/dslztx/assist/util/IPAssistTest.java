@@ -82,4 +82,18 @@ public class IPAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void obtainNetAddressIPv4Test() {
+        try {
+            Assert.assertTrue(
+                ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressIPv4("127.0.0.1", 8), new byte[] {127, 0, 0, 0}));
+
+            Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressIPv4("127.0.0.255", 25),
+                new byte[] {127, 0, 0, -128}));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

@@ -113,4 +113,17 @@ public class IPAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void isInRangeTest() {
+        try {
+            Assert.assertTrue(IPAssist.isInRange("192.168.1.127", "192.168.1.64/26"));
+            Assert.assertTrue(IPAssist.isInRange("192.168.1.2", "192.168.0.0/23"));
+            Assert.assertTrue(IPAssist.isInRange("192.168.0.1", "192.168.0.0/24"));
+            Assert.assertTrue(IPAssist.isInRange("192.168.0.0", "192.168.0.0/32"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

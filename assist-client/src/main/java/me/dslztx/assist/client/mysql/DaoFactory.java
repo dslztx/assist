@@ -26,6 +26,7 @@ import me.dslztx.assist.util.CollectionAssist;
 import me.dslztx.assist.util.ConfigLoadAssist;
 import me.dslztx.assist.util.StringAssist;
 
+@Deprecated
 public class DaoFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(DaoFactory.class);

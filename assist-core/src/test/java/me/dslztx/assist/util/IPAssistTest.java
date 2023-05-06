@@ -84,16 +84,30 @@ public class IPAssistTest {
     }
 
     @Test
-    public void obtainNetAddressIPv4Test() {
+    public void obtainNetAddressIPv4ByteArrayTest() {
         try {
-            Assert.assertTrue(
-                ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressIPv4("127.0.0.1", 8), new byte[] {127, 0, 0, 0}));
+            Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressByteArrayIPv4("127.0.0.1", 8),
+                new byte[] {127, 0, 0, 0}));
 
-            Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressIPv4("127.0.0.255", 25),
+            Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressByteArrayIPv4("127.0.0.255", 25),
                 new byte[] {127, 0, 0, -128}));
 
-            Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressIPv4("7.33.204.128", 26),
+            Assert.assertTrue(ObjectAssist.equalsGenerally(IPAssist.obtainNetAddressByteArrayIPv4("7.33.204.128", 26),
                 new byte[] {7, 33, -52, -128}));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void obtainNetAddressIPv4Test() {
+        try {
+            Assert.assertTrue(IPAssist.obtainNetAddressIPv4("127.0.0.1", 8).equals("127.0.0.0"));
+
+            Assert.assertTrue(IPAssist.obtainNetAddressIPv4("127.0.0.255", 25).equals("127.0.0.128"));
+
+            Assert.assertTrue(IPAssist.obtainNetAddressIPv4("7.33.204.128", 26).equals("7.33.204.128"));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

@@ -143,7 +143,7 @@ public class IPAssist {
         return ip0 == 10 || (ip0 == 172 && (ip1 >= 16 && ip1 <= 31)) || (ip0 == 192 && ip1 == 168);
     }
 
-    public static byte[] obtainNetAddressIPv4(String ip, int mask) {
+    protected static byte[] obtainNetAddressByteArrayIPv4(String ip, int mask) {
         if (mask < 0 || mask > 32) {
             return null;
         }
@@ -190,5 +190,23 @@ public class IPAssist {
         }
 
         return bb;
+    }
+
+    public static String obtainNetAddressIPv4(String ip, int mask) {
+        byte[] bb = obtainNetAddressByteArrayIPv4(ip, mask);
+
+        if (ArrayAssist.isEmpty(bb) || bb.length != 4) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append((bb[0] & 0xff));
+
+        for (int pos = 1; pos < 4; pos++) {
+            sb.append(".");
+            sb.append((bb[pos] & 0xff));
+        }
+
+        return sb.toString();
     }
 }

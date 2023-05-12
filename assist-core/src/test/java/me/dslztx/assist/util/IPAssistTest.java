@@ -126,4 +126,69 @@ public class IPAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void isIPv6NormalCompressTest() {
+        try {
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("::"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("::ABCD:EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("EF01::ABCD:EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("EF01:ABCD::EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("EF01:ABCD:EF01::2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("EF01:ABCD:EF01:2345::6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("EF01:ABCD:EF01:2345:6789::6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompress("EF01:ABCD:EF01:2345:6789:6789::"));
+
+            Assert.assertFalse(IPAssist.isIPv6NormalCompress("EF01:ABCD:EF01:2345:G789:6789::"));
+            Assert.assertFalse(IPAssist.isIPv6NormalCompress("EF01:ABCD:EF01:2345:6789:6789::6789"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void isIPv6NormalCompressMixTest() {
+        try {
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("::"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("::ABCD:EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01::ABCD:EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD::EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD:EF01::2345:6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD:EF01:2345::6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD:EF01:2345:6789::6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD:EF01:2345:6789:6789::"));
+
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("ABCD:EF01:2345:6789:ABCD:EF01:192.168.0.1"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("::"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("::ABCD:EF01:2345:6789:192.168.0.1"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01::ABCD:EF01:6789:192.168.0.1"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01::EF01:6789:192.168.0.1"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD::2345:6789:192.168.0.1"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD:2345::6789:192.168.0.1"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD:EF01:2345:6789::6789"));
+            Assert.assertTrue(IPAssist.isIPv6NormalCompressMix("EF01:ABCD:EF01:2345:6789:6789::"));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void isLanIPv6Test() {
+        try {
+            Assert.assertTrue(IPAssist.isLanIPv6("FC00:EF01:2345:6789:ABCD:EF01:2345:6789"));
+            Assert.assertTrue(IPAssist.isLanIPv6("FD00:EF01:2345:6789:ABCD:EF01:2345:6789"));
+            Assert.assertFalse(IPAssist.isLanIPv6(""));
+            Assert.assertFalse(IPAssist.isLanIPv6("FE00::GF01:2345:6789:ABCD:EF01:2345:6789"));
+            Assert.assertFalse(IPAssist.isLanIPv6("::EF01:2345:6789:ABCD:EF01:2345:6789"));
+            Assert.assertFalse(IPAssist.isLanIPv6("FE00:EF01:2345:6789:ABCD:EF01:2345:6789"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

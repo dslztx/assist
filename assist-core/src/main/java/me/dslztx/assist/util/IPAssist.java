@@ -6,9 +6,29 @@ import org.apache.commons.configuration2.Configuration;
 
 import sun.net.util.IPAddressUtil;
 
+/**
+ * IPv4和IPv6的Private IP Address Ranges：<br/>
+ *
+ * [1]https://docs.microfocus.com/NNMi/10.30/Content/Administer/NNMi_Deployment/Advanced_Configurations/Private_IP_Address_Range.htm
+ * [2]https://www.redhat.com/sysadmin/what-you-need-know-about-ipv6
+ * 
+ * <br/>
+ * <br/>
+ * 
+ * 正则表达式：<br/>
+ * [1]https://developer.aliyun.com/article/297865<br/>
+ */
 public class IPAssist {
 
+    private static final int IPV6_PRIVATE_IP_ADDRESS_BLOCK = 0x0000fc00;
+
+    private static final int IPV6_PRIVATE_IP_MASK = 0x0000fe00;
+
     private static Pattern IPV4_PATTERN = null;
+
+    private static Pattern IPV6_PATTERN_NORMAL_COMPRESS = null;
+
+    private static Pattern IPV6_PATTERN_NORMAL_COMPRESS_MIX = null;
 
     static {
         loadPatternRegexFromFile();
@@ -26,21 +46,56 @@ public class IPAssist {
             throw new RuntimeException("no ipv4 regex");
         }
         IPV4_PATTERN = Pattern.compile(ipV4Regex, Pattern.CASE_INSENSITIVE);
+
+        String ipV6NormalCompressRegex = configuration.getString("ipv6_normal_compress");
+        if (StringAssist.isBlank(ipV6NormalCompressRegex)) {
+            throw new RuntimeException("no ipv6 normal compress regex");
+        }
+        IPV6_PATTERN_NORMAL_COMPRESS = Pattern.compile(ipV6NormalCompressRegex, Pattern.CASE_INSENSITIVE);
+
+        String ipV6NormalCompressMixRegex = configuration.getString("ipv6_normal_compress_mix");
+        if (StringAssist.isBlank(ipV6NormalCompressMixRegex)) {
+            throw new RuntimeException("no ipv6 normal compress mix regex");
+        }
+        IPV6_PATTERN_NORMAL_COMPRESS_MIX = Pattern.compile(ipV6NormalCompressMixRegex, Pattern.CASE_INSENSITIVE);
     }
 
     /**
      * 是否是合法的IPv4地址
      */
     public static boolean isIPv4(String ip) {
+        if (StringAssist.isBlank(ip)) {
+            return false;
+        }
+
         return IPV4_PATTERN.matcher(ip).matches();
     }
 
     /**
-     * 是否是合法的IPv6地址
+     * 是否是合法的IPv6地址（支持标准和压缩形式）
+     */
+    public static boolean isIPv6NormalCompress(String ip) {
+        if (StringAssist.isBlank(ip)) {
+            return false;
+        }
+        return IPV6_PATTERN_NORMAL_COMPRESS.matcher(ip).matches();
+    }
+
+    /**
+     * 是否是合法的IPv6地址（支持标准、压缩和混合形式）
+     */
+    public static boolean isIPv6NormalCompressMix(String ip) {
+        if (StringAssist.isBlank(ip)) {
+            return false;
+        }
+        return IPV6_PATTERN_NORMAL_COMPRESS_MIX.matcher(ip).matches();
+    }
+
+    /**
+     * 是否是合法的IPv6地址（默认支持标准和压缩形式）
      */
     public static boolean isIPv6(String ip) {
-        // todo
-        return false;
+        return isIPv6NormalCompress(ip);
     }
 
     /**
@@ -141,6 +196,26 @@ public class IPAssist {
         int ip1 = Integer.valueOf(ss[1]);
 
         return ip0 == 10 || (ip0 == 172 && (ip1 >= 16 && ip1 <= 31)) || (ip0 == 192 && ip1 == 168);
+    }
+
+    public static boolean isLanIPv6(String ip) {
+        if (StringAssist.isBlank(ip)) {
+            return false;
+        }
+
+        if (!isIPv6NormalCompress(ip)) {
+            return false;
+        }
+
+        if (ip.startsWith("::")) {
+            return false;
+        }
+
+        int index = ip.indexOf(":");
+
+        int firstPartValue = NumberAssist.hexStrToDec(ip, 0, index - 1);
+
+        return (firstPartValue & IPV6_PRIVATE_IP_MASK) == (IPV6_PRIVATE_IP_ADDRESS_BLOCK & IPV6_PRIVATE_IP_MASK);
     }
 
     /**

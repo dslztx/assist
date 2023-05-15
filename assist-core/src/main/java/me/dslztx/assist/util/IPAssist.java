@@ -309,4 +309,15 @@ public class IPAssist {
         return (ipAddr & mask) == (cidrIpAddr & mask);
     }
 
+    public static Pattern getIpv4Pattern() {
+        return IPV4_PATTERN;
+    }
+
+    public static Pattern getIpv6PatternNormalCompress() {
+        return IPV6_PATTERN_NORMAL_COMPRESS;
+    }
+
+    public static Pattern getIpv6PatternNormalCompressMix() {
+        return IPV6_PATTERN_NORMAL_COMPRESS_MIX;
+    }
 }

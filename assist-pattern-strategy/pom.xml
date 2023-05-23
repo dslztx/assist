@@ -6,7 +6,7 @@
   <parent>
     <groupId>me.dslztx</groupId>
     <artifactId>assist-parent</artifactId>
-    <version>3.0.42</version>
+    <version>3.0.43</version>
   </parent>
 
   <artifactId>assist-pattern-strategy</artifactId>

@@ -201,6 +201,9 @@ public class URLAssistTest {
             Assert.assertTrue(
                 URLAssist.obtainURLPathPart("http://cpc4ksa.com/ctwsiayhm/?dremis=sarah@henfenpaper" + ".com ")
                     .equals("ctwsiayhm/?dremis=sarah@henfenpaper.com "));
+
+            Assert.assertTrue(URLAssist.obtainURLPathPart("http://qxzmwuehsj.oxurxhydru.ink#sten@unitedubao.com")
+                .equals("sten@unitedubao.com"));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

@@ -230,16 +230,25 @@ public class URLAssist {
 
         int idx0 = url.indexOf("/");
         int idx1 = url.indexOf("\\");
+        int idx2 = url.indexOf("#");
 
-        if (idx0 == -1 && idx1 == -1) {
+        if (idx0 == -1) {
+            idx0 = Integer.MAX_VALUE;
+        }
+        if (idx1 == -1) {
+            idx1 = Integer.MAX_VALUE;
+        }
+        if (idx2 == -1) {
+            idx2 = Integer.MAX_VALUE;
+        }
+
+        int idxv = Math.min(idx0, idx1);
+        idxv = Math.min(idx2, idxv);
+
+        if (idxv >= url.length()) {
             return null;
-        } else if (idx0 != -1 && idx1 != -1) {
-            int idx2 = Math.min(idx0, idx1);
-            return url.substring(idx2 + 1);
-        } else if (idx0 != -1) {
-            return url.substring(idx0 + 1);
         } else {
-            return url.substring(idx1 + 1);
+            return url.substring(idxv + 1);
         }
     }
 

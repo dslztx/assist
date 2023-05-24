@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dslztx.assist.util.ConfigLoadAssist;
+import me.dslztx.assist.util.StringAssist;
 
 public class KafkaProducerFactory {
 
@@ -51,11 +52,26 @@ public class KafkaProducerFactory {
                         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
                         props.put(ProducerConfig.ACKS_CONFIG, "all");
                         props.put(ProducerConfig.RETRIES_CONFIG, 3);
-                        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
-                        props.put(ProducerConfig.LINGER_MS_CONFIG, 0);
+                        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 5 * 1024 * 1024);
+                        props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
                         props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 100 * 1024 * 1024);
                         props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 100 * 1024 * 1024);
                         props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
+
+                        String username = configuration.getString("kafka.servers.username");
+                        String password = configuration.getString("kafka.servers.password");
+
+                        if (StringAssist.isNotBlank(username) && StringAssist.isNotBlank(password)) {
+                            props.put("security.protocol", "SASL_PLAINTEXT");
+                            props.put("sasl.mechanism", "PLAIN");
+
+                            String auth = StringAssist.format(
+                                "org.apache.kafka.common.security.plain"
+                                    + ".PlainLoginModule required username=\"{}\" password=\"{}\";",
+                                username, password);
+
+                            props.put("sasl.jaas.config", auth);
+                        }
 
                         kafKaProducer =
                             new KafkaProducer<String, byte[]>(props, new StringSerializer(), new ByteArraySerializer());

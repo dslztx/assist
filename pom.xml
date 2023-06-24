@@ -64,6 +64,7 @@
         <me.dslztx.ac.algorithm.version>1.2.1</me.dslztx.ac.algorithm.version>
         <me.dslztx.lombok.version>1.16.18</me.dslztx.lombok.version>
         <me.dslztx.guava.version>31.1-jre</me.dslztx.guava.version>
+        <me.dslztx.lucene.version>7.7.3</me.dslztx.lucene.version>
 
         <plugin-compiler.version>3.0</plugin-compiler.version>
         <plugin-compiler.compile.encoding>UTF-8</plugin-compiler.compile.encoding>
@@ -115,6 +116,16 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-core</artifactId>
+                <version>${me.dslztx.lucene.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-queryparser</artifactId>
+                <version>${me.dslztx.lucene.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>

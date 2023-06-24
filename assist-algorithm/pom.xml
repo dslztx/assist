@@ -26,5 +26,13 @@
             <groupId>com.hankcs</groupId>
             <artifactId>aho-corasick-double-array-trie</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+        </dependency>
     </dependencies>
 </project>

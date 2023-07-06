@@ -14,6 +14,8 @@ public class EnvironmentAssist {
 
     private static final Logger logger = LoggerFactory.getLogger(EnvironmentAssist.class);
 
+    private static final String POD_NAME = "POD_NAME";
+
     private static volatile boolean init = false;
 
     private static String machineName = null;
@@ -51,13 +53,19 @@ public class EnvironmentAssist {
             synchronized (EnvironmentAssist.class) {
                 if (!init) {
                     try {
-                        machineName = (InetAddress.getLocalHost()).getHostName();
 
-                        int index = machineName.indexOf(".");
-                        if (index != -1) {
-                            shortMachineName = machineName.substring(0, index);
-                        } else {
+                        if (StringAssist.isNotBlank(System.getenv(POD_NAME))) {
+                            machineName = System.getenv(POD_NAME);
                             shortMachineName = machineName;
+                        } else {
+                            machineName = (InetAddress.getLocalHost()).getHostName();
+
+                            int index = machineName.indexOf(".");
+                            if (index != -1) {
+                                shortMachineName = machineName.substring(0, index);
+                            } else {
+                                shortMachineName = machineName;
+                            }
                         }
 
                         doObtainLanIPv4();

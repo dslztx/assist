@@ -5,7 +5,7 @@
 
     <groupId>me.dslztx</groupId>
     <artifactId>assist-parent</artifactId>
-    <version>3.0.46</version>
+    <version>3.0.47</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -39,7 +39,7 @@
 
         <me.dslztx.slf4j.version>1.7.30</me.dslztx.slf4j.version>
         <me.dslztx.log4j2.version>2.17.1</me.dslztx.log4j2.version>
-        <me.dslztx.junit.version>4.13.1</me.dslztx.junit.version>
+        <me.dslztx.junit.version>5.9.3</me.dslztx.junit.version>
         <me.dslztx.mockito.version>4.6.0</me.dslztx.mockito.version>
         <me.dslztx.h2.version>2.1.210</me.dslztx.h2.version>
         <me.dslztx.mockito.version>2.20.0</me.dslztx.mockito.version>
@@ -86,11 +86,20 @@
 
         <!--for test-->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${me.dslztx.junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!--        用于兼容junit 4，逐步去掉-->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${me.dslztx.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.mockito</groupId>

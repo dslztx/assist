@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StringAssistTest {
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIsHexStr() throws Exception {
         try {
             assertTrue(StringAssist.isHexStr("aaFf"));

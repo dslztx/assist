@@ -1,53 +1,67 @@
 package me.dslztx.assist.client.redis;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RedisServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisServiceTest.class);
 
-    @Test
-    public void obtainRedisClient() {
+    @BeforeAll
+    public static void init0() {
         try {
-            RedisFutureProxy<String> z1 = RedisService.setAsync("in", "a1", "v1", 60L);
-            RedisFutureProxy<String> z2 = RedisService.setAsync("in", "a2", "v2", 60L);
+            Map<String, String> kvs = new HashMap<>();
+            kvs.put("key1#luomhtest", "value1@luomhtest");
+            kvs.put("key2#luomhtest", "value2@luomhtest");
+            kvs.put("key3#luomhtest", "value3@luomhtest");
 
-            String vv1 = z1.get(1, TimeUnit.SECONDS);
-            String vv2 = z2.get(1, TimeUnit.SECONDS);
-            Assert.assertTrue("OK".equals(vv1));
-            Assert.assertTrue("OK".equals(vv2));
+            RedisFutureProxy<String> result = RedisService.msetAsync("in", kvs);
 
-            RedisFutureProxy<List<String>> result = RedisService.mgetAsync("in", "a1", "a2");
-
-            List<String> values = result.get(1, TimeUnit.SECONDS);
-
-            Assert.assertTrue(values.get(0).equals("v1"));
-            Assert.assertTrue(values.get(1).equals("v2"));
-
-            System.out.println(z1.obtainServer());
-            System.out.println(z2.obtainServer());
-            System.out.println(result.obtainServer());
-
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("mapKey1", "mapValue1");
-            map.put("mapKey2", "mapValue2");
-            map.put("mapKey3", "mapValue3");
-
-            RedisFutureProxy<String> result2 = RedisService.msetAsync("in", map);
-            Assert.assertTrue(result2.get(100, TimeUnit.MILLISECONDS).equals("OK"));
+            assertTrue(result.get(10, TimeUnit.SECONDS).equals("OK"));
         } catch (Exception e) {
             logger.error("", e);
-            Assert.fail();
+            fail();
+        }
+    }
+
+    @AfterAll
+    public static void destroy0() {
+        try {
+            RedisFutureProxy<Long> result2 =
+                RedisService.mdelAsync("in", "key1#luomhtest", "key2#luomhtest", "key3" + "#luomhtest");
+
+            assertTrue(result2.get(10, TimeUnit.SECONDS).compareTo(0L) > 0);
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Order(1)
+    public void test0() {
+        try {
+            long t = System.currentTimeMillis() / 1000 + 10;
+            RedisService.expireAtAsync("in", "key1#luomhtest", t);
+
+            Thread.sleep(15000L);
+
+            RedisFutureProxy<Long> result2 =
+                RedisService.existAsync("in", "key1#luomhtest", "key2#luomhtest", "key3" + "#luomhtest");
+            assertTrue(result2.get(20, TimeUnit.SECONDS).equals(2L));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
         }
     }
 }

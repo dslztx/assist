@@ -179,6 +179,11 @@ public class RedisService {
         return new RedisFutureProxy<String>(result, client);
     }
 
+    /**
+     * @param redisClusterName
+     * @param keyValues
+     * @return RedisFuture<String> simple-string-reply always OK since MSET can't fail.
+     */
     public static RedisFutureProxy<String> msetAsync(String redisClusterName, Map<String, String> keyValues) {
         if (StringAssist.isBlank(redisClusterName)) {
             throw new RuntimeException("redisClusterName is blank");
@@ -252,6 +257,90 @@ public class RedisService {
         RedisFuture<Boolean> result = client.getRedisAsyncConnection().expire(key, seconds);
 
         return new RedisFutureProxy<Boolean>(result, client);
+    }
+
+    /**
+     *
+     * @return Boolean integer-reply specifically: true if the timeout was set. false if key does not exist or the
+     *         timeout could not be set (see: EXPIRE).
+     */
+    /**
+     * @param redisClusterName
+     * @param key
+     * @param expireAtTime 到期时间，不是TTL
+     * @return RedisFuture<Long> integer-reply The number of keys that were removed.
+     */
+    public static RedisFutureProxy<Boolean> expireAtAsync(String redisClusterName, String key, long expireAtTime) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<Boolean> result = client.getRedisAsyncConnection().expireat(key, expireAtTime);
+
+        return new RedisFutureProxy<Boolean>(result, client);
+    }
+
+    /**
+     * @param redisClusterName
+     * @param keys
+     * @return RedisFuture<Long> integer-reply The number of keys that were removed.
+     */
+    public static RedisFutureProxy<Long> mdelAsync(String redisClusterName, String... keys) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (ArrayAssist.isEmpty(keys)) {
+            throw new RuntimeException("keyValues is empty");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<Long> result = client.getRedisAsyncConnection().del(keys);
+
+        return new RedisFutureProxy<Long>(result, client);
+    }
+
+    /**
+     * @param redisClusterName
+     * @param keys
+     * @return 实际存在的个数
+     */
+    public static RedisFutureProxy<Long> existAsync(String redisClusterName, String... keys) {
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (ArrayAssist.isEmpty(keys)) {
+            throw new RuntimeException("keyValues is empty");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<Long> result = client.getRedisAsyncConnection().exists(keys);
+
+        return new RedisFutureProxy<Long>(result, client);
     }
 
     public static List<String> mgetSync(String redisClusterName, String... keys) {

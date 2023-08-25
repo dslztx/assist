@@ -27,10 +27,14 @@ public class HttpClientAssist {
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     public static String httpPostJSONUTF8(String url, String jsonRequest) {
-        return httpPostJSON(url, jsonRequest, Consts.UTF_8);
+        return httpPostJSON(url, null, jsonRequest, Consts.UTF_8);
     }
 
-    public static String httpPostJSON(String url, String jsonRequest, Charset encoding) {
+    public static String httpPostJSONUTF8WithHeader(String url, Map<String, String> headerMap, String jsonRequest) {
+        return httpPostJSON(url, headerMap, jsonRequest, Consts.UTF_8);
+    }
+
+    public static String httpPostJSON(String url, Map<String, String> headerMap, String jsonRequest, Charset encoding) {
         String resp = "";
 
         CloseableHttpClient httpClient = null;
@@ -41,6 +45,13 @@ public class HttpClientAssist {
             httpClient = HttpClients.createDefault();
 
             httpPost = new HttpPost(url);
+
+            if (Objects.nonNull(headerMap) && headerMap.size() > 0) {
+                for (String key : headerMap.keySet()) {
+                    httpPost.addHeader(key, headerMap.get(key));
+                }
+            }
+
             StringEntity paramEntity = new StringEntity(jsonRequest, encoding);
             paramEntity.setContentType(CONTENT_TYPE_JSON);
             httpPost.setEntity(paramEntity);

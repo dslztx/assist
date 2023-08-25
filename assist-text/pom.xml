@@ -6,7 +6,7 @@
     <parent>
         <groupId>me.dslztx</groupId>
         <artifactId>assist-parent</artifactId>
-        <version>3.0.49</version>
+        <version>3.0.50</version>
     </parent>
 
     <artifactId>assist-text</artifactId>

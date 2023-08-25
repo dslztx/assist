@@ -1,5 +1,8 @@
 package me.dslztx.io.socket.http;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,25 @@ class HttpClientAssistTest {
             mailContent.setContent("test content");
 
             HttpClientAssist.httpPostJSONUTF8("http://10.110.20.142:18181/alert/sendMail",
+                JSON.toJSONString(mailContent));
+        } catch (Exception e) {
+            log.error("", e);
+        }
+    }
+
+    @Test
+    @Disabled
+    void testHttpPostJSONUTF8WithHeader() {
+        try {
+            MailContent mailContent = new MailContent();
+            mailContent.setSubject("test subject");
+            mailContent.setAccounts("dslztx@gmail.com");
+            mailContent.setContent("test content");
+
+            Map<String, String> headerMap = new HashMap<String, String>();
+            headerMap.put("Host", "alert-center.test.qzgw.internal");
+
+            HttpClientAssist.httpPostJSONUTF8WithHeader("http://10.110.20.142:18181/alert/sendMail", headerMap,
                 JSON.toJSONString(mailContent));
         } catch (Exception e) {
             log.error("", e);

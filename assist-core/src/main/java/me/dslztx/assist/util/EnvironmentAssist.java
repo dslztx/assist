@@ -56,7 +56,12 @@ public class EnvironmentAssist {
 
                         if (StringAssist.isNotBlank(System.getenv(POD_NAME))) {
                             machineName = System.getenv(POD_NAME);
-                            shortMachineName = machineName;
+
+                            if (machineName.length() > 5) {
+                                shortMachineName = machineName.substring(machineName.length() - 5);
+                            } else {
+                                shortMachineName = machineName;
+                            }
                         } else {
                             machineName = (InetAddress.getLocalHost()).getHostName();
 

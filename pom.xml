@@ -40,6 +40,7 @@
         <me.dslztx.slf4j.version>1.7.30</me.dslztx.slf4j.version>
         <me.dslztx.log4j2.version>2.17.1</me.dslztx.log4j2.version>
         <me.dslztx.junit.version>5.9.3</me.dslztx.junit.version>
+        <me.dslztx.system-stubs.version>1.1.0</me.dslztx.system-stubs.version>
         <me.dslztx.mockito.version>4.6.0</me.dslztx.mockito.version>
         <me.dslztx.h2.version>2.1.210</me.dslztx.h2.version>
         <me.dslztx.mockito.version>2.20.0</me.dslztx.mockito.version>
@@ -90,6 +91,13 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${me.dslztx.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.webcompere</groupId>
+            <artifactId>system-stubs-jupiter</artifactId>
+            <version>${me.dslztx.system-stubs.version}</version>
             <scope>test</scope>
         </dependency>
 

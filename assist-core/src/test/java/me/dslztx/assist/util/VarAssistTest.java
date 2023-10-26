@@ -32,6 +32,7 @@ class VarAssistTest {
             Assertions.assertTrue(VarAssist.parse("abc").equals("abc"));
             Assertions.assertTrue(VarAssist.parse("${}") == null);
             Assertions.assertTrue(VarAssist.parse("${POD_NAME}").equals("pod-name-test-online-5f47c45c5c-2fx2k"));
+            Assertions.assertTrue(VarAssist.parse("${POD_NAME:bbb}").equals("pod-name-test-online-5f47c45c5c-2fx2k"));
             Assertions.assertTrue(VarAssist.parse("${POD2_NAME:helloworld}").equals("" + "helloworld"));
             Assertions.assertTrue(VarAssist.parse("${POD2_NAME:hello:world}").equals("" + "hello:world"));
         } catch (Exception e) {

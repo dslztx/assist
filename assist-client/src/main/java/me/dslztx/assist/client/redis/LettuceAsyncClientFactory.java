@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.dslztx.assist.util.VarAssist;
 import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,10 @@ public class LettuceAsyncClientFactory {
             logger.error("no redis servers");
             return clientPools;
         }
+
+        servers = VarAssist.parse(servers);
+
+        logger.info("the redis servers is {} after parse", servers);
 
         if (servers.toLowerCase().startsWith("master(") && servers.toLowerCase().endsWith(")")) {
             buildClusterConnections(servers, clientPools);

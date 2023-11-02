@@ -57,6 +57,8 @@ public class KafkaProducerFactory {
                         props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 100 * 1024 * 1024);
                         props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 100 * 1024 * 1024);
                         props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
+                        props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,
+                            "org.apache.kafka.clients.producer.RoundRobinPartitioner");
 
                         String username = configuration.getString("kafka.servers.username");
                         String password = configuration.getString("kafka.servers.password");

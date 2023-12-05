@@ -35,13 +35,20 @@ public class KafkaConsumerFactory {
 
             props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
             props.put(ConsumerConfig.GROUP_ID_CONFIG, "defaultGroup");
-            props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 20971520);
             // 这个参数十分重要，影响消费行为：https://blog.csdn.net/lishuangzhe7047/article/details/74530417
             props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "3000");
             props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
             props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
             props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+
+            // Consumer A调用poll(timeout)之后，其绑定到的分区组装返回数据：
+            // - 单分区最多返回ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG字节数据
+            // - 然后最多返回ConsumerConfig.MAX_POLL_RECORDS_CONFIG条Record
+            // - 然后最终的字节大小又不能超过ConsumerConfig.FETCH_MAX_BYTES_CONFIG
+            // 当在timeout时间内组装完成则顺利返回，否则超时本次poll未获取结果
+            // 从以上可知，影响Consumer吞吐量的是以下3个参数+poll的timeout
+            props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 10 * 1024 * 1024);
+            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "3000");
             props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 100 * 1024 * 1024);
 
             String username = configuration.getString("kafka.servers.username");
@@ -82,13 +89,20 @@ public class KafkaConsumerFactory {
 
             props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
             props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-            props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 20971520);
             // 这个参数十分重要，影响消费行为：https://blog.csdn.net/lishuangzhe7047/article/details/74530417
             props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "3000");
             props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
             props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
             props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+
+            // Consumer A调用poll(timeout)之后，其绑定到的分区组装返回数据：
+            // - 单分区最多返回ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG字节数据
+            // - 然后最多返回ConsumerConfig.MAX_POLL_RECORDS_CONFIG条Record
+            // - 然后最终的字节大小又不能超过ConsumerConfig.FETCH_MAX_BYTES_CONFIG
+            // 当在timeout时间内组装完成则顺利返回，否则超时本次poll未获取结果
+            // 从以上可知，影响Consumer吞吐量的是以下3个参数+poll的timeout
+            props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 10 * 1024 * 1024);
+            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "3000");
             props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 100 * 1024 * 1024);
 
             String username = configuration.getString("kafka.servers.username");

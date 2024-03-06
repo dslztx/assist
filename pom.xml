@@ -19,6 +19,7 @@
         <module>assist-log</module>
         <module>assist-text</module>
         <module>assist-io</module>
+        <module>assist-nlp</module>
     </modules>
 
     <url>https://github.com/dslztx/assist</url>

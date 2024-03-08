@@ -178,4 +178,31 @@ public class LanguageAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void convertToTraditionalChineseTest() {
+        try {
+            Assert.assertTrue(("Google是總部位於美國加州山景城的跨國科技公司，爲Alphabet"
+                + "的子公司，業務範圍涵蓋互聯網廣告、互聯網搜索、雲計算等領域，開發並提供大量基於互聯網的產品與服務，其主要利潤來自Ads和AdSense等廣告服務。")
+                    .equalsIgnoreCase(LanguageAssist.convertToTraditionalChinese(
+                        "Google是总部位于美国加州山景城的跨国科技公司，为Alphabet的子公司，业务范围涵盖互联网广告、互联网搜索、云计算等领域，开发并提供大量基于互联网的产品与服务，其主要利润来自Ads和AdSense等广告服务。")));
+        } catch (Exception e) {
+            log.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void convertToSimplifiedChineseTest() {
+        try {
+            Assert.assertTrue(("Google是总部位于美国加州山景城的跨国科技公司，为Alphabet"
+                + "的子公司，业务范围涵盖互联网广告、互联网搜索、云计算等领域，开发并提供大量基于互联网的产品与服务，其主要利润来自Ads和AdSense等广告服务。")
+                    .equalsIgnoreCase(LanguageAssist.convertToSimplifiedChinese(
+                        "Google是總部位於美國加州山景城的跨國科技公司，爲Alphabet的子公司，業務範圍涵蓋互聯網廣告、互聯網搜索、雲計算等領域，開發並提供大量基於互聯網的產品與服務，其主要利潤來自Ads和AdSense等廣告服務。")));
+        } catch (Exception e) {
+            log.error("", e);
+            Assert.fail();
+        }
+    }
+
 }

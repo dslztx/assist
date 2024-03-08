@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.hankcs.hanlp.HanLP;
+
 import me.dslztx.assist.util.CollectionAssist;
 import me.dslztx.assist.util.ObjectAssist;
 import me.dslztx.assist.util.StringAssist;
@@ -212,6 +214,14 @@ public class LanguageAssist {
                 return LanguageAssist.Language.UNKNOWN;
             }
         }
+    }
+
+    public static String convertToTraditionalChinese(String s) {
+        return HanLP.convertToTraditionalChinese(s);
+    }
+
+    public static String convertToSimplifiedChinese(String s) {
+        return HanLP.convertToSimplifiedChinese(s);
     }
 
     public static enum Language {

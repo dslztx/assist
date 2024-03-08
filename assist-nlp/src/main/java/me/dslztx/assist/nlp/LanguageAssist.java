@@ -13,7 +13,7 @@ import me.dslztx.assist.util.StringAssist;
 /**
  * 语言识别工具类
  */
-public class LanguageRecognizeAssist {
+public class LanguageAssist {
 
     /**
      * 中文汉字（不包括中文标点符号）UnicodeRange下界值，其对应十进制值为19968
@@ -24,23 +24,21 @@ public class LanguageRecognizeAssist {
      */
     private static final int CHINESE_CHAR_UNICODE_RANGE_UPPER_BOUND = 0x9fa5;
 
-    private static final LanguageRecognizeAssist.Language[] lls =
-        new LanguageRecognizeAssist.Language[] {LanguageRecognizeAssist.Language.CHINESE,
-            LanguageRecognizeAssist.Language.KOREA, LanguageRecognizeAssist.Language.JAPAN,
-            LanguageRecognizeAssist.Language.GREEK, LanguageRecognizeAssist.Language.LATIN,
-            LanguageRecognizeAssist.Language.ARABIC, LanguageRecognizeAssist.Language.CYRILLIC};
+    private static final LanguageAssist.Language[] lls = new LanguageAssist.Language[] {LanguageAssist.Language.CHINESE,
+        LanguageAssist.Language.KOREA, LanguageAssist.Language.JAPAN, LanguageAssist.Language.GREEK,
+        LanguageAssist.Language.LATIN, LanguageAssist.Language.ARABIC, LanguageAssist.Language.CYRILLIC};
 
-    private static final Map<Character.UnicodeScript, List<LanguageRecognizeAssist.Language>> map = new HashMap<>();
+    private static final Map<Character.UnicodeScript, List<LanguageAssist.Language>> map = new HashMap<>();
 
     static {
         map.put(Character.UnicodeScript.HAN,
-            Arrays.asList(LanguageRecognizeAssist.Language.CHINESE, LanguageRecognizeAssist.Language.JAPAN));
-        map.put(Character.UnicodeScript.HANGUL, Arrays.asList(LanguageRecognizeAssist.Language.KOREA));
-        map.put(Character.UnicodeScript.HIRAGANA, Arrays.asList(LanguageRecognizeAssist.Language.JAPAN));
-        map.put(Character.UnicodeScript.GREEK, Arrays.asList(LanguageRecognizeAssist.Language.GREEK));
-        map.put(Character.UnicodeScript.LATIN, Arrays.asList(LanguageRecognizeAssist.Language.LATIN));
-        map.put(Character.UnicodeScript.ARABIC, Arrays.asList(LanguageRecognizeAssist.Language.ARABIC));
-        map.put(Character.UnicodeScript.CYRILLIC, Arrays.asList(LanguageRecognizeAssist.Language.CYRILLIC));
+            Arrays.asList(LanguageAssist.Language.CHINESE, LanguageAssist.Language.JAPAN));
+        map.put(Character.UnicodeScript.HANGUL, Arrays.asList(LanguageAssist.Language.KOREA));
+        map.put(Character.UnicodeScript.HIRAGANA, Arrays.asList(LanguageAssist.Language.JAPAN));
+        map.put(Character.UnicodeScript.GREEK, Arrays.asList(LanguageAssist.Language.GREEK));
+        map.put(Character.UnicodeScript.LATIN, Arrays.asList(LanguageAssist.Language.LATIN));
+        map.put(Character.UnicodeScript.ARABIC, Arrays.asList(LanguageAssist.Language.ARABIC));
+        map.put(Character.UnicodeScript.CYRILLIC, Arrays.asList(LanguageAssist.Language.CYRILLIC));
     }
 
     /**
@@ -164,15 +162,15 @@ public class LanguageRecognizeAssist {
         return false;
     }
 
-    public static LanguageRecognizeAssist.Language guessLanguage(String text) {
+    public static LanguageAssist.Language guessLanguage(String text) {
         if (StringAssist.isBlank(text)) {
-            return LanguageRecognizeAssist.Language.UNKNOWN;
+            return LanguageAssist.Language.UNKNOWN;
         }
 
-        Map<LanguageRecognizeAssist.Language, Integer> cnt = new HashMap<>();
+        Map<LanguageAssist.Language, Integer> cnt = new HashMap<>();
         char c;
         Character.UnicodeScript cu;
-        List<LanguageRecognizeAssist.Language> languages;
+        List<LanguageAssist.Language> languages;
 
         for (int index = 0; index < text.length(); index++) {
             c = text.charAt(index);
@@ -183,7 +181,7 @@ public class LanguageRecognizeAssist {
                 languages = map.get(cu);
 
                 if (CollectionAssist.isNotEmpty(languages)) {
-                    for (LanguageRecognizeAssist.Language language : languages) {
+                    for (LanguageAssist.Language language : languages) {
                         if (ObjectAssist.isNull(cnt.get(language))) {
                             cnt.put(language, 0);
                         }
@@ -196,9 +194,9 @@ public class LanguageRecognizeAssist {
         }
 
         int maxv = -1;
-        LanguageRecognizeAssist.Language selected = null;
+        LanguageAssist.Language selected = null;
 
-        for (LanguageRecognizeAssist.Language language : lls) {
+        for (LanguageAssist.Language language : lls) {
             if (ObjectAssist.isNotNull(cnt.get(language)) && cnt.get(language) > maxv) {
                 maxv = cnt.get(language);
                 selected = language;
@@ -206,12 +204,12 @@ public class LanguageRecognizeAssist {
         }
 
         if (ObjectAssist.isNull(selected)) {
-            return LanguageRecognizeAssist.Language.UNKNOWN;
+            return LanguageAssist.Language.UNKNOWN;
         } else {
             if (maxv * 10 > text.length() * 3) {
                 return selected;
             } else {
-                return LanguageRecognizeAssist.Language.UNKNOWN;
+                return LanguageAssist.Language.UNKNOWN;
             }
         }
     }

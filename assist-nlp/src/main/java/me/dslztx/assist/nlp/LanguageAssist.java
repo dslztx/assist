@@ -164,6 +164,56 @@ public class LanguageAssist {
         return false;
     }
 
+    /**
+     * 整个文本是否全是0-9 | a-z | A-Z
+     */
+    public static boolean isAlphanumericWhole(String str) {
+        if (StringAssist.isBlank(str)) {
+            return false;
+        }
+
+        char c;
+
+        for (int index = 0; index < str.length(); index++) {
+            c = str.charAt(index);
+
+            if (!isAlphanumericChar(c)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     *
+     * 整个文本是否存在0-9 | a-z | A-Z
+     */
+    public static boolean existAlphanumeric(String str) {
+        if (StringAssist.isBlank(str)) {
+            return false;
+        }
+
+        char c;
+
+        for (int index = 0; index < str.length(); index++) {
+            c = str.charAt(index);
+
+            if (isAlphanumericChar(c)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 字符是否是0-9 | a-z | A-Z
+     */
+    public static boolean isAlphanumericChar(char c) {
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
     public static LanguageAssist.Language guessLanguage(String text) {
         if (StringAssist.isBlank(text)) {
             return LanguageAssist.Language.UNKNOWN;

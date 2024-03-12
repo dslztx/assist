@@ -205,4 +205,45 @@ public class LanguageAssistTest {
         }
     }
 
+    @Test
+    public void isAlphanumericWholeTest() {
+        try {
+            Assert.assertTrue(LanguageAssist.isAlphanumericWhole("123456789"));
+            Assert.assertTrue(LanguageAssist.isAlphanumericWhole("abcdeft"));
+            Assert.assertTrue(LanguageAssist.isAlphanumericWhole("abcdefTG"));
+            Assert.assertFalse(LanguageAssist.isAlphanumericWhole("abcdefTG好"));
+        } catch (Exception e) {
+            log.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void existAlphanumericTest() {
+        try {
+            Assert.assertTrue(LanguageAssist.existAlphanumeric("123456789"));
+            Assert.assertTrue(LanguageAssist.existAlphanumeric("abcdeft"));
+            Assert.assertTrue(LanguageAssist.existAlphanumeric("abcdefTG"));
+            Assert.assertTrue(LanguageAssist.existAlphanumeric("abcdefTG好"));
+            Assert.assertFalse(LanguageAssist.existAlphanumeric("好"));
+            Assert.assertFalse(LanguageAssist.existAlphanumeric(null));
+            Assert.assertFalse(LanguageAssist.existAlphanumeric(""));
+        } catch (Exception e) {
+            log.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void isAlphanumericCharTest() {
+        try {
+            Assert.assertTrue(LanguageAssist.isAlphanumericChar('1'));
+            Assert.assertTrue(LanguageAssist.isAlphanumericChar('a'));
+            Assert.assertTrue(LanguageAssist.isAlphanumericChar('B'));
+            Assert.assertFalse(LanguageAssist.isAlphanumericChar('好'));
+        } catch (Exception e) {
+            log.error("", e);
+            Assert.fail();
+        }
+    }
 }

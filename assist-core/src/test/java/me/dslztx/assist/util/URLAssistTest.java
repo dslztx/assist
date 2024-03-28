@@ -209,4 +209,15 @@ public class URLAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void extractSuspectRedirectURLsTEst(){
+        try {
+
+            String s = "http://www.google.com/redirect?url=http://sale.biz.com/product.html";
+            System.out.println(URLAssist.extractSuspectRedirectURLs(s));
+        }catch (Exception e){
+            logger.error("", e);
+        }
+    }
 }

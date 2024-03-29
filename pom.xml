@@ -5,7 +5,7 @@
 
     <groupId>me.dslztx</groupId>
     <artifactId>assist-parent</artifactId>
-    <version>3.0.57</version>
+    <version>3.0.58</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -53,8 +53,7 @@
         <me.dslztx.commons-io.version>2.7</me.dslztx.commons-io.version>
         <me.dslztx.jedis.version>4.2.0</me.dslztx.jedis.version>
         <me.dslztx.lettuce.version>4.5.0.Final</me.dslztx.lettuce.version>
-        <me.dslztx.alibaba.druid.version>1.1.9</me.dslztx.alibaba.druid.version>
-        <me.dslztx.alibaba.fastjson.version>1.2.83</me.dslztx.alibaba.fastjson.version>
+        <me.dslztx.jackson.version>2.12.2</me.dslztx.jackson.version>
         <me.dslztx.mysql-connector.version>8.0.16</me.dslztx.mysql-connector.version>
         <me.dslztx.curator.version>2.12.0</me.dslztx.curator.version>
         <me.dslztx.kafka-client.version>2.4.1</me.dslztx.kafka-client.version>
@@ -227,9 +226,9 @@
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${me.dslztx.alibaba.fastjson.version}</version>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${me.dslztx.jackson.version}</version>
             </dependency>
 
             <dependency>

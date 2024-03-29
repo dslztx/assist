@@ -87,15 +87,6 @@ public class JSONAssist {
         K[] arrayResult = (K[])Array.newInstance(elementClz, listResult.size());
 
         return (K[])listResult.toArray(arrayResult);
-
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Map.class.isAssignableFrom(HashMap.class));
-        System.out.println(Collection.class.isAssignableFrom(List.class));
-        System.out.println(Collection.class.isAssignableFrom(ArrayList.class));
-        System.out.println(Collection.class.isAssignableFrom(Set.class));
-        System.out.println(Collection.class.isAssignableFrom(HashSet.class));
     }
 
 }

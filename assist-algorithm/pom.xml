@@ -6,7 +6,7 @@
     <parent>
         <groupId>me.dslztx</groupId>
         <artifactId>assist-parent</artifactId>
-        <version>3.0.57</version>
+        <version>3.0.58</version>
     </parent>
 
     <artifactId>assist-algorithm</artifactId>
@@ -19,8 +19,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hankcs</groupId>

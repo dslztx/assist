@@ -101,6 +101,9 @@ public class JSONAssistTest {
         }
     }
 
+    /**
+     * fastjson实现的话，会报错。Entry中的value为空，不被序列化
+     */
     @Test
     public void test0() {
         try {
@@ -119,10 +122,12 @@ public class JSONAssistTest {
         }
     }
 
+    /**
+     * fastjson实现的话，会报错。循环引用
+     */
     @Test
     public void test1() {
         try {
-            // fastjson报错，循环引用
             ObjA objA = new ObjA("dslztx", 10);
 
             Map<String, ObjA> map = new HashMap<>();
@@ -146,7 +151,7 @@ public class JSONAssistTest {
     @Test
     public void test2() {
         try {
-            JSONAssist.parseObjectForbidMapOrCollectionOrArray("", Map.class);
+            JSONAssist.parseObjectForbidMapOrCollectionOrArray("tt", Map.class);
         } catch (UnsupportedOperationException e) {
             Assert.assertTrue(true);
         } catch (Exception e) {
@@ -158,7 +163,7 @@ public class JSONAssistTest {
     @Test
     public void test3() {
         try {
-            JSONAssist.parseObjectForbidMapOrCollectionOrArray("", List.class);
+            JSONAssist.parseObjectForbidMapOrCollectionOrArray("tt", List.class);
         } catch (UnsupportedOperationException e) {
             Assert.assertTrue(true);
         } catch (Exception e) {
@@ -170,7 +175,7 @@ public class JSONAssistTest {
     @Test
     public void test4() {
         try {
-            JSONAssist.parseObjectForbidMapOrCollectionOrArray("", new String[2].getClass());
+            JSONAssist.parseObjectForbidMapOrCollectionOrArray("tt", new String[2].getClass());
         } catch (UnsupportedOperationException e) {
             Assert.assertTrue(true);
         } catch (Exception e) {

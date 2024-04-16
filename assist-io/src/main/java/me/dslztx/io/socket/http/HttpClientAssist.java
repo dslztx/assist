@@ -12,6 +12,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -111,6 +112,53 @@ public class HttpClientAssist {
                 }
                 UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(formParams, encoding);
                 httpPost.setEntity(postEntity);
+            }
+
+            response = httpClient.execute(httpPost);
+
+            if (Objects.nonNull(response)) {
+                resp = EntityUtils.toString(response.getEntity(), encoding);
+            }
+
+        } catch (Exception e) {
+            log.error("", e);
+        } finally {
+            CloseableAssist.closeQuietly(response);
+
+            if (Objects.nonNull(httpPost)) {
+                httpPost.releaseConnection();
+            }
+
+            CloseableAssist.closeQuietly(httpClient);
+        }
+        return resp;
+    }
+
+    public static String httpPostByteArray(String url, Map<String, String> headerMap, byte[] data, Charset encoding) {
+
+        String resp = "";
+
+        CloseableHttpClient httpClient = null;
+
+        HttpPost httpPost = null;
+
+        CloseableHttpResponse response = null;
+
+        try {
+            httpClient = HttpClients.createDefault();
+
+            httpPost = new HttpPost(url);
+
+            if (Objects.nonNull(headerMap) && headerMap.size() > 0) {
+                for (String key : headerMap.keySet()) {
+                    httpPost.addHeader(key, headerMap.get(key));
+                }
+            }
+
+            if (Objects.nonNull(data)) {
+                ByteArrayEntity byteArrayEntity = new ByteArrayEntity(data);
+
+                httpPost.setEntity(byteArrayEntity);
             }
 
             response = httpClient.execute(httpPost);

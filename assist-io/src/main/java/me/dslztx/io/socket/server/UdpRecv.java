@@ -1,5 +1,7 @@
 package me.dslztx.io.socket.server;
 
+import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -17,7 +19,14 @@ public class UdpRecv {
 
     public static void main(String[] args) throws Exception {
         // 创建套接字
-        DatagramSocket ds = new DatagramSocket(3000);
+        InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+        DatagramSocket ds = new DatagramSocket(3000, inetAddress);
+
+//        DatagramSocket ds = new DatagramSocket();
+        System.out.println(ds.getLocalPort());
+        System.out.println(ds.getLocalAddress());
+        System.out.println(ds.getLocalSocketAddress());
+
         byte[] buf = new byte[1024];
         while (true) {
             // 创建接收消息数据包

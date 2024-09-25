@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,9 +24,8 @@ class HttpClientAssistTest {
             mailContent.setAccounts("dslztx@gmail.com");
             mailContent.setContent("test content");
 
-            ObjectMapper objectMapper = new ObjectMapper();
             HttpClientAssist.httpPostJSONUTF8("http://10.110.20.142:18181/alert/sendMail",
-                objectMapper.writeValueAsString(mailContent));
+                JSON.toJSONString(mailContent));
 
         } catch (Exception e) {
             log.error("", e);
@@ -45,9 +44,8 @@ class HttpClientAssistTest {
             Map<String, String> headerMap = new HashMap<String, String>();
             headerMap.put("Host", "alert-center.test.qzgw.internal");
 
-            ObjectMapper objectMapper = new ObjectMapper();
             HttpClientAssist.httpPostJSONUTF8WithHeader("http://10.110.20.142:18181/alert/sendMail", headerMap,
-                objectMapper.writeValueAsString(mailContent));
+                JSON.toJSONString(mailContent));
         } catch (Exception e) {
             log.error("", e);
         }

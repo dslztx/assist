@@ -1,4 +1,4 @@
-package nio;
+package me.dslztx.nio;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;

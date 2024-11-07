@@ -1,4 +1,4 @@
-package nio;
+package me.dslztx.nio;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

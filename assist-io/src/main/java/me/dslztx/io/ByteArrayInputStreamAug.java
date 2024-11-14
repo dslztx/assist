@@ -1,6 +1,7 @@
 package me.dslztx.io;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
 
 /**
  * @author dslztx
@@ -63,6 +64,28 @@ public class ByteArrayInputStreamAug extends ByteArrayInputStream {
 
         if (a == '\r' && b == '\n') {
             return new String(buf, start, pos - 2 - start);
+        } else {
+            throw new RuntimeException("no new legal line");
+        }
+    }
+
+    public String readLineToCRLF(Charset charset) {
+        int start = pos;
+
+        int a = -1;
+        int b = -1;
+
+        while ((a = read()) != -1) {
+            if (a == '\r') {
+                b = read();
+                if (b != -1 && b == '\n') {
+                    break;
+                }
+            }
+        }
+
+        if (a == '\r' && b == '\n') {
+            return new String(buf, start, pos - 2 - start, charset);
         } else {
             throw new RuntimeException("no new legal line");
         }

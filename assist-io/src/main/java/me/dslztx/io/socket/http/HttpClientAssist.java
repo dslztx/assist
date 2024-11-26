@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -196,6 +197,43 @@ public class HttpClientAssist {
             httpClient = HttpClients.createDefault();
 
             httpGet = new HttpGet(url);
+            response = httpClient.execute(httpGet);
+
+            if (Objects.nonNull(response)) {
+                resp = EntityUtils.toString(response.getEntity(), encoding);
+            }
+        } catch (Exception e) {
+            log.error("", e);
+        } finally {
+            CloseableAssist.closeQuietly(response);
+
+            if (Objects.nonNull(httpGet)) {
+                httpGet.releaseConnection();
+            }
+
+            CloseableAssist.closeQuietly(httpClient);
+        }
+
+        return resp;
+    }
+
+    public static String httpGetTimeout(String url, Charset encoding, int connectTimeout, int socketTimeout) {
+        String resp = null;
+
+        CloseableHttpClient httpClient = null;
+        HttpGet httpGet = null;
+        CloseableHttpResponse response = null;
+
+        try {
+            httpClient = HttpClients.createDefault();
+
+            httpGet = new HttpGet(url);
+
+            // 设置请求和传输超时时间
+            RequestConfig requestConfig =
+                RequestConfig.custom().setSocketTimeout(socketTimeout).setConnectTimeout(connectTimeout).build();
+            httpGet.setConfig(requestConfig);
+
             response = httpClient.execute(httpGet);
 
             if (Objects.nonNull(response)) {

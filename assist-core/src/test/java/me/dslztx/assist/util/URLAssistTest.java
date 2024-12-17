@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.dslztx.assist.util.domain.URLParseBean;
+
 public class URLAssistTest {
     private static final Logger logger = LoggerFactory.getLogger(URLAssistTest.class);
 
@@ -210,4 +212,104 @@ public class URLAssistTest {
         }
     }
 
+    @Test
+    public void test10() {
+        try {
+            Assert.assertTrue(URLAssist
+                .retainHostAndUrlPath("http://testuser:testpass@www.aspxfans.com:8080/news/index"
+                    + ".asp?boardID=5&ID=24618&page=1#refpart")
+                .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+
+            Assert.assertTrue(URLAssist
+                .retainHostAndUrlPath(
+                    "testuser:testpass@www.aspxfans.com:8080/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
+                .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+
+            Assert.assertTrue(URLAssist
+                .retainHostAndUrlPath("www.aspxfans.com:8080/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
+                .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+
+            Assert.assertTrue(
+                URLAssist.retainHostAndUrlPath("www.aspxfans.com/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
+                    .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+
+            Assert.assertTrue(
+                URLAssist.retainHostAndUrlPath("www.aspxfans.com").equals(new URLParseBean("www.aspxfans.com", "")));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void test11() {
+        try {
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("telnet://www.baidu.com"));
+
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http//www.baidu.com"));
+
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http:/www.baidu.com"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void test12() {
+        try {
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("telnet://www.baidu.com"));
+
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http//www.baidu.com"));
+
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http:/www.baidu.com"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void test13() {
+        try {
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http://www.baidu.com@refpart"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+
+    }
+
+    @Test
+    public void test14() {
+        try {
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http://www:8080baidu.com/refpartillegal"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+
+    }
+
+    @Test
+    public void test15() {
+        try {
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http:///www.baidu.com"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+
+    }
+
+    @Test
+    public void test16() {
+        try {
+            Assert.assertNull(URLAssist.retainHostAndUrlPath("http:///..cn"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+
+    }
 }

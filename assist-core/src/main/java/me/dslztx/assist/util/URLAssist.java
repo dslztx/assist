@@ -1,5 +1,6 @@
 package me.dslztx.assist.util;
 
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,14 +10,26 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.configuration2.Configuration;
 
+import lombok.extern.slf4j.Slf4j;
+import me.dslztx.assist.util.domain.URLParseBean;
+
 /**
- * URI RFC：https://datatracker.ietf.org/doc/html/rfc3986#section-1.1.3
+ * URL RFC：https://datatracker.ietf.org/doc/html/rfc1738<br/>
+ * 
+ * URI RFC：https://datatracker.ietf.org/doc/html/rfc3986#section-1.1.3<br/>
  */
+@Slf4j
 public class URLAssist {
 
     protected static final Set<String> PROTOCOLS = new HashSet<>();
 
     private static final Map<Character, Character> ILLEGAL_CHAR_MAP = new HashMap<Character, Character>();
+
+    private static final String HTTP_PREFIX = "http://";
+
+    private static final String HTTPS_PREFIX = "https://";
+
+    private static final String FTP_PREFIX = "ftp://";
 
     public static Set<String> cnSubdomains = new HashSet<String>();
 
@@ -359,6 +372,160 @@ public class URLAssist {
             }
         }
         return start;
+    }
+
+    /**
+     * URL格式见https://datatracker.ietf.org/doc/html/rfc1738<br/>
+     * 
+     * 本方法去掉protocol header，username/password，port，只保留host和url-path
+     *
+     * @param url
+     * @return
+     */
+    public static URLParseBean retainHostAndUrlPath(String url) {
+
+        if (StringAssist.isBlank(url)) {
+            return null;
+        }
+
+        try {
+            url = URLDecoder.decode(url);
+        } catch (Exception e) {
+            log.warn("", e);
+
+            return null;
+        }
+
+        url = url.toLowerCase();
+
+        int start = 0;
+        int end = url.length() - 1;
+
+        // 去掉前导和后续空格
+        while (start <= end) {
+            if (url.charAt(start) == ' ') {
+                start++;
+            } else {
+                break;
+            }
+        }
+
+        if (start > end) {
+            return null;
+        }
+
+        while (start <= end) {
+            if (url.charAt(end) == ' ') {
+                end--;
+            } else {
+                break;
+            }
+        }
+
+        if (start > end) {
+            return null;
+        }
+
+        if (url.startsWith(HTTP_PREFIX, start)) {
+            start += HTTP_PREFIX.length();
+        } else if (url.startsWith(HTTPS_PREFIX, start)) {
+            start += HTTPS_PREFIX.length();
+        } else if (url.startsWith(FTP_PREFIX, start)) {
+            start += FTP_PREFIX.length();
+        }
+
+        // 走到这里有两类URL
+        // 1）正常的去掉协议头的URL，比如www.baidu.com
+        // 2）非正常URL，又分为两类：1）非HTTP，HTTPS，FTP协议的URL，协议头去掉失败，比如telnet://www.baidu.com；2）其他非法形式，比如http:/www.baidu.com,//www.baidu.com
+
+        if (start > end) {
+            return null;
+        }
+
+        int pos = url.indexOf("@", start);
+
+        // 分为3种情况：
+        // 1）不存在
+        // 2）存在且合法，比如http://testuser:testpass@www.aspxfans.com:8080
+        // 3）存在但是非法，比如http://www.aspxfans.com:8080?testuser@testpass
+        if (pos != -1) {
+            start = pos + 1;
+        }
+
+        if (start > end) {
+            return null;
+        }
+
+        int portStart = url.indexOf(":", start);
+
+        // 分为3种情况：
+        // 1）不存在
+        // 2）存在且合法，比如http://www.aspxfans.com:8080/path
+        // 3）存在但是非法，比如http://www.aspx:passfans.com/testpath
+        if (portStart != -1) {
+            // 去掉可能存在的port
+            int portEnd = portStart + 1;
+
+            while (portEnd <= end) {
+                if (url.charAt(portEnd) >= '0' && url.charAt(portEnd) <= '9') {
+                    portEnd++;
+                } else {
+                    break;
+                }
+            }
+
+            String host = url.substring(start, portStart);
+
+            if (!isValidHostSimply(host)) {
+                // 很好的一个思想：前面有太多异常情形，穷举较困难，这里统一作个验证
+                return null;
+            }
+
+            return new URLParseBean(host, url.substring(portEnd, end + 1));
+        } else {
+            int slashPos = url.indexOf("/", start);
+
+            // 分为3种情况：
+            // 1）不存在
+            // 2）存在且合法，比如http://www.aspxfans.com:8080/path
+            // 3）存在但是非法，比如/www.aspx:passfans.com
+
+            if (slashPos != -1) {
+                String host = url.substring(start, slashPos);
+                if (!isValidHostSimply(host)) {
+                    // 很好的一个思想：前面有太多异常情形，穷举较困难，这里统一作个验证
+                    return null;
+                }
+                return new URLParseBean(host, url.substring(slashPos, end + 1));
+            } else {
+                String host = url.substring(start, end + 1);
+                if (!isValidHostSimply(host)) {
+                    // 很好的一个思想：前面有太多异常情形，穷举较困难，这里统一作个验证
+                    return null;
+                }
+                return new URLParseBean(host, "");
+            }
+        }
+    }
+
+    /**
+     * 判断url host最准确的方案是使用正则表达式，但是性能低，这里简单化处理：点号分割部分数量>=2即认为合法
+     *
+     * @param host
+     * @return
+     */
+    public static boolean isValidHostSimply(String host) {
+        if (StringAssist.isBlank(host)) {
+            return false;
+        }
+
+        String[] urlParts = StringAssist.split(host, '.', true);
+
+        if (ArrayAssist.isEmpty(urlParts) || urlParts.length <= 1) {
+            return false;
+        }
+
+        return true;
     }
 }
 

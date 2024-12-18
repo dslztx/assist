@@ -298,4 +298,19 @@ public class URLAssistTest {
         }
 
     }
+
+    @Test
+    public void removeQueryAndTagFromUrlPathTest() {
+        try {
+            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path?a=b&c=d#anchor").equals("/path"));
+            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path?a=b&c=d").equals("/path"));
+            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path#anchor").equals("/path"));
+            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path").equals("/path"));
+            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("").equals(""));
+            Assert.assertNull(URLAssist.removeQueryAndTagFromUrlPath(null));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

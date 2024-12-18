@@ -527,6 +527,35 @@ public class URLAssist {
 
         return true;
     }
+
+    public static String removeQueryAndTagFromUrlPath(String urlPath) {
+        if (StringAssist.isBlank(urlPath)) {
+            return urlPath;
+        }
+
+        int removePartStart = urlPath.length();
+
+        int queryPartStart = urlPath.indexOf("?");
+        int tagPartStart = urlPath.indexOf("#");
+
+        if (queryPartStart != -1) {
+            if (queryPartStart < removePartStart) {
+                removePartStart = queryPartStart;
+            }
+        }
+
+        if (tagPartStart != -1) {
+            if (tagPartStart < removePartStart) {
+                removePartStart = tagPartStart;
+            }
+        }
+
+        if (removePartStart == urlPath.length()) {
+            return urlPath;
+        } else {
+            return urlPath.substring(0, removePartStart);
+        }
+    }
 }
 
 class URLPart {

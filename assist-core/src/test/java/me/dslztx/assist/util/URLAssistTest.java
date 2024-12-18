@@ -213,7 +213,7 @@ public class URLAssistTest {
     }
 
     @Test
-    public void test10() {
+    public void retainHostAndUrlPath0() {
         try {
             Assert.assertTrue(URLAssist
                 .retainHostAndUrlPath("http://testuser:testpass@www.aspxfans.com:8080/news/index"
@@ -242,7 +242,7 @@ public class URLAssistTest {
     }
 
     @Test
-    public void test11() {
+    public void retainHostAndUrlPath1() {
         try {
             Assert.assertNull(URLAssist.retainHostAndUrlPath("telnet://www.baidu.com"));
 
@@ -256,21 +256,7 @@ public class URLAssistTest {
     }
 
     @Test
-    public void test12() {
-        try {
-            Assert.assertNull(URLAssist.retainHostAndUrlPath("telnet://www.baidu.com"));
-
-            Assert.assertNull(URLAssist.retainHostAndUrlPath("http//www.baidu.com"));
-
-            Assert.assertNull(URLAssist.retainHostAndUrlPath("http:/www.baidu.com"));
-        } catch (Exception e) {
-            logger.error("", e);
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void test13() {
+    public void retainHostAndUrlPath2() {
         try {
             Assert.assertNull(URLAssist.retainHostAndUrlPath("http://www.baidu.com@refpart"));
         } catch (Exception e) {
@@ -281,7 +267,7 @@ public class URLAssistTest {
     }
 
     @Test
-    public void test14() {
+    public void retainHostAndUrlPath3() {
         try {
             Assert.assertNull(URLAssist.retainHostAndUrlPath("http://www:8080baidu.com/refpartillegal"));
         } catch (Exception e) {
@@ -292,7 +278,7 @@ public class URLAssistTest {
     }
 
     @Test
-    public void test15() {
+    public void retainHostAndUrlPath4() {
         try {
             Assert.assertNull(URLAssist.retainHostAndUrlPath("http:///www.baidu.com"));
         } catch (Exception e) {
@@ -303,7 +289,7 @@ public class URLAssistTest {
     }
 
     @Test
-    public void test16() {
+    public void retainHostAndUrlPath5() {
         try {
             Assert.assertNull(URLAssist.retainHostAndUrlPath("http:///..cn"));
         } catch (Exception e) {

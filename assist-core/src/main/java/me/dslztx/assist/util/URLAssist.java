@@ -31,6 +31,8 @@ public class URLAssist {
 
     private static final String FTP_PREFIX = "ftp";
 
+    private static final String WWW_PREFIX = "www";
+
     public static Set<String> cnSubdomains = new HashSet<String>();
 
     private static Pattern ipPattern = null;
@@ -434,10 +436,6 @@ public class URLAssist {
             start += FTP_PREFIX.length();
         }
 
-        // 走到这里有两类URL
-        // 1）正常的去掉协议头的URL，比如www.baidu.com
-        // 2）非正常URL，又分为两类：1）非HTTP，HTTPS，FTP协议的URL，协议头去掉失败，比如telnet://www.baidu.com；2）其他非法形式，比如http:/www.baidu.com,//www.baidu.com
-
         if (start > end) {
             return null;
         }
@@ -448,7 +446,6 @@ public class URLAssist {
             if (c == '/' || c == ':' || c == '\\') {
                 // 兼容/// \\\ :// http//等情形
                 start++;
-                continue;
             } else {
                 break;
             }
@@ -458,22 +455,36 @@ public class URLAssist {
             return null;
         }
 
-        int hostAndPortEnd = end;
+        // 去掉可能存在的www
+        if (url.startsWith(WWW_PREFIX, start)) {
+            start += WWW_PREFIX.length();
+        }
+
+        if (start > end) {
+            return null;
+        }
+
+        // 走到这里有两类URL
+        // 1）正常的去掉协议头的URL，形如"(http|https|ftp)[:/\]+"都能兼容，最后形如"www.baidu.com"
+        // 2）非正常URL，又分为两类：1）非HTTP，HTTPS，FTP协议的URL，协议头去掉失败，比如telnet://www.baidu.com；2）其他非法形式，比如http+//www.baidu.com
+
+        // 先找到与urlPath的分界点，因为urlPath中可以存在@，:等字符，所有后续找寻@，:字符以endBeforeUrlPath为界限
+        int endBeforeUrlPath = end;
 
         int pos0 = url.indexOf("/", start);
         int pos1 = url.indexOf("?", start);
         int pos2 = url.indexOf("#", start);
 
-        if (pos0 != -1 && pos0 - 1 < hostAndPortEnd) {
-            hostAndPortEnd = pos0 - 1;
+        if (pos0 != -1 && pos0 - 1 < endBeforeUrlPath) {
+            endBeforeUrlPath = pos0 - 1;
         }
 
-        if (pos1 != -1 && pos1 - 1 < hostAndPortEnd) {
-            hostAndPortEnd = pos1 - 1;
+        if (pos1 != -1 && pos1 - 1 < endBeforeUrlPath) {
+            endBeforeUrlPath = pos1 - 1;
         }
 
-        if (pos2 != -1 && pos2 - 1 < hostAndPortEnd) {
-            hostAndPortEnd = pos2 - 1;
+        if (pos2 != -1 && pos2 - 1 < endBeforeUrlPath) {
+            endBeforeUrlPath = pos2 - 1;
         }
 
         int pos = url.indexOf("@", start);
@@ -481,12 +492,12 @@ public class URLAssist {
         // 分为3种情况：
         // 1）不存在
         // 2）存在且合法，比如http://testuser:testpass@www.aspxfans.com:8080
-        // 3）存在但是非法，比如http://www.aspxfans.com:8080?testuser@testpass
-        if (pos != -1 && pos <= hostAndPortEnd) {
+        // 3）存在但是非法，比如http://www.aspxftestuser@testpassans.com:8080
+        if (pos != -1 && pos <= endBeforeUrlPath) {
             start = pos + 1;
         }
 
-        if (start > hostAndPortEnd) {
+        if (start > endBeforeUrlPath) {
             return null;
         }
 
@@ -496,18 +507,7 @@ public class URLAssist {
         // 1）不存在
         // 2）存在且合法，比如http://www.aspxfans.com:8080/path
         // 3）存在但是非法，比如http://www.aspx:passfans.com/testpath
-        if (portStart != -1 && portStart <= hostAndPortEnd) {
-            // // 去掉可能存在的port
-            // int portEnd = portStart + 1;
-            //
-            // while (portEnd <= hostAndPortEnd) {
-            // if (url.charAt(portEnd) >= '0' && url.charAt(portEnd) <= '9') {
-            // portEnd++;
-            // } else {
-            // break;
-            // }
-            // }
-
+        if (portStart != -1 && portStart <= endBeforeUrlPath) {
             String host = url.substring(start, portStart);
 
             if (!isValidHostSimply(host)) {
@@ -515,37 +515,14 @@ public class URLAssist {
                 return null;
             }
 
-            return new URLParseBean(host, url.substring(hostAndPortEnd + 1, end + 1));
+            return new URLParseBean(host, url.substring(endBeforeUrlPath + 1, end + 1));
         } else {
-            String host = url.substring(start, hostAndPortEnd + 1);
+            String host = url.substring(start, endBeforeUrlPath + 1);
             if (!isValidHostSimply(host)) {
                 // 很好的一个思想：前面有太多异常情形，穷举较困难，这里统一作个验证
                 return null;
             }
-            return new URLParseBean(host, url.substring(hostAndPortEnd + 1, end + 1));
-
-            // int slashPos = url.indexOf("/", start);
-            //
-            // // 分为3种情况：
-            // // 1）不存在
-            // // 2）存在且合法，比如http://www.aspxfans.com:8080/path
-            // // 3）存在但是非法，比如/www.aspx:passfans.com
-            //
-            // if (slashPos != -1) {
-            // String host = url.substring(start, slashPos);
-            // if (!isValidHostSimply(host)) {
-            // // 很好的一个思想：前面有太多异常情形，穷举较困难，这里统一作个验证
-            // return null;
-            // }
-            // return new URLParseBean(host, url.substring(slashPos, end + 1));
-            // } else {
-            // String host = url.substring(start, end + 1);
-            // if (!isValidHostSimply(host)) {
-            // // 很好的一个思想：前面有太多异常情形，穷举较困难，这里统一作个验证
-            // return null;
-            // }
-            // return new URLParseBean(host, "");
-            // }
+            return new URLParseBean(host, url.substring(endBeforeUrlPath + 1, end + 1));
         }
     }
 

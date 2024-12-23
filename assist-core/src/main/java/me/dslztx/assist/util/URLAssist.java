@@ -12,6 +12,7 @@ import org.apache.commons.configuration2.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import me.dslztx.assist.util.domain.URLParseBean;
+import me.dslztx.assist.util.domain.URLPath;
 
 /**
  * URL RFC：https://datatracker.ietf.org/doc/html/rfc1738<br/>
@@ -21,8 +22,9 @@ import me.dslztx.assist.util.domain.URLParseBean;
 @Slf4j
 public class URLAssist {
 
+    public static final Pattern MAIL_PATTERN =
+        Pattern.compile("[A-Za-z0-9][A-Za-z0-9_.-]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}");
     protected static final Set<String> PROTOCOLS = new HashSet<>();
-
     private static final Map<Character, Character> ILLEGAL_CHAR_MAP = new HashMap<Character, Character>();
 
     private static final String HTTP_PREFIX = "http";
@@ -181,7 +183,7 @@ public class URLAssist {
 
     /**
      * 提取出明文的疑似跳转URL
-     * 
+     *
      * @param s 要么是空白，要么是合法的URL
      * @return
      */
@@ -378,9 +380,16 @@ public class URLAssist {
 
     /**
      * URL格式见https://datatracker.ietf.org/doc/html/rfc1738<br/>
-     * 
+     *
      * 本方法去掉protocol header，username/password，port，只保留host和url-path
      *
+     *
+     * 1、维持 start<=endBeforeUrlPath<=end的性质<br/>
+     * 2、正常url -> host合法<br/>
+     * 部分不兼容情况 -> host也是合法的<br/>
+     * 部分不兼容情况 -> host非法<br/>
+     * 3、url.substring(endBeforeUrlPath + 1, end + 1)不会抛出异常的，写得牛逼<br/>
+     * 
      * @param url
      * @return
      */
@@ -428,10 +437,10 @@ public class URLAssist {
             return null;
         }
 
-        if (url.startsWith(HTTP_PREFIX, start)) {
-            start += HTTP_PREFIX.length();
-        } else if (url.startsWith(HTTPS_PREFIX, start)) {
+        if (url.startsWith(HTTPS_PREFIX, start)) {
             start += HTTPS_PREFIX.length();
+        } else if (url.startsWith(HTTP_PREFIX, start)) {
+            start += HTTP_PREFIX.length();
         } else if (url.startsWith(FTP_PREFIX, start)) {
             start += FTP_PREFIX.length();
         }
@@ -545,6 +554,86 @@ public class URLAssist {
 
         return true;
     }
+
+    public static URLPath parse(String path){
+        if(StringAssist.isBlank(path)){
+            return null;
+        }
+
+        char c = path.charAt(0);
+
+        int start=0;
+        int end = path.length() - 1;
+
+        StringBuilder sb = new StringBuilder();
+        StringBuilder buffer = new StringBuilder();
+
+
+        if(path.charAt(start)=='/'){
+            sb.append(path.charAt(start));
+
+            start++;
+            while (start<=end){
+                c = path.charAt(start);
+                if(c=='?' || c=='#'){
+                    break;
+                }
+
+                if(c=='/'){
+                    // buffer加进去
+                    buffer.setLength(0);
+                }
+            }
+        }
+
+        if(buffer.length()>0){
+            // buffer加进去
+            buffer.setLength(0);
+        }
+
+        if(path.charAt(start)=='?'){
+            sb.append(path.charAt(start));
+
+            boolean findKey=false;
+            start++;
+            while (start<=end){
+                c = path.charAt(start);
+                if(c=='#'){
+                    break;
+                }
+
+                if(!findKey){
+                    sb.append(c);
+                }else {
+                    if (c == '=') {
+                        findKey = true;
+                        buffer.setLength(0);
+                    } else {
+
+                    }
+
+                }
+            }
+        }
+
+        if(path.charAt(start)=='#'){
+            sb.append(path.charAt(start));
+        }
+        if(c=='#'){
+            return new URLPath(null, null, path);
+        }
+        else if(c=='?'){
+            int pos = path.lastIndexOf('#');
+            if(pos==-1){
+                return new URLPath(null, path, null);
+            }else{
+                return new URLPath(null,path.substring(0,pos),path.substring())
+            }
+        }
+
+        return null;
+    }
+
 
     public static String removeQueryAndTagFromUrlPath(String urlPath) {
         if (StringAssist.isBlank(urlPath)) {

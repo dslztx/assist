@@ -218,23 +218,41 @@ public class URLAssistTest {
             Assert.assertTrue(URLAssist
                 .retainHostAndUrlPath("http://testuser:testpass@www.aspxfans.com:8080/news/index"
                     + ".asp?boardID=5&ID=24618&page=1#refpart")
-                .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+                .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
 
             Assert.assertTrue(URLAssist
                 .retainHostAndUrlPath(
                     "testuser:testpass@www.aspxfans.com:8080/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
-                .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+                .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
 
             Assert.assertTrue(URLAssist
                 .retainHostAndUrlPath("www.aspxfans.com:8080/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
-                .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+                .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
 
             Assert.assertTrue(
                 URLAssist.retainHostAndUrlPath("www.aspxfans.com/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
-                    .equals(new URLParseBean("www.aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+                    .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
 
             Assert.assertTrue(
-                URLAssist.retainHostAndUrlPath("www.aspxfans.com").equals(new URLParseBean("www.aspxfans.com", "")));
+                URLAssist.retainHostAndUrlPath("www.aspxfans.com").equals(new URLParseBean("aspxfans.com", "")));
+
+            Assert.assertTrue(URLAssist.retainHostAndUrlPath("http:www.baidu.com/a?b#c")
+                .equals(new URLParseBean("baidu.com", "/a?b#c")));
+            Assert.assertTrue(URLAssist.retainHostAndUrlPath("http/www.baidu.com/a?b#c")
+                .equals(new URLParseBean("baidu.com", "/a?b#c")));
+            Assert.assertTrue(URLAssist.retainHostAndUrlPath("http//www.baidu.com/a?b#c")
+                .equals(new URLParseBean("baidu.com", "/a?b#c")));
+            Assert.assertTrue(URLAssist.retainHostAndUrlPath("http///www.baidu.com/a?b#c")
+                .equals(new URLParseBean("baidu.com", "/a?b#c")));
+
+            Assert.assertTrue(
+                URLAssist.retainHostAndUrlPath("http://www.baidu.com/a").equals(new URLParseBean("baidu.com", "/a")));
+            Assert.assertTrue(
+                URLAssist.retainHostAndUrlPath("http://www.baidu.com?b").equals(new URLParseBean("baidu.com", "?b")));
+            Assert.assertTrue(
+                URLAssist.retainHostAndUrlPath("http://www.baidu.com#c").equals(new URLParseBean("baidu.com", "#c")));
+            Assert.assertTrue(URLAssist.retainHostAndUrlPath("http://www.baidu.com/a?b#c")
+                .equals(new URLParseBean("baidu.com", "/a?b#c")));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
@@ -245,10 +263,6 @@ public class URLAssistTest {
     public void retainHostAndUrlPath1() {
         try {
             Assert.assertNull(URLAssist.retainHostAndUrlPath("telnet://www.baidu.com"));
-
-            Assert.assertNull(URLAssist.retainHostAndUrlPath("http//www.baidu.com"));
-
-            Assert.assertNull(URLAssist.retainHostAndUrlPath("http:/www.baidu.com"));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
@@ -279,17 +293,6 @@ public class URLAssistTest {
 
     @Test
     public void retainHostAndUrlPath4() {
-        try {
-            Assert.assertNull(URLAssist.retainHostAndUrlPath("http:///www.baidu.com"));
-        } catch (Exception e) {
-            logger.error("", e);
-            Assert.fail();
-        }
-
-    }
-
-    @Test
-    public void retainHostAndUrlPath5() {
         try {
             Assert.assertNull(URLAssist.retainHostAndUrlPath("http:///..cn"));
         } catch (Exception e) {

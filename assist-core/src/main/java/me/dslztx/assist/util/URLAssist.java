@@ -31,7 +31,7 @@ public class URLAssist {
 
     private static final String FTP_PREFIX = "ftp";
 
-    private static final String WWW_PREFIX = "www";
+    private static final String WWW_PREFIX = "www.";
 
     public static Set<String> cnSubdomains = new HashSet<String>();
 
@@ -455,15 +455,6 @@ public class URLAssist {
             return null;
         }
 
-        // 去掉可能存在的www
-        if (url.startsWith(WWW_PREFIX, start)) {
-            start += WWW_PREFIX.length();
-        }
-
-        if (start > end) {
-            return null;
-        }
-
         // 走到这里有两类URL
         // 1）正常的去掉协议头的URL，形如"(http|https|ftp)[:/\]+"都能兼容，最后形如"www.baidu.com"
         // 2）非正常URL，又分为两类：1）非HTTP，HTTPS，FTP协议的URL，协议头去掉失败，比如telnet://www.baidu.com；2）其他非法形式，比如http+//www.baidu.com
@@ -495,6 +486,15 @@ public class URLAssist {
         // 3）存在但是非法，比如http://www.aspxftestuser@testpassans.com:8080
         if (pos != -1 && pos <= endBeforeUrlPath) {
             start = pos + 1;
+        }
+
+        if (start > endBeforeUrlPath) {
+            return null;
+        }
+
+        // 去掉可能存在的www
+        if (url.startsWith(WWW_PREFIX, start)) {
+            start += WWW_PREFIX.length();
         }
 
         if (start > endBeforeUrlPath) {

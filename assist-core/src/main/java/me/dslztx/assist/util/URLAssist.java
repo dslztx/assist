@@ -1,10 +1,7 @@
 package me.dslztx.assist.util;
 
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,11 +9,10 @@ import org.apache.commons.configuration2.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import me.dslztx.assist.util.domain.URLParseBean;
-import me.dslztx.assist.util.domain.URLPath;
 
 /**
  * URL RFC：https://datatracker.ietf.org/doc/html/rfc1738<br/>
- * 
+ * <p>
  * URI RFC：https://datatracker.ietf.org/doc/html/rfc3986#section-1.1.3<br/>
  */
 @Slf4j
@@ -380,16 +376,16 @@ public class URLAssist {
 
     /**
      * URL格式见https://datatracker.ietf.org/doc/html/rfc1738<br/>
-     *
+     * <p>
      * 本方法去掉protocol header，username/password，port，只保留host和url-path
-     *
-     *
+     * <p>
+     * <p>
      * 1、维持 start<=endBeforeUrlPath<=end的性质<br/>
      * 2、正常url -> host合法<br/>
      * 部分不兼容情况 -> host也是合法的<br/>
      * 部分不兼容情况 -> host非法<br/>
      * 3、url.substring(endBeforeUrlPath + 1, end + 1)不会抛出异常的，写得牛逼<br/>
-     * 
+     *
      * @param url
      * @return
      */
@@ -555,85 +551,144 @@ public class URLAssist {
         return true;
     }
 
-    public static URLPath parse(String path){
-        if(StringAssist.isBlank(path)){
+    public static String parse(String path) {
+        if (StringAssist.isBlank(path)) {
             return null;
         }
 
-        char c = path.charAt(0);
-
-        int start=0;
+        int start = 0;
         int end = path.length() - 1;
+
+        char c;
 
         StringBuilder sb = new StringBuilder();
         StringBuilder buffer = new StringBuilder();
 
-
-        if(path.charAt(start)=='/'){
+        if (start <= end && path.charAt(start) == '/') {
             sb.append(path.charAt(start));
 
             start++;
-            while (start<=end){
+            while (start <= end) {
                 c = path.charAt(start);
-                if(c=='?' || c=='#'){
+
+                if (c == '?' || c == '#') {
                     break;
                 }
 
-                if(c=='/'){
-                    // buffer加进去
-                    buffer.setLength(0);
-                }
-            }
-        }
-
-        if(buffer.length()>0){
-            // buffer加进去
-            buffer.setLength(0);
-        }
-
-        if(path.charAt(start)=='?'){
-            sb.append(path.charAt(start));
-
-            boolean findKey=false;
-            start++;
-            while (start<=end){
-                c = path.charAt(start);
-                if(c=='#'){
-                    break;
-                }
-
-                if(!findKey){
-                    sb.append(c);
-                }else {
-                    if (c == '=') {
-                        findKey = true;
+                if (c == '/') {
+                    if (buffer.length() > 0) {
+                        if (isNotMail(buffer)) {
+                            sb.append(buffer);
+                        }
                         buffer.setLength(0);
-                    } else {
-
                     }
 
+                    sb.append(c);
+                } else {
+                    buffer.append(c);
                 }
+                start++;
+            }
+
+            if (buffer.length() > 0) {
+                if (isNotMail(buffer)) {
+                    sb.append(buffer);
+                }
+                buffer.setLength(0);
             }
         }
 
-        if(path.charAt(start)=='#'){
+        if (start <= end && path.charAt(start) == '?') {
             sb.append(path.charAt(start));
-        }
-        if(c=='#'){
-            return new URLPath(null, null, path);
-        }
-        else if(c=='?'){
-            int pos = path.lastIndexOf('#');
-            if(pos==-1){
-                return new URLPath(null, path, null);
-            }else{
-                return new URLPath(null,path.substring(0,pos),path.substring())
+
+            boolean findKey = false;
+            start++;
+
+            while (start <= end) {
+                c = path.charAt(start);
+                if (c == '#') {
+                    break;
+                }
+
+                if (c == '=') {
+                    if (findKey) {
+                        buffer.append(c);
+                    } else {
+                        sb.append(c);
+                        findKey = true;
+                    }
+                } else if (c == '&') {
+                    if (findKey) {
+                        if (buffer.length() > 0) {
+                            if (isNotMail(buffer)) {
+                                sb.append(buffer);
+                            }
+
+                            buffer.setLength(0);
+                        }
+                        sb.append(c);
+                        findKey = false;
+                    } else {
+                        sb.append(c);
+                    }
+                } else {
+                    if (findKey) {
+                        buffer.append(c);
+                    } else {
+                        sb.append(c);
+                    }
+                }
+
+                start++;
+            }
+
+            if (buffer.length() > 0) {
+                if (isNotMail(buffer)) {
+                    sb.append(buffer);
+                }
+
+                buffer.setLength(0);
             }
         }
 
-        return null;
+        if (start <= end && path.charAt(start) == '#') {
+            sb.append(path.charAt(start));
+
+            start++;
+            while (start <= end) {
+                buffer.append(path.charAt(start));
+
+                start++;
+            }
+
+            if (buffer.length() > 0) {
+                if (isNotMail(buffer)) {
+                    sb.append(buffer);
+                }
+
+                buffer.setLength(0);
+            }
+
+        }
+
+        return sb.toString();
     }
 
+    private static boolean isNotMail(StringBuilder buffer) {
+        String param = buffer.toString();
+
+        Matcher matcher = MAIL_PATTERN.matcher(param);
+        if (param.contains("@") && matcher.find()) {
+            return false;
+        }
+
+        String decodeParam = new String(Base64.getDecoder().decode(param.getBytes()));
+        if (decodeParam.contains("@") && MAIL_PATTERN.matcher(decodeParam).matches()) {
+            return false;
+        }
+
+        return true;
+    }
 
     public static String removeQueryAndTagFromUrlPath(String urlPath) {
         if (StringAssist.isBlank(urlPath)) {

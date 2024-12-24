@@ -316,4 +316,15 @@ public class URLAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void parseTest() {
+        try {
+            String s = "/urlpath/test@163.com/dGVzdEAxNjMuY29t?a=dGVzdEAxNjMuY29t&b=test@163.com#dGVzdEAxNjMuY29t";
+            Assert.assertTrue(URLAssist.parse(s).equals("/urlpath//?a=&b=#"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
 }

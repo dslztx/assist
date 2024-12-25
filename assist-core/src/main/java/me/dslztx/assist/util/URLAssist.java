@@ -99,7 +99,6 @@ public class URLAssist {
         SUFFIX_SET.add("rar");
         SUFFIX_SET.add("zip");
         SUFFIX_SET.add("7z");
-        SUFFIX_SET.add("tar.gz");
         SUFFIX_SET.add("tar");
         SUFFIX_SET.add("gz");
     }

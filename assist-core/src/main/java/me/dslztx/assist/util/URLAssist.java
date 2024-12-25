@@ -767,6 +767,12 @@ public class URLAssist {
         return true;
     }
 
+    /**
+     * 是否是静态资源路径
+     * 
+     * @param urlPath 从retainHostAndUrlPath方法获得结果中得到的urlPath，所以要么为空，要么为以/，#，?开头
+     * @return
+     */
     public static boolean isStaticResource(String urlPath) {
         if (StringAssist.isBlank(urlPath)) {
             return false;

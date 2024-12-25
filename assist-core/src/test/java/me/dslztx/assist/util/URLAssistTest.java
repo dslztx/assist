@@ -218,12 +218,12 @@ public class URLAssistTest {
             Assert.assertTrue(URLAssist
                 .retainHostAndUrlPath("http://testuser:testpass@www.aspxfans.com:8080/news/index"
                     + ".asp?boardID=5&ID=24618&page=1#refpart")
-                .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+                .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardID=5&ID=24618&page=1#refpart")));
 
             Assert.assertTrue(URLAssist
                 .retainHostAndUrlPath(
-                    "testuser:testpass@www.aspxfans.com:8080/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
-                .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardid=5&id=24618&page=1#refpart")));
+                    "testuser:testpass@www.aspxfans.com:8080/news/index" + ".asp?boardID=5&ID=24618&page=1#refpart")
+                .equals(new URLParseBean("aspxfans.com", "/news/index.asp?boardID=5&ID=24618&page=1#refpart")));
 
             Assert.assertTrue(URLAssist
                 .retainHostAndUrlPath("www.aspxfans.com:8080/news/index" + ".asp?boardid=5&id=24618&page=1#refpart")
@@ -246,13 +246,18 @@ public class URLAssistTest {
                 .equals(new URLParseBean("baidu.com", "/a?b#c")));
 
             Assert.assertTrue(
-                URLAssist.retainHostAndUrlPath("http://www.baidu.com/a").equals(new URLParseBean("baidu.com", "/a")));
+                URLAssist.retainHostAndUrlPath("https://www.baidu.com/a").equals(new URLParseBean("baidu.com", "/a")));
             Assert.assertTrue(
-                URLAssist.retainHostAndUrlPath("http://www.baidu.com?b").equals(new URLParseBean("baidu.com", "?b")));
+                URLAssist.retainHostAndUrlPath("ftp://www.baidu.com?b").equals(new URLParseBean("baidu.com", "?b")));
             Assert.assertTrue(
                 URLAssist.retainHostAndUrlPath("http://www.baidu.com#c").equals(new URLParseBean("baidu.com", "#c")));
             Assert.assertTrue(URLAssist.retainHostAndUrlPath("http://www.baidu.com/a?b#c")
                 .equals(new URLParseBean("baidu.com", "/a?b#c")));
+
+            Assert.assertTrue(URLAssist.retainHostAndUrlPath("http://www.baidu.com/a?b=just_test@163.com#c")
+                .equals(new URLParseBean("baidu.com", "/a?b=just_test@163.com#c")));
+            Assert.assertTrue(URLAssist.retainHostAndUrlPath("http://www.baidu.com/a?b=d:e#c")
+                .equals(new URLParseBean("baidu.com", "/a?b=d:e#c")));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
@@ -303,17 +308,13 @@ public class URLAssistTest {
     }
 
     @Test
-    public void removeQueryAndTagFromUrlPathTest() {
+    public void retainHostAndUrlPath5() {
         try {
-            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path?a=b&c=d#anchor").equals("/path"));
-            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path?a=b&c=d").equals("/path"));
-            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path#anchor").equals("/path"));
-            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("/path").equals("/path"));
-            Assert.assertTrue(URLAssist.removeQueryAndTagFromUrlPath("").equals(""));
-            Assert.assertNull(URLAssist.removeQueryAndTagFromUrlPath(null));
+            String url = "http://tangy2010.c.wao360.com/%D4%AA%B5%A9%BA%D8%BF%A8%D6%D0%CE%C4%B0%E6.JPG";
+
+            Assert.assertNull(URLAssist.retainHostAndUrlPath(url));
         } catch (Exception e) {
             logger.error("", e);
-            Assert.fail();
         }
     }
 
@@ -321,7 +322,23 @@ public class URLAssistTest {
     public void parseTest() {
         try {
             String s = "/urlpath/test@163.com/dGVzdEAxNjMuY29t?a=dGVzdEAxNjMuY29t&b=test@163.com#dGVzdEAxNjMuY29t";
-            Assert.assertTrue(URLAssist.parse(s).equals("/urlpath//?a=&b=#"));
+            Assert.assertTrue(URLAssist.removeEmailFromUrlPath(s).equals("/urlpath//?a=&b="));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void isStaticResourceTest() {
+        try {
+            Assert.assertTrue(URLAssist.isStaticResource("/a/a.png?a=b#c"));
+            Assert.assertTrue(URLAssist.isStaticResource("/a.zip?a=b#c"));
+            Assert.assertTrue(URLAssist.isStaticResource("/a.rar"));
+
+            Assert.assertFalse(URLAssist.isStaticResource(""));
+            Assert.assertFalse(URLAssist.isStaticResource(null));
+            Assert.assertFalse(URLAssist.isStaticResource("/.?a=b#c"));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();

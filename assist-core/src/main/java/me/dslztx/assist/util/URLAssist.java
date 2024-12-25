@@ -1,6 +1,7 @@
 package me.dslztx.assist.util;
 
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +22,10 @@ public class URLAssist {
     public static final Pattern MAIL_PATTERN =
         Pattern.compile("[A-Za-z0-9][A-Za-z0-9_.-]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}");
     protected static final Set<String> PROTOCOLS = new HashSet<>();
+
     private static final Map<Character, Character> ILLEGAL_CHAR_MAP = new HashMap<Character, Character>();
+
+    private static final Set<String> SUFFIX_SET = new HashSet<>();
 
     private static final String HTTP_PREFIX = "http";
 
@@ -75,6 +79,29 @@ public class URLAssist {
         PROTOCOLS.add("prospero");
 
         ILLEGAL_CHAR_MAP.put('。', '.');
+
+        initSuffixSet();
+    }
+
+    private static void initSuffixSet() {
+        SUFFIX_SET.add("png");
+        SUFFIX_SET.add("jpg");
+        SUFFIX_SET.add("gif");
+        SUFFIX_SET.add("svg");
+        SUFFIX_SET.add("doc");
+        SUFFIX_SET.add("docx");
+        SUFFIX_SET.add("ppt");
+        SUFFIX_SET.add("pptx");
+        SUFFIX_SET.add("xls");
+        SUFFIX_SET.add("xlsx");
+        SUFFIX_SET.add("pdf");
+        SUFFIX_SET.add("exe");
+        SUFFIX_SET.add("rar");
+        SUFFIX_SET.add("zip");
+        SUFFIX_SET.add("7z");
+        SUFFIX_SET.add("tar.gz");
+        SUFFIX_SET.add("tar");
+        SUFFIX_SET.add("gz");
     }
 
     public static Pattern getIpPattern() {
@@ -376,21 +403,23 @@ public class URLAssist {
 
     /**
      * URL格式见https://datatracker.ietf.org/doc/html/rfc1738<br/>
+     * 本方法暂只支持HTTP，HTTPS，FTP协议URL的解析<br/>
+     *
+     * HTTP，HTTPS，FTP协议URL：<br/>
+     * 1、分为5部分：protocol header，username/password，host，port和url-path，本方法处理后只保留host和url-path<br/>
+     * 2、protocol
+     * header和port完全不区分大小写；username/password和url-path完全区分大小写；host从域名解析角度不区分大小写，从Nginx配置转发策略区分大小写，本方法处理中不区分大小写<br/>
      * <p>
-     * 本方法去掉protocol header，username/password，port，只保留host和url-path
      * <p>
-     * <p>
-     * 1、维持 start<=endBeforeUrlPath<=end的性质<br/>
-     * 2、正常url -> host合法<br/>
-     * 部分不兼容情况 -> host也是合法的<br/>
-     * 部分不兼容情况 -> host非法<br/>
-     * 3、url.substring(endBeforeUrlPath + 1, end + 1)不会抛出异常的，写得牛逼<br/>
+     * 本方法的几个核心要点：<br/>
+     * 1、维持 start <= endBeforeUrlPath <= end的性质<br/>
+     * 2、存在很多不规范URL情形，统一以host合法性进行兜底判断，又分为3种情况：1）正常url -> host合法；2）部分不规范情形 -> host也是合法的；3）部分不兼容情况 -> host非法<br/>
+     * 3、url.substring(endBeforeUrlPath + 1, end + 1)必不会抛出异常的，字段定义得很好<br/>
      *
      * @param url
      * @return
      */
     public static URLParseBean retainHostAndUrlPath(String url) {
-
         if (StringAssist.isBlank(url)) {
             return null;
         }
@@ -403,7 +432,15 @@ public class URLAssist {
             return null;
         }
 
+        String originUrl = url;
+
+        // 路径需要区分大小写，比如路径中带有Base64编码的帐号
         url = url.toLowerCase();
+
+        if (originUrl.length() != url.length()) {
+            // 一般情况下，小写转化后，前后长度一致，只有url中带有乱码，前后长度才可能不一致，比如"http://tangy2010.c.wao360.com/%D4%AA%B5%A9%BA%D8%BF%A8%D6%D0%CE%C4%B0%E6.JPG"
+            return null;
+        }
 
         int start = 0;
         int end = url.length() - 1;
@@ -434,6 +471,7 @@ public class URLAssist {
         }
 
         if (url.startsWith(HTTPS_PREFIX, start)) {
+            // https和http必须https的判断在前面，否则会出错
             start += HTTPS_PREFIX.length();
         } else if (url.startsWith(HTTP_PREFIX, start)) {
             start += HTTP_PREFIX.length();
@@ -520,14 +558,17 @@ public class URLAssist {
                 return null;
             }
 
-            return new URLParseBean(host, url.substring(endBeforeUrlPath + 1, end + 1));
+            // 注意url-path是基于原url生成的，因为需要保留大小写信息
+            return new URLParseBean(host, originUrl.substring(endBeforeUrlPath + 1, end + 1));
         } else {
             String host = url.substring(start, endBeforeUrlPath + 1);
             if (!isValidHostSimply(host)) {
                 // 很好的一个思想：前面有太多异常情形，穷举较困难，这里统一作个验证
                 return null;
             }
-            return new URLParseBean(host, url.substring(endBeforeUrlPath + 1, end + 1));
+
+            // 注意url-path是基于原url生成的，因为需要保留大小写信息
+            return new URLParseBean(host, originUrl.substring(endBeforeUrlPath + 1, end + 1));
         }
     }
 
@@ -551,25 +592,32 @@ public class URLAssist {
         return true;
     }
 
-    public static String parse(String path) {
-        if (StringAssist.isBlank(path)) {
+    /**
+     * 去掉urlPath中的显式和Base64编码的邮箱帐号
+     * 
+     * @param urlPath 从retainHostAndUrlPath方法获得结果中得到的urlPath，所以要么为空，要么为以/，#，?开头
+     * @return
+     */
+    public static String removeEmailFromUrlPath(String urlPath) {
+
+        if (StringAssist.isBlank(urlPath)) {
             return null;
         }
 
         int start = 0;
-        int end = path.length() - 1;
+        int end = urlPath.length() - 1;
 
         char c;
 
         StringBuilder sb = new StringBuilder();
         StringBuilder buffer = new StringBuilder();
 
-        if (start <= end && path.charAt(start) == '/') {
-            sb.append(path.charAt(start));
+        if (start <= end && urlPath.charAt(start) == '/') {
+            sb.append(urlPath.charAt(start));
 
             start++;
             while (start <= end) {
-                c = path.charAt(start);
+                c = urlPath.charAt(start);
 
                 if (c == '?' || c == '#') {
                     break;
@@ -577,7 +625,7 @@ public class URLAssist {
 
                 if (c == '/') {
                     if (buffer.length() > 0) {
-                        if (isNotMail(buffer)) {
+                        if (notContainEmail(buffer)) {
                             sb.append(buffer);
                         }
                         buffer.setLength(0);
@@ -591,21 +639,21 @@ public class URLAssist {
             }
 
             if (buffer.length() > 0) {
-                if (isNotMail(buffer)) {
+                if (notContainEmail(buffer)) {
                     sb.append(buffer);
                 }
                 buffer.setLength(0);
             }
         }
 
-        if (start <= end && path.charAt(start) == '?') {
-            sb.append(path.charAt(start));
+        if (start <= end && urlPath.charAt(start) == '?') {
+            sb.append(urlPath.charAt(start));
 
             boolean findKey = false;
             start++;
 
             while (start <= end) {
-                c = path.charAt(start);
+                c = urlPath.charAt(start);
                 if (c == '#') {
                     break;
                 }
@@ -620,7 +668,7 @@ public class URLAssist {
                 } else if (c == '&') {
                     if (findKey) {
                         if (buffer.length() > 0) {
-                            if (isNotMail(buffer)) {
+                            if (notContainEmail(buffer)) {
                                 sb.append(buffer);
                             }
 
@@ -643,7 +691,7 @@ public class URLAssist {
             }
 
             if (buffer.length() > 0) {
-                if (isNotMail(buffer)) {
+                if (notContainEmail(buffer)) {
                     sb.append(buffer);
                 }
 
@@ -651,18 +699,18 @@ public class URLAssist {
             }
         }
 
-        if (start <= end && path.charAt(start) == '#') {
-            sb.append(path.charAt(start));
+        if (start <= end && urlPath.charAt(start) == '#') {
+            sb.append(urlPath.charAt(start));
 
             start++;
             while (start <= end) {
-                buffer.append(path.charAt(start));
+                buffer.append(urlPath.charAt(start));
 
                 start++;
             }
 
             if (buffer.length() > 0) {
-                if (isNotMail(buffer)) {
+                if (notContainEmail(buffer)) {
                     sb.append(buffer);
                 }
 
@@ -671,52 +719,79 @@ public class URLAssist {
 
         }
 
-        return sb.toString();
+        int len = sb.length();
+        if (len == 0) {
+            return sb.toString();
+        } else {
+            // 最后去掉结尾带的/.&,#\字符
+            int cnt = 0;
+            for (int index = len - 1; index >= 0; index--) {
+                c = sb.charAt(index);
+                if (c == '/' || c == '.' || c == '&' || c == ',' || c == '#' || c == '\\') {
+                    cnt++;
+                } else {
+                    break;
+                }
+            }
+
+            sb.setLength(len - cnt);
+
+            return sb.toString();
+        }
     }
 
-    private static boolean isNotMail(StringBuilder buffer) {
-        String param = buffer.toString();
+    /**
+     * 
+     * @param buffer 内容长度大于0
+     * @return
+     */
+    private static boolean notContainEmail(StringBuilder buffer) {
 
-        Matcher matcher = MAIL_PATTERN.matcher(param);
-        if (param.contains("@") && matcher.find()) {
+        String content = buffer.toString();
+
+        Matcher matcher = MAIL_PATTERN.matcher(content);
+
+        if (content.contains("@") && matcher.find()) {
             return false;
         }
 
-        String decodeParam = new String(Base64.getDecoder().decode(param.getBytes()));
-        if (decodeParam.contains("@") && MAIL_PATTERN.matcher(decodeParam).matches()) {
-            return false;
+        try {
+            String decodeContent = new String(Base64.getDecoder().decode(content.getBytes(StandardCharsets.UTF_8)));
+            if (decodeContent.contains("@") && MAIL_PATTERN.matcher(decodeContent).matches()) {
+                return false;
+            }
+        } catch (Exception e) {
+            return true;
         }
 
         return true;
     }
 
-    public static String removeQueryAndTagFromUrlPath(String urlPath) {
+    public static boolean isStaticResource(String urlPath) {
         if (StringAssist.isBlank(urlPath)) {
-            return urlPath;
+            return false;
         }
 
-        int removePartStart = urlPath.length();
-
-        int queryPartStart = urlPath.indexOf("?");
-        int tagPartStart = urlPath.indexOf("#");
-
-        if (queryPartStart != -1) {
-            if (queryPartStart < removePartStart) {
-                removePartStart = queryPartStart;
-            }
+        if (urlPath.charAt(0) != '/') {
+            return false;
         }
 
-        if (tagPartStart != -1) {
-            if (tagPartStart < removePartStart) {
-                removePartStart = tagPartStart;
-            }
+        int end = urlPath.length() - 1;
+
+        int pos0 = urlPath.indexOf("?");
+        int pos1 = urlPath.indexOf("#");
+        if (pos0 != -1 && pos0 - 1 < end) {
+            end = pos0 - 1;
+        }
+        if (pos1 != -1 && pos1 - 1 < end) {
+            end = pos1 - 1;
+        }
+        int pos = urlPath.lastIndexOf(".", end);
+        if (pos == -1) {
+            return false;
         }
 
-        if (removePartStart == urlPath.length()) {
-            return urlPath;
-        } else {
-            return urlPath.substring(0, removePartStart);
-        }
+        return SUFFIX_SET.contains(urlPath.substring(pos + 1, end + 1).toLowerCase());
     }
 }
 

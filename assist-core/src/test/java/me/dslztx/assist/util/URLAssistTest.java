@@ -319,7 +319,7 @@ public class URLAssistTest {
     }
 
     @Test
-    public void parseTest() {
+    public void removeEmailFromUrlPathTest() {
         try {
             String s = "/urlpath/test@163.com/dGVzdEAxNjMuY29t?a=dGVzdEAxNjMuY29t&b=test@163.com#dGVzdEAxNjMuY29t";
             Assert.assertTrue(URLAssist.removeEmailFromUrlPath(s).equals("/urlpath//?a=&b="));

@@ -718,25 +718,28 @@ public class URLAssist {
 
         }
 
-        int len = sb.length();
-        if (len == 0) {
-            return sb.toString();
-        } else {
-            // 最后去掉结尾带的/.&,#\字符
-            int cnt = 0;
-            for (int index = len - 1; index >= 0; index--) {
-                c = sb.charAt(index);
-                if (c == '/' || c == '.' || c == '&' || c == ',' || c == '#' || c == '\\') {
-                    cnt++;
-                } else {
-                    break;
-                }
-            }
+        // int len = sb.length();
+        // if (len == 0) {
+        // return sb.toString();
+        // } else {
+        // // 最后去掉结尾带的/.&,#\字符
+        // int cnt = 0;
+        // for (int index = len - 1; index >= 0; index--) {
+        // c = sb.charAt(index);
+        // if (c == '/' || c == '.' || c == '&' || c == ',' || c == '#' || c == '\\') {
+        // cnt++;
+        // } else {
+        // break;
+        // }
+        // }
+        //
+        // sb.setLength(len - cnt);
+        //
+        // return sb.toString();
+        // }
 
-            sb.setLength(len - cnt);
-
-            return sb.toString();
-        }
+        // 上面去掉结尾带的/.&,#\字符，先注释掉不做。否则，会导致出现youtube.com/just@163.com -> youtube.com，易导致误判，youtube.com/相对来说风险小点
+        return sb.toString();
     }
 
     /**

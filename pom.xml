@@ -59,7 +59,7 @@
         <me.dslztx.kafka-client.version>2.4.1</me.dslztx.kafka-client.version>
         <me.dslztx.xz.version>1.6</me.dslztx.xz.version>
         <me.dslztx.mybatis.version>3.5.6</me.dslztx.mybatis.version>
-        <me.dslztx.spring.version>5.3.18</me.dslztx.spring.version>
+        <me.dslztx.spring.version>5.3.27</me.dslztx.spring.version>
         <me.dslztx.reflections.version>0.9.10</me.dslztx.reflections.version>
         <me.dslztx.influxdb.client.version>1.5</me.dslztx.influxdb.client.version>
         <me.dslztx.ac.algorithm.version>1.2.1</me.dslztx.ac.algorithm.version>

@@ -1,5 +1,7 @@
 package me.dslztx.assist.util;
 
+import java.io.BufferedReader;
+import java.net.IDN;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -8,13 +10,24 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.configuration2.Configuration;
 
+import com.hankcs.algorithm.AhoCorasickDoubleArrayTrie;
+
 import lombok.extern.slf4j.Slf4j;
+import me.dslztx.assist.util.domain.ParsedURLTuple;
 import me.dslztx.assist.util.domain.URLParseBean;
+import me.dslztx.assist.util.metric.TimerAssist;
 
 /**
  * URL RFC：https://datatracker.ietf.org/doc/html/rfc1738<br/>
  * <p>
+ * <p>
  * URI RFC：https://datatracker.ietf.org/doc/html/rfc3986#section-1.1.3<br/>
+ * <p>
+ * <p>
+ * https://data.iana.org/TLD/tlds-alpha-by-domain.txt：从此处可以获取最新完备的顶级域名列表<br/>
+ * TLD（Top Level Domain）中包括两部分： <br/>
+ * 1、常见的英文顶级域名，比如".com",".cn"<br/>
+ * 2、国际顶级域名（IDN，Internationalized Domain Name），包括中文顶级域名，文档中以Punycode编码格式存在，比如"XN--FIQS8S -> 中国","XN--J6W193G -> 香港"
  */
 @Slf4j
 public class URLAssist {
@@ -40,9 +53,20 @@ public class URLAssist {
     private static Pattern ipPattern = null;
     private static Pattern domainPattern = null;
     private static Pattern urlPattern = null;
+    private static Pattern urlChinesePattern = null;
     private static Pattern urlProtocols = null;
 
+    private static Set<String> englishTLDSet;
+    private static Set<String> chineseTLDSet;
+
+    private static AhoCorasickDoubleArrayTrie<String> chineseTLDAC;
+    private static AhoCorasickDoubleArrayTrie<String> englishTLDAC;
+
     static {
+        String pname = "init";
+
+        TimerAssist.timerStart(pname);
+
         loadPatternRegexFromFile();
 
         cnSubdomains.add("ac");
@@ -81,6 +105,10 @@ public class URLAssist {
         ILLEGAL_CHAR_MAP.put('。', '.');
 
         initSuffixSet();
+
+        TimerAssist.timerStop(pname);
+
+        log.info("URLAssist static init success, time cost {}", TimerAssist.timerValue(pname));
     }
 
     private static void initSuffixSet() {
@@ -103,24 +131,28 @@ public class URLAssist {
         SUFFIX_SET.add("gz");
     }
 
+    @Deprecated
     public static Pattern getIpPattern() {
         return ipPattern;
     }
 
+    @Deprecated
     public static Pattern getDomainPattern() {
         return domainPattern;
     }
 
+    @Deprecated
     public static Pattern getUrlPattern() {
         return urlPattern;
     }
 
+    @Deprecated
     public static Pattern getUrlProtocols() {
         return urlProtocols;
     }
 
     private static void loadPatternRegexFromFile() {
-        Configuration configuration = ConfigLoadAssist.propConfig("regex.list");
+        Configuration configuration = ConfigLoadAssist.propConfig("regex.list", "utf-8");
 
         if (ObjectAssist.isNull(configuration)) {
             throw new RuntimeException("no regex.list file in classpath");
@@ -149,10 +181,210 @@ public class URLAssist {
             throw new RuntimeException("no urlProtocol regex");
         }
         urlProtocols = Pattern.compile(urlProtocolRegex, Pattern.CASE_INSENSITIVE);
+
+        List<String> englishTLDList = new ArrayList<>();
+        List<String> chineseTLDList = new ArrayList<>();
+
+        loadEnglishAndChineseTLDList(englishTLDList, chineseTLDList);
+
+        englishTLDSet = new HashSet<>();
+        for (String englishTLD : englishTLDList) {
+            englishTLDSet.add("." + englishTLD);
+        }
+
+        chineseTLDSet = new HashSet<>();
+        for (String chineseTLD : chineseTLDList) {
+            chineseTLDSet.add("." + chineseTLD);
+        }
+
+        buildChineseTLDAC(chineseTLDList);
+        buildEnglishTLDAC(englishTLDList);
+
+        String urlChineseRegex = configuration.getString("url_chinese");
+        if (StringAssist.isBlank(urlChineseRegex)) {
+            throw new RuntimeException("no url_chinese regex");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String chineseTLD : chineseTLDList) {
+            sb.append(chineseTLD);
+            sb.append("|");
+        }
+
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+
+        urlChineseRegex = urlChineseRegex.replace("${1}", sb.toString());
+        urlChinesePattern = Pattern.compile(urlChineseRegex, Pattern.CASE_INSENSITIVE);
     }
 
-    public static void main(String[] args) {
-        System.out.println("hello");
+    private static void loadEnglishAndChineseTLDList(List<String> englishTLDList, List<String> chineseTLDList) {
+
+        BufferedReader in = null;
+        try {
+            in = IOAssist.bufferedReader(ClassPathResourceAssist.locateInputStream("tlds.txt"),
+                StandardCharsets.US_ASCII);
+
+            String line;
+
+            TextAssist.Language language;
+            String tld;
+
+            int englishTLDCnt = 0;
+            int idnTLDCnt = 0;
+            int chineseTLDCnt = 0;
+
+            while ((line = in.readLine()) != null) {
+                if (line.startsWith("#")) {
+                    continue;
+                }
+
+                tld = line;
+                if (line.startsWith("XN--")) {
+                    idnTLDCnt++;
+
+                    tld = IDN.toUnicode(line);
+                    language = TextAssist.guessLanguage(tld);
+
+                    if (language == TextAssist.Language.CHINESE) {
+                        chineseTLDCnt++;
+
+                        chineseTLDList.add(tld);
+                    }
+                } else {
+                    englishTLDCnt++;
+
+                    englishTLDList.add(tld.toLowerCase());
+                }
+            }
+
+            log.info("load english and chinese tld list success, tld number stat [english-{}, idn-{}, chinese-{}]",
+                englishTLDCnt, idnTLDCnt, chineseTLDCnt);
+
+        } catch (Exception e) {
+            log.error("load english and chinese tld list fail", e);
+
+            throw new RuntimeException("", e);
+        } finally {
+            CloseableAssist.closeQuietly(in);
+        }
+    }
+
+    private static void buildEnglishTLDAC(List<String> englishTLDList) {
+        Map<String, String> kwMap = new HashMap<>();
+
+        String kw;
+        for (String englishTLD : englishTLDList) {
+            kw = "." + englishTLD;
+            kwMap.put(kw, kw);
+        }
+
+        englishTLDAC = new AhoCorasickDoubleArrayTrie<String>();
+        englishTLDAC.build(kwMap);
+    }
+
+    private static void buildChineseTLDAC(List<String> chineseTLDList) {
+        Map<String, String> kwMap = new HashMap<>();
+
+        String kw;
+        for (String chineseTLD : chineseTLDList) {
+            kw = "." + chineseTLD;
+            kwMap.put(kw, kw);
+        }
+
+        chineseTLDAC = new AhoCorasickDoubleArrayTrie<String>();
+        chineseTLDAC.build(kwMap);
+    }
+
+    /**
+     * 完备情况说明：考虑了"英语.英语顶级域名"和"英语/中文.中文顶级域名"，暂时未考虑"中文.英语顶级域名"
+     *
+     * @param content
+     * @return
+     */
+    public static List<ParsedURLTuple> parseUrlFromContent(String content) {
+
+        List<ParsedURLTuple> result = new ArrayList<>();
+
+        if (StringAssist.isBlank(content)) {
+            return result;
+        }
+
+        List<ParsedURLTuple> tmp = null;
+
+        tmp = parseEnglishUrl0(content);
+        if (CollectionAssist.isNotEmpty(tmp)) {
+            result.addAll(tmp);
+        }
+
+        tmp = parseChineseUrl0(content);
+        if (CollectionAssist.isNotEmpty(tmp)) {
+            result.addAll(tmp);
+        }
+
+        return result;
+    }
+
+    /**
+     * 针对"英文/中文.中文顶级域名"情形：<br/>
+     * 1、通过中文顶级域名的AC自动机进行剪枝<br/>
+     * 2、对于正则表达式中的中文顶级域名匹配部分，"(\.[\u4e00-\u9fa5\w-]{2,})" vs
+     * "(\.(佛山|慈善|集团|在线|点看|八卦|公益|公司|香格里拉|网站|移动|我爱你|联通|时尚|微博|淡马锡|商标|商店|商城|新闻|家電|中文网|中信|中国|中國|娱乐|谷歌|電訊盈科|购物|通販|网店|餐厅|网络|香港|亚马逊|食品|飞利浦|台湾|台灣|手机|澳門|政府|机构|组织机构|健康|招聘|大拿|世界|書籍|网址|天主教|游戏|企业|信息|嘉里大酒店|嘉里|广东|新加坡|政务))"：前者字符类范围过广，后者虽然每次需要匹配59次，但是相对前者性能优，选用后者<br/>
+     * 3、中文顶级域名后置验证：1）步骤2中如果选用前者，那么需要后置验证；2）步骤2中如果选用后者，那么无需后置验证<br/>
+     * <br/>
+     * <br/>
+     * 对于形如"(a|b|c|d|e)"正则表达式的匹配过程，详见Pattern内部类Branch的match方法<br/>
+     * 
+     * @param content
+     * @return
+     */
+    protected static List<ParsedURLTuple> parseChineseUrl0(String content) {
+
+        List<AhoCorasickDoubleArrayTrie.Hit<String>> hits = chineseTLDAC.parseText(content);
+
+        if (CollectionAssist.isEmpty(hits)) {
+            return null;
+        }
+
+        List<ParsedURLTuple> result = new ArrayList<>();
+
+        Matcher matcher = urlChinesePattern.matcher(content);
+
+        while (matcher.find()) {
+            result.add(new ParsedURLTuple(matcher.group(0), matcher.group(1), matcher.group(5), matcher.start(),
+                matcher.end()));
+        }
+        return result;
+    }
+
+    /**
+     * 针对"英文.英文顶级域名"情形：<br/>
+     * 1、通过英文顶级域名的AC自动机进行剪枝：需要注意AC自动机是区分大小写的<br/>
+     * 2、对于正则表达式中的英文顶级域名匹配部分，"(\.[\w-]{2,})" vs
+     * "(\.(com|cn|tw|ua|...总共1000多个))"：前者字符类范围相对不广，后者每次需要匹配1000多次，相对前者性能差，选用前者<br/>
+     * 3、英文顶级域名后置验证：1）步骤2中如果选用前者，那么需要后置验证；2）步骤2中如果选用后者，那么无需后置验证<br/>
+     *
+     * @param content
+     * @return
+     */
+    protected static List<ParsedURLTuple> parseEnglishUrl0(String content) {
+        List<AhoCorasickDoubleArrayTrie.Hit<String>> hits = englishTLDAC.parseText(content.toLowerCase());
+
+        if (CollectionAssist.isEmpty(hits)) {
+            return null;
+        }
+
+        List<ParsedURLTuple> result = new ArrayList<>();
+
+        Matcher matcher = urlPattern.matcher(content);
+
+        while (matcher.find()) {
+            if (englishTLDSet.contains(matcher.group(5).toLowerCase())) {
+                result.add(new ParsedURLTuple(matcher.group(0), matcher.group(1), matcher.group(5), matcher.start(),
+                    matcher.end()));
+            }
+        }
+        return result;
     }
 
     public static boolean isLegalURL(String url) {
@@ -160,7 +392,41 @@ public class URLAssist {
             return false;
         }
 
-        return urlPattern.matcher(url).matches();
+        return isLegalEnglishUrl0(url) || isLegalChineseUrl0(url);
+    }
+
+    protected static boolean isLegalEnglishUrl0(String url) {
+
+        if (CollectionAssist.isEmpty(englishTLDAC.parseText(url.toLowerCase()))) {
+            return false;
+        }
+
+        Matcher matcher = urlPattern.matcher(url);
+
+        if (!matcher.matches()) {
+            return false;
+        }
+
+        if (!englishTLDSet.contains(matcher.group(5).toLowerCase())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected static boolean isLegalChineseUrl0(String url) {
+
+        if (CollectionAssist.isEmpty(chineseTLDAC.parseText(url))) {
+            return false;
+        }
+
+        Matcher matcher = urlChinesePattern.matcher(url);
+
+        if (!matcher.matches()) {
+            return false;
+        }
+
+        return true;
     }
 
     public static String removeProtocol(String url) {

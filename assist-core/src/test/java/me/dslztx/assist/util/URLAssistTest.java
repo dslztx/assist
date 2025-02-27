@@ -1,5 +1,6 @@
 package me.dslztx.assist.util;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.dslztx.assist.util.domain.ParsedURLTuple;
 import me.dslztx.assist.util.domain.URLParseBean;
 
 public class URLAssistTest {
@@ -48,6 +50,15 @@ public class URLAssistTest {
 
             String url5 = "163.com";
             Assert.assertTrue(URLAssist.isLegalURL(url5));
+
+            Assert.assertTrue(URLAssist.isLegalURL("蜜雪冰城.网址"));
+            Assert.assertTrue(URLAssist.isLegalURL("www.163.com"));
+            Assert.assertFalse(URLAssist.isLegalURL("www.163.comm"));
+            Assert.assertFalse(URLAssist.isLegalURL("蜜雪冰城.网址址"));
+            Assert.assertTrue(URLAssist.isLegalURL("www.163.Com"));
+            Assert.assertTrue(URLAssist.isLegalURL("www.163.CoM"));
+            Assert.assertTrue(URLAssist.isLegalURL("www.163.COM"));
+
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
@@ -344,4 +355,65 @@ public class URLAssistTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void parseUrlFromContentTest() {
+        try {
+            String content = "网络办公.中国夜風凜凜 獨回望舊事前塵\n" + "是以往的我充滿怒憤http://www.baidu.COM\n" + "誣告與指責 積壓着滿肚氣不憤\n"
+                + "對謠言反應甚為着緊\n" + "受了教訓 得了書經的指引\n" + "現已看得透不再自困\n" + "但覺有分數 不再像以往那般笨\n" + "抹淚痕輕快笑着行www.163.com\n"
+                + "冥冥中都早註定你富或貧\n" + "是錯永不對真永是真\n" + "任你怎説安守我本份yeah.Cn\n" + "始終相信沉默是金\n" + "是非有公理 慎言莫冒犯別人\n"
+                + "遇上冷風雨休太認真\n" + "自信滿心裏 休理會諷刺與質問\n" + "笑罵由人 灑脱地做人\n" + "受了教訓 得了書經的指引\n" + "現已看得透不再自困\n"
+                + "但覺有分數 不再像以往那般笨\n" + "抹淚痕輕快笑着行\n" + "冥冥中都早註定你富或貧google.com:8080/china\n" + "是錯永不對真永是真：https://台湾"
+                + ".電訊盈科RFC\n" + "任你怎説安守我本份\n" + "始終相信沉默是金。蜜雪冰城.网址。优衣库中国.网址。屈臣氏.网址";
+
+            List<ParsedURLTuple> result = URLAssist.parseUrlFromContent(content);
+
+            Assert.assertTrue("http://www.baidu.COM".equals(result.get(0).getUrl()));
+            Assert.assertTrue("www.163.com".equals(result.get(1).getUrl()));
+            Assert.assertTrue("yeah.Cn".equals(result.get(2).getUrl()));
+            Assert.assertTrue("google.com:8080/china".equals(result.get(3).getUrl()));
+            Assert.assertTrue("网络办公.中国".equals(result.get(4).getUrl()));
+            Assert.assertTrue("https://台湾.電訊盈科".equals(result.get(5).getUrl()));
+            Assert.assertTrue("蜜雪冰城.网址".equals(result.get(6).getUrl()));
+            Assert.assertTrue("优衣库中国.网址".equals(result.get(7).getUrl()));
+            Assert.assertTrue("屈臣氏.网址".equals(result.get(8).getUrl()));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void parseUrlFromContentTest1() {
+        try {
+            Assert.assertTrue(URLAssist.parseUrlFromContent("http://www.baidu.comm").size() == 0);
+            Assert.assertTrue(URLAssist.parseUrlFromContent("网络办公.中国国").get(0).getUrl().equals("网络办公.中国"));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void parseUrlFromContentTest2() {
+        try {
+            Assert.assertTrue(URLAssist.parseUrlFromContent("http://www.baidu.COM，这是一段测试文本").get(0).getUrl()
+                .equals("http://www.baidu.COM"));
+
+            Assert.assertTrue(URLAssist.parseUrlFromContent("http://www.baidu.COMM，这是一段测试文本").size() == 0);
+
+            // baidu竟然也是个顶级域名
+            Assert.assertTrue(URLAssist.parseUrlFromContent("http://www.baidu.C，这是一段测试文本").get(0).getUrl()
+                .equals("http://www.baidu"));
+
+            Assert.assertTrue(URLAssist.parseUrlFromContent("http://www.baidu.com.cn，这是一段测试文本").get(0).getUrl()
+                .equals("http://www.baidu.com.cn"));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
 }

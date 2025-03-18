@@ -60,4 +60,15 @@ public class CharAssist {
     public static boolean isEnglishPunctuation(char c) {
         return (c >= 32 && c <= 47) || (c >= 58 && c <= 64) || (c >= 91 && c <= 96) || (c >= 123 && c <= 126);
     }
+
+    public static boolean isControlChar(char c) {
+        int type = Character.getType(c);
+
+        if (type == 15 || type == 16) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

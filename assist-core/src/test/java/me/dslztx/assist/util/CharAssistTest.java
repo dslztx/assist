@@ -2,6 +2,7 @@ package me.dslztx.assist.util;
 
 import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,6 +117,24 @@ public class CharAssistTest {
         } catch (Exception e) {
             logger.error("", e);
             fail();
+        }
+    }
+
+    @Test
+    public void isControlCharTest() {
+        try {
+
+            Assert.assertTrue(CharAssist.isControlChar((char)0x202e));
+            Assert.assertTrue(CharAssist.isControlChar((char)0x1f));
+            Assert.assertTrue(CharAssist.isControlChar((char)0xfeff));
+            Assert.assertTrue(CharAssist.isControlChar((char)0x200f));
+            Assert.assertTrue(CharAssist.isControlChar((char)0x00ad));
+            Assert.assertTrue(CharAssist.isControlChar((char)0x200b));
+
+            Assert.assertFalse(CharAssist.isControlChar((char)0x6004));
+
+        } catch (Exception e) {
+            logger.error("", e);
         }
     }
 }

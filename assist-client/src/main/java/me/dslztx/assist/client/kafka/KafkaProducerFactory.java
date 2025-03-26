@@ -54,8 +54,8 @@ public class KafkaProducerFactory {
                         props.put(ProducerConfig.RETRIES_CONFIG, 3);
                         props.put(ProducerConfig.BATCH_SIZE_CONFIG, 5 * 1024 * 1024);
                         props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
-                        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 100 * 1024 * 1024);
-                        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 100 * 1024 * 1024);
+                        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 300 * 1024 * 1024);
+                        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 300 * 1024 * 1024);
                         props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
                         props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,
                             "org.apache.kafka.clients.producer.RoundRobinPartitioner");

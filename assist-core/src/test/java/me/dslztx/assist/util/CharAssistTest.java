@@ -133,6 +133,22 @@ public class CharAssistTest {
 
             Assert.assertFalse(CharAssist.isControlChar((char)0x6004));
 
+
+            String s = "𝗷𝕫𝘅𝕫119.𝗰𝗻";
+
+            char c;
+//            System.out.println(s.length());
+
+
+            System.out.println(s.codePointAt(0));
+
+            System.out.println(s.charAt(0));
+
+            for(int index=0;index<s.length();index++){
+                c = s.charAt(index);
+
+                System.out.println(Character.getType(c));
+            }
         } catch (Exception e) {
             logger.error("", e);
         }

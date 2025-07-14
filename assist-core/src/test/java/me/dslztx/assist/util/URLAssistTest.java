@@ -416,4 +416,29 @@ public class URLAssistTest {
         }
     }
 
+    @Test
+    public void normalizeTest() {
+        try {
+            Assert.assertTrue("https://safagrp.sbs/bc/wv&&&"
+                .equals(URLAssist.normalizeURL("https://\u00AD\u200Bs\u00AD\u200Ba" + "\u00AD\u200Bf\u00AD\u200Ba\u00AD"
+                    + "\u200Bg\u00AD" + "\u200Br\u00AD\u200Bp.s\u00AD\u200Bb\u00AD\u200Bs/bc/wv&&&")));
+
+            Assert
+                .assertTrue("http://fjdh3u8.cn".equalsIgnoreCase(URLAssist.normalizeURL("http://𝗳𝐣𝚍𝐡𝟛𝖚𝟪.𝖈𝙣")));
+            Assert.assertTrue(
+                "http://vwqeupijoxnena.cn".equals(URLAssist.normalizeURL("http://𝘃𝒘𝚚𝚎𝓾𝒑𝗶𝒿ℴ𝕩𝖓𝗲𝓃𝚊.𝓬𝓃")));
+            Assert.assertTrue("http://o5zh74v.cn".equals(URLAssist.normalizeURL("http://𝓸𝟧𝔃𝒉𝟳𝟰𝐯.𝙘𝙣")));
+            Assert.assertTrue("http://iollu24.cn".equals(URLAssist.normalizeURL("http://𝖎𝐨𝐥𝒍𝓾𝟚𝟜.𝕔𝕟")));
+            Assert.assertTrue("http://iollu24.cn".equals(URLAssist.normalizeURL("http://𝒊𝗼𝙡𝐥𝙪2𝟦.𝒄𝗻")));
+            Assert.assertTrue("http://o5zh74v.cn".equals(URLAssist.normalizeURL("http://𝐨𝟓𝚣𝗵74𝓋.𝚌𝖓")));
+
+            String[] ss = new String[] {"http://𝗳𝐣𝚍𝐡𝟛𝖚𝟪.𝖈𝙣", "http://𝘃𝒘𝚚𝚎𝓾𝒑𝗶𝒿ℴ𝕩𝖓𝗲𝓃𝚊.𝓬𝓃",
+                "http://𝓸𝟧𝔃𝒉𝟳𝟰𝐯.𝙘𝙣", "http://𝖎𝐨𝐥𝒍𝓾𝟚𝟜.𝕔𝕟", "http://𝒊𝗼𝙡𝐥𝙪2𝟦.𝒄𝗻",
+                "http://𝐨𝟓𝚣𝗵74𝓋.𝚌𝖓"};
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
 }

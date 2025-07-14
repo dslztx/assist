@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.net.IDN;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1067,6 +1068,38 @@ public class URLAssist {
 
         return SUFFIX_SET.contains(urlPath.substring(pos + 1, end + 1).toLowerCase());
     }
+
+    public static String normalizeURL(String url) {
+        if (StringAssist.isBlank(url)) {
+            return url;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        char c;
+        for (int index = 0; index < url.length(); index++) {
+
+            c = url.charAt(index);
+
+            if (Character.getType(c) == 16) {
+                // Characater#FORMAT
+                continue;
+            }
+
+            sb.append(c);
+        }
+
+        url = sb.toString();
+
+        try {
+            // 两个16字节的字符
+            return Normalizer.normalize(url, Normalizer.Form.NFKC);
+        } catch (Exception e) {
+            log.warn("", e);
+
+            return url;
+        }
+    }
+
 }
 
 class URLPart {

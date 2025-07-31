@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -64,4 +65,60 @@ public class RedisServiceTest {
             fail();
         }
     }
+
+    @Test
+    @Order(2)
+    public void loadLuaScriptTest() {
+        try {
+
+            RedisFutureProxy<String> proxy = RedisService.luaScriptLoadAsync("in",
+                "local current = redis.call('INCR', KEYS[1]); redis.call('EXPIRE', KEYS[1], 86400); return current;");
+
+            String luaScriptSHA = proxy.get(30, TimeUnit.SECONDS);
+
+            Assertions.assertTrue("6527aefefb661192b731a580865cd01d5731a4ca".equals(luaScriptSHA));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Order(3)
+    public void luaScriptSHAExistTest() {
+        try {
+
+            RedisFutureProxy<List<Boolean>> proxy =
+                RedisService.luaScriptSHAExistAsync("in", "6527aefefb661192b731a580865cd01d5731a4ca", "notexistsha");
+
+            List<Boolean> valueList = proxy.get(50, TimeUnit.SECONDS);
+
+            Assertions.assertTrue(Boolean.TRUE.equals(valueList.get(0)));
+            Assertions.assertTrue(Boolean.FALSE.equals(valueList.get(1)));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Order(4)
+    public void evalLuaScriptSHASingleKeyLongResultTest() {
+        try {
+
+            RedisFutureProxy<Long> proxy = RedisService.evalLuaScriptSHASingleKeyLongResultAsync("in",
+                "6527aefefb661192b731a580865cd01d5731a4ca", "lmhtest");
+
+            Long value = proxy.get(50, TimeUnit.SECONDS);
+
+            Assertions.assertTrue(value > 0);
+
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
 }

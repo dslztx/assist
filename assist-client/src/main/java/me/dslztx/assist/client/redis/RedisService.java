@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lambdaworks.redis.RedisFuture;
+import com.lambdaworks.redis.ScriptOutputType;
 import com.lambdaworks.redis.cluster.api.async.RedisClusterAsyncCommands;
 
 import me.dslztx.assist.algorithm.loadbalance.AbstractLoadBalancer;
@@ -341,6 +342,97 @@ public class RedisService {
         RedisFuture<Long> result = client.getRedisAsyncConnection().exists(keys);
 
         return new RedisFutureProxy<Long>(result, client);
+    }
+
+    /**
+     * @param redisClusterName
+     * @param luaScriptSHA
+     * @param key
+     * @return Lua脚本执行结果值（这个方法是返回Long值）
+     */
+    public static RedisFutureProxy<Long> evalLuaScriptSHASingleKeyLongResultAsync(String redisClusterName,
+        String luaScriptSHA, String key) {
+
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(luaScriptSHA)) {
+            throw new RuntimeException("lua script sha is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        // ScriptOutputType.INTEGER: Expects a Redis integer reply to be converted to a Java Long.
+        // Redis中的Integer就对应Java中的Long类型
+        RedisFuture<Long> result =
+            client.getRedisAsyncConnection().evalsha(luaScriptSHA, ScriptOutputType.INTEGER, key);
+
+        return new RedisFutureProxy<Long>(result, client);
+    }
+
+    /**
+     * @param redisClusterName
+     * @param luaScriptSHAs
+     * @return SHA对应的Lua脚本是否存在
+     */
+    public static RedisFutureProxy<List<Boolean>> luaScriptSHAExistAsync(String redisClusterName,
+        String... luaScriptSHAs) {
+
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (ArrayAssist.isEmpty(luaScriptSHAs)) {
+            throw new RuntimeException("lua script shas is empty");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<List<Boolean>> result = client.getRedisAsyncConnection().scriptExists(luaScriptSHAs);
+
+        return new RedisFutureProxy<List<Boolean>>(result, client);
+    }
+
+    /**
+     * @param redisClusterName
+     * @param luaScript
+     * @return Lua脚本的SHA值
+     */
+    public static RedisFutureProxy<String> luaScriptLoadAsync(String redisClusterName, String luaScript) {
+
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(luaScript)) {
+            throw new RuntimeException("lua script is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<String> result = client.getRedisAsyncConnection().scriptLoad(luaScript);
+
+        return new RedisFutureProxy<String>(result, client);
     }
 
     public static List<String> mgetSync(String redisClusterName, String... keys) {

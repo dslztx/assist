@@ -345,6 +345,78 @@ public class RedisService {
     }
 
     /**
+     * 根据Key路由到一个Redis节点：<br/>
+     * 1）在该节点执行Lua脚本<br/>
+     * 2）在该节点缓存Lua脚本<br/>
+     * 
+     * @param redisClusterName
+     * @param luaScript
+     * @param key
+     * @return Lua脚本执行结果值（这个方法是返回Long值）
+     */
+    public static RedisFutureProxy<Long> evalLuaScriptSingleKeyLongResultAsync(String redisClusterName,
+        String luaScript, String key) {
+
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(luaScript)) {
+            throw new RuntimeException("lua script is blank");
+        }
+
+        if (StringAssist.isBlank(key)) {
+            throw new RuntimeException("key is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        // ScriptOutputType.INTEGER: Expects a Redis integer reply to be converted to a Java Long.
+        // Redis中的Integer就对应Java中的Long类型
+        RedisFuture<Long> result = client.getRedisAsyncConnection().eval(luaScript, ScriptOutputType.INTEGER, key);
+
+        return new RedisFutureProxy<Long>(result, client);
+    }
+
+    /**
+     * 在Redis集群所有节点缓存Lua脚本
+     * 
+     * @param redisClusterName
+     * @param luaScript
+     * @return Lua脚本的SHA值
+     */
+    public static RedisFutureProxy<String> luaScriptLoadAsync(String redisClusterName, String luaScript) {
+
+        if (StringAssist.isBlank(redisClusterName)) {
+            throw new RuntimeException("redisClusterName is blank");
+        }
+
+        if (StringAssist.isBlank(luaScript)) {
+            throw new RuntimeException("lua script is blank");
+        }
+
+        LettuceAsyncClientProxy client =
+            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
+
+        if (ObjectAssist.isNull(client)) {
+            throw new RuntimeException("no redis client");
+        }
+
+        RedisFuture<String> result = client.getRedisAsyncConnection().scriptLoad(luaScript);
+
+        return new RedisFutureProxy<String>(result, client);
+    }
+
+    /**
+     * 执行缓存的Lua脚本，须确保key所对应的Redis节点的确缓存有相应的Lua脚本，否则会报以下错误：<br/>
+     * java.util.concurrent.ExecutionException: com.lambdaworks.redis.RedisNoScriptException: NOSCRIPT No matching
+     * script. Please use EVAL.
+     * 
      * @param redisClusterName
      * @param luaScriptSHA
      * @param key
@@ -381,9 +453,11 @@ public class RedisService {
     }
 
     /**
+     * 随机选择一个Redis节点，判断相应的Lua脚本在该节点是否被缓存
+     * 
      * @param redisClusterName
      * @param luaScriptSHAs
-     * @return SHA对应的Lua脚本是否存在
+     * @return SHA对应的Lua脚本是否被缓存
      */
     public static RedisFutureProxy<List<Boolean>> luaScriptSHAExistAsync(String redisClusterName,
         String... luaScriptSHAs) {
@@ -406,33 +480,6 @@ public class RedisService {
         RedisFuture<List<Boolean>> result = client.getRedisAsyncConnection().scriptExists(luaScriptSHAs);
 
         return new RedisFutureProxy<List<Boolean>>(result, client);
-    }
-
-    /**
-     * @param redisClusterName
-     * @param luaScript
-     * @return Lua脚本的SHA值
-     */
-    public static RedisFutureProxy<String> luaScriptLoadAsync(String redisClusterName, String luaScript) {
-
-        if (StringAssist.isBlank(redisClusterName)) {
-            throw new RuntimeException("redisClusterName is blank");
-        }
-
-        if (StringAssist.isBlank(luaScript)) {
-            throw new RuntimeException("lua script is blank");
-        }
-
-        LettuceAsyncClientProxy client =
-            loadBalancer.select(LettuceAsyncClientFactory.obtainRedisClient(redisClusterName));
-
-        if (ObjectAssist.isNull(client)) {
-            throw new RuntimeException("no redis client");
-        }
-
-        RedisFuture<String> result = client.getRedisAsyncConnection().scriptLoad(luaScript);
-
-        return new RedisFutureProxy<String>(result, client);
     }
 
     public static List<String> mgetSync(String redisClusterName, String... keys) {

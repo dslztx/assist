@@ -68,6 +68,26 @@ public class RedisServiceTest {
 
     @Test
     @Order(2)
+    public void evalLuaScriptSingleKeyLongResultTest() {
+        try {
+
+            RedisFutureProxy<Long> proxy = RedisService.evalLuaScriptSingleKeyLongResultAsync("in",
+                "local current = redis.call('INCR', KEYS[1]); redis.call('EXPIRE', KEYS[1], 86400); return "
+                    + "current;",
+                "lmhtest");
+
+            long value = proxy.get(30, TimeUnit.SECONDS);
+
+            Assertions.assertTrue(value >= 1);
+
+        } catch (Exception e) {
+            logger.error("", e);
+            fail();
+        }
+    }
+
+    @Test
+    @Order(3)
     public void loadLuaScriptTest() {
         try {
 
@@ -85,17 +105,16 @@ public class RedisServiceTest {
     }
 
     @Test
-    @Order(3)
-    public void luaScriptSHAExistTest() {
+    @Order(4)
+    public void evalLuaScriptSHASingleKeyLongResultTest() {
         try {
 
-            RedisFutureProxy<List<Boolean>> proxy =
-                RedisService.luaScriptSHAExistAsync("in", "6527aefefb661192b731a580865cd01d5731a4ca", "notexistsha");
+            RedisFutureProxy<Long> proxy = RedisService.evalLuaScriptSHASingleKeyLongResultAsync("in",
+                "6527aefefb661192b731a580865cd01d5731a4ca", "lmhtest");
 
-            List<Boolean> valueList = proxy.get(50, TimeUnit.SECONDS);
+            Long value = proxy.get(30, TimeUnit.SECONDS);
 
-            Assertions.assertTrue(Boolean.TRUE.equals(valueList.get(0)));
-            Assertions.assertTrue(Boolean.FALSE.equals(valueList.get(1)));
+            Assertions.assertTrue(value >= 2);
 
         } catch (Exception e) {
             logger.error("", e);
@@ -104,16 +123,17 @@ public class RedisServiceTest {
     }
 
     @Test
-    @Order(4)
-    public void evalLuaScriptSHASingleKeyLongResultTest() {
+    @Order(5)
+    public void luaScriptSHAExistTest() {
         try {
 
-            RedisFutureProxy<Long> proxy = RedisService.evalLuaScriptSHASingleKeyLongResultAsync("in",
-                "6527aefefb661192b731a580865cd01d5731a4ca", "lmhtest");
+            RedisFutureProxy<List<Boolean>> proxy =
+                RedisService.luaScriptSHAExistAsync("in", "6527aefefb661192b731a580865cd01d5731a4ca", "notexistsha");
 
-            Long value = proxy.get(50, TimeUnit.SECONDS);
+            List<Boolean> valueList = proxy.get(30, TimeUnit.SECONDS);
 
-            Assertions.assertTrue(value > 0);
+            Assertions.assertTrue(Boolean.TRUE.equals(valueList.get(0)));
+            Assertions.assertTrue(Boolean.FALSE.equals(valueList.get(1)));
 
         } catch (Exception e) {
             logger.error("", e);

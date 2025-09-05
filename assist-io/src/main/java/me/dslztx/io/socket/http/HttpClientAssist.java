@@ -44,6 +44,7 @@ public class HttpClientAssist {
         CloseableHttpResponse response = null;
 
         try {
+            // Apache HttpClient 4.x中，以下方式创建默认无限期等待
             httpClient = HttpClients.createDefault();
 
             httpPost = new HttpPost(url);

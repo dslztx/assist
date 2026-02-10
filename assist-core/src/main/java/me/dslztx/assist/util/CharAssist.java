@@ -1,5 +1,7 @@
 package me.dslztx.assist.util;
 
+import java.util.stream.Collectors;
+
 /**
  * @author dslztx
  */
@@ -69,6 +71,54 @@ public class CharAssist {
         }
 
         return false;
+    }
+
+    /**
+     * 移除字符串中的所有不可见字符（控制字符、零宽字符等）
+     *
+     * @param input 待处理的原始字符串
+     * @return 移除不可见字符后的新字符串（null/空字符串返回原内容）
+     */
+    public static String removeInvisibleCharacters(String input) {
+        // 处理空值和空字符串，避免空指针
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        // 遍历字符串的每个码点，过滤不可见字符后拼接
+        return input.codePoints().filter(codePoint -> isVisibleCharacter(codePoint))
+            .mapToObj(codePoint -> new String(Character.toChars(codePoint))).collect(Collectors.joining());
+    }
+
+    /**
+     * 判断单个 Unicode 码点是否为可见字符
+     *
+     * @param codePoint 字符的 Unicode 码点
+     * @return true=可见，false=不可见
+     */
+    private static boolean isVisibleCharacter(int codePoint) {
+        // 排除空白字符（空格、制表符、换行、回车等）
+        // if (Character.isWhitespace(codePoint)) {
+        // return false;
+        // }
+        // 空白字符属于可见字符
+
+        // 排除控制字符（如 \0、\b 等）
+        if (Character.isISOControl(codePoint)) {
+            return false;
+        }
+
+        // 补充排除常见的零宽字符（零宽空格、零宽非连接符、零宽连接符）
+        switch (codePoint) {
+            case 0x200B: // 零宽空格 (ZWSP)
+            case 0x200C: // 零宽非连接符 (ZWNJ)
+            case 0x200D: // 零宽连接符 (ZWJ)
+            case 0xFEFF: // 字节顺序标记 (BOM)
+                return false;
+            default:
+                // 其余字符判定为可见（包括字母、数字、符号、Emoji、汉字等）
+                return true;
+        }
     }
 
 }

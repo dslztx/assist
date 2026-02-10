@@ -133,24 +133,45 @@ public class CharAssistTest {
 
             Assert.assertFalse(CharAssist.isControlChar((char)0x6004));
 
-
             String s = "𝗷𝕫𝘅𝕫119.𝗰𝗻";
 
             char c;
-//            System.out.println(s.length());
-
+            // System.out.println(s.length());
 
             System.out.println(s.codePointAt(0));
 
             System.out.println(s.charAt(0));
 
-            for(int index=0;index<s.length();index++){
+            for (int index = 0; index < s.length(); index++) {
                 c = s.charAt(index);
 
                 System.out.println(Character.getType(c));
             }
         } catch (Exception e) {
             logger.error("", e);
+        }
+    }
+
+    @Test
+    public void removeInvisibleCharactersTest() {
+        try {
+
+            Assert.assertTrue("".equals(CharAssist.removeInvisibleCharacters("")));
+            Assert.assertNull(CharAssist.removeInvisibleCharacters(null));
+
+            Assert.assertTrue("hello".equals(CharAssist.removeInvisibleCharacters("hello")));
+
+            Assert.assertTrue("".equals(CharAssist.removeInvisibleCharacters("\r\n\t")));
+
+            Assert.assertTrue("hello".equals(CharAssist.removeInvisibleCharacters("he\r\nllo\r\b\u001f\u008f")));
+
+            Assert.assertTrue("hello".equals(CharAssist.removeInvisibleCharacters("he\u200Bllo\u200C\u200D\uFEFF")));
+
+            Assert.assertTrue("hello\u200E".equals(CharAssist.removeInvisibleCharacters("hello\u200E")));
+
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
         }
     }
 }

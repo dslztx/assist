@@ -86,39 +86,60 @@ public class CharAssist {
         }
 
         // 遍历字符串的每个码点，过滤不可见字符后拼接
-        return input.codePoints().filter(codePoint -> isVisibleCharacter(codePoint))
+        return input.codePoints().filter(codePoint -> !isInvisibleCharacter(codePoint))
             .mapToObj(codePoint -> new String(Character.toChars(codePoint))).collect(Collectors.joining());
     }
 
     /**
-     * 判断单个 Unicode 码点是否为可见字符
+     * 字符串中是否存在不可见字符
      *
-     * @param codePoint 字符的 Unicode 码点
-     * @return true=可见，false=不可见
+     * @param input
+     * @return
      */
-    private static boolean isVisibleCharacter(int codePoint) {
-        // 排除空白字符（空格、制表符、换行、回车等）
-        // if (Character.isWhitespace(codePoint)) {
-        // return false;
-        // }
-        // 空白字符属于可见字符
+    public static boolean existInvisibleCharacter(String input) {
 
-        // 排除控制字符（如 \0、\b 等）
-        if (Character.isISOControl(codePoint)) {
+        // 处理空值和空字符串，避免空指针
+        if (input == null || input.isEmpty()) {
             return false;
         }
 
-        // 补充排除常见的零宽字符（零宽空格、零宽非连接符、零宽连接符）
-        switch (codePoint) {
-            case 0x200B: // 零宽空格 (ZWSP)
-            case 0x200C: // 零宽非连接符 (ZWNJ)
-            case 0x200D: // 零宽连接符 (ZWJ)
-            case 0xFEFF: // 字节顺序标记 (BOM)
-                return false;
-            default:
-                // 其余字符判定为可见（包括字母、数字、符号、Emoji、汉字等）
+        int[] strCodePointArray = input.codePoints().toArray();
+
+        for (int charCodePoint : strCodePointArray) {
+            if (isInvisibleCharacter(charCodePoint)) {
                 return true;
+            }
         }
+        return false;
+    }
+
+    /**
+     * 判断单个 Unicode 码点是否为不可见字符
+     *
+     * @param codePoint 字符的 Unicode 码点
+     * @return true=不可见，false=可见
+     */
+    protected static boolean isInvisibleCharacter(int codePoint) {
+        // 排除空白字符（空格、制表符、换行、回车等）
+        // if (Character.isWhitespace(codePoint)) {
+        // return true;
+        // }
+        // 空白字符属于可见字符
+
+        // 1. 格式控制字符（Unicode类别：Cf）
+        if (Character.getType(codePoint) == Character.FORMAT) {
+            return true;
+        }
+
+        // 排除控制字符（如 \0、\b 等）
+        if (Character.isISOControl(codePoint)) {
+            return true;
+        }
+
+        // 3. 其他常见不可见字符（补充判断，防止遗漏）
+        // 零宽字符范围：U+2000~U+200F、U+2028~U+202F、U+2060~U+206F 等
+        return (codePoint >= 0x2000 && codePoint <= 0x200F) || (codePoint >= 0x2028 && codePoint <= 0x202F)
+            || (codePoint >= 0x2060 && codePoint <= 0x206F) || (codePoint >= 0x1800 && codePoint <= 0x180F);
     }
 
 }

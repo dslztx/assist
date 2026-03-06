@@ -167,8 +167,44 @@ public class CharAssistTest {
 
             Assert.assertTrue("hello".equals(CharAssist.removeInvisibleCharacters("he\u200Bllo\u200C\u200D\uFEFF")));
 
-            Assert.assertTrue("hello\u200E".equals(CharAssist.removeInvisibleCharacters("hello\u200E")));
+            Assert.assertTrue("hello".equals(CharAssist.removeInvisibleCharacters("hello\u200E")));
 
+            Assert.assertTrue(
+                "https://rankoncores.my./q/XCTRVYervwci&ervwci&34=Z2NAY2hlbXNoaW5lLWdyb3VwLmNvbQ#c3995725ba6d9166d78e9ca24caaf86522944e4e6969124d9fe366644dc7bc1d67399966ce8b20c7794d2f4b72d6e3662451ad79bac9b1ce0760"
+                    .equals(CharAssist.removeInvisibleCharacters(
+                        "https://ra\u180Fnko\u180Fnco\u180Fres.m\u180Fy./q/XCTRVYervwci&ervwci&34=Z2NAY2hlbXNoaW5lLWdyb3VwLmNvbQ#c3995725ba6d9166d78e9ca24caaf86522944e4e6969124d9fe366644dc7bc1d67399966ce8b20c7794d2f4b72d6e3662451ad79bac9b1ce0760")));
+
+            Assert.assertTrue(
+                "https://rankoncores.my./q/ZUDARVcbltzh&cbltzh&34=aW5mb0BzdG9uZW1hcmt0LmNvbQ#67a41b44cb80e063e5848320380e24f8475ebaf9ecd4d6e8216d427a25684af98baad1e8ed98f2a274f3c12aa4d5de9e55d76ec16cce862569cc8"
+                    .equals(CharAssist.removeInvisibleCharacters(
+                        "https://ra᠍᠌nko\u180Fnco᠍᠌res.m᠍᠌y./q/ZUDARVcbltzh&cbltzh&34=aW5mb0BzdG9uZW1hcmt0LmNvbQ#67a41b44cb80e063e5848320380e24f8475ebaf9ecd4d6e8216d427a25684af98baad1e8ed98f2a274f3c12aa4d5de9e55d76ec16cce862569cc8")));
+
+            Assert.assertTrue(("https://rankoncores.my/q/HAZIJOvuqpcn&vuqpcn&-=Y3BwQHNjZW5ld2F5LmNu#åä ̧æ1å1⁄4äoåä "
+                + "̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä "
+                + "̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4")
+                    .equals(CharAssist.removeInvisibleCharacters(
+                        "https://ra᠍᠌nko᠍᠌nco᠍᠌res.m᠍᠌y/q/HAZIJOvuqpcn&vuqpcn&-=Y3BwQHNjZW5ld2F5LmNu#åä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4")));
+        } catch (Exception e) {
+            logger.error("", e);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void existInvisibleCharacterTest() {
+        try {
+
+            Assert.assertTrue(CharAssist.existInvisibleCharacter(
+                "https://ra\u180Fnko\u180Fnco\u180Fres.m\u180Fy./q/XCTRVYervwci&ervwci&34=Z2NAY2hlbXNoaW5lLWdyb3VwLmNvbQ#c3995725ba6d9166d78e9ca24caaf86522944e4e6969124d9fe366644dc7bc1d67399966ce8b20c7794d2f4b72d6e3662451ad79bac9b1ce0760"));
+
+            Assert.assertTrue(CharAssist.existInvisibleCharacter(
+                "https://ra᠍᠌nko\u180Fnco᠍᠌res.m᠍᠌y./q/ZUDARVcbltzh&cbltzh&34=aW5mb0BzdG9uZW1hcmt0LmNvbQ#67a41b44cb80e063e5848320380e24f8475ebaf9ecd4d6e8216d427a25684af98baad1e8ed98f2a274f3c12aa4d5de9e55d76ec16cce862569cc8"));
+            Assert.assertTrue(CharAssist.existInvisibleCharacter(
+                "https://ra᠍᠌nko᠍᠌nco᠍᠌res.m᠍᠌y/q/HAZIJOvuqpcn&vuqpcn&-=Y3BwQHNjZW5ld2F5LmNu#åä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4äoåä ̧æ1å1⁄4"));
+
+            Assert.assertFalse(CharAssist.existInvisibleCharacter("hello world"));
+            Assert.assertFalse(CharAssist.existInvisibleCharacter("http://www.baidu.com"));
+            Assert.assertFalse(CharAssist.existInvisibleCharacter("http://www.google.com"));
         } catch (Exception e) {
             logger.error("", e);
             Assert.fail();
